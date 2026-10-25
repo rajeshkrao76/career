@@ -1,23 +1,17 @@
 /* ============================================================================
    Raveone Careers — Shared Client
-   Configure API_URL once. All pages use window.ATS.
    ============================================================================ */
 
 (function () {
   const ATS = {
-    /* ⚠️ REPLACE with your deployed web app URL */
-    API_URL: 'https://script.google.com/macros/s/AKfycbzFSGlT2DgPg-U_vL2UsyNdX2cH9nflQ0X7sgmOTc97giY553WByUmxzppCAgBOq9aAiw/exec',
+    API_URL: 'https://script.google.com/macros/s/AKfycbx_REPLACE_ME/exec',
 
-    /* ── API calls ── */
     async getJobs() {
       try {
         const r = await fetch(this.API_URL + '?action=jobs', { cache: 'no-store' });
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return await r.json();
-      } catch (e) {
-        console.error('getJobs failed:', e);
-        return [];
-      }
+      } catch (e) { console.error('getJobs:', e); return []; }
     },
 
     async getJob(jobId) {
@@ -26,24 +20,20 @@
         if (!r.ok) throw new Error('HTTP ' + r.status);
         const data = await r.json();
         return data && data.error ? null : data;
-      } catch (e) {
-        console.error('getJob failed:', e);
-        return null;
-      }
+      } catch (e) { console.error('getJob:', e); return null; }
     },
 
     async post(action, payload) {
       try {
         const r = await fetch(this.API_URL, {
           method: 'POST',
-          // text/plain avoids CORS preflight — Apps Script parses the JSON body regardless
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify(Object.assign({ action: action }, payload || {}))
         });
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return await r.json();
       } catch (e) {
-        console.error('POST ' + action + ' failed:', e);
+        console.error('POST ' + action + ':', e);
         return { ok: false, error: e.message || 'Network error' };
       }
     },
@@ -58,7 +48,7 @@
       return true;
     },
 
-    /* ── UI helpers ── */
+    /* ── UI ── */
     esc(s) {
       return String(s == null ? '' : s)
         .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -139,12 +129,38 @@
       });
     },
 
-    /* Delegated event helper for dynamically-rendered content */
     on(eventName, selector, handler) {
       document.addEventListener(eventName, function (e) {
         const target = e.target.closest(selector);
         if (target) handler.call(target, e);
       });
+    },
+
+    /* ── Password strength (shared between portals) ── */
+    passwordStrength(pw) {
+      const checks = {
+        length: pw.length >= 8,
+        letter: /[a-zA-Z]/.test(pw),
+        number: /[0-9]/.test(pw)
+      };
+      const score = Object.values(checks).filter(Boolean).length;
+      return {
+        checks: checks,
+        score: score,  // 0..3
+        level: score === 3 ? 'strong' : score === 2 ? 'fair' : 'weak',
+        valid: checks.length && checks.letter && checks.number
+      };
+    },
+
+    /* Detect session expiry and redirect */
+    handleAuthError(res, portal, loginUrl) {
+      if (!res.ok && /not authenticated|invalid session|session expired|deactivated/i.test(res.error || '')) {
+        this.toast('Your session expired. Please sign in again.', 'error');
+        this.clearSession(portal);
+        setTimeout(() => window.location.replace(loginUrl), 800);
+        return true;
+      }
+      return false;
     }
   };
 
