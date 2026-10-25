@@ -6,7 +6,7 @@
 (function () {
   const ATS = {
     /* ⚠️ REPLACE with your deployed web app URL */
-    API_URL: 'https://script.google.com/macros/s/AKfycbx_REPLACE_ME/exec',
+    API_URL: 'https://script.google.com/macros/s/AKfycbzFSGlT2DgPg-U_vL2UsyNdX2cH9nflQ0X7sgmOTc97giY553WByUmxzppCAgBOq9aAiw/exec',
 
     /* ── API calls ── */
     async getJobs() {
