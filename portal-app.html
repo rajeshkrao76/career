@@ -69,15 +69,16 @@
 
   <div class="m3-app-body">
     <nav class="m3-rail">
-      <button class="m3-rail-item active" data-tab="dashboard"><span class="m3-rail-icon material-symbols-outlined">dashboard</span><span class="m3-rail-label">Dashboard</span></button>
-      <button class="m3-rail-item" data-tab="cv"><span class="m3-rail-icon material-symbols-outlined">description</span><span class="m3-rail-label">My CV</span></button>
-      <button class="m3-rail-item" data-tab="profile"><span class="m3-rail-icon material-symbols-outlined">person</span><span class="m3-rail-label">Profile</span></button>
-      <button class="m3-rail-item" data-tab="applications"><span class="m3-rail-icon material-symbols-outlined">work</span><span class="m3-rail-label">Applications</span></button>
-      <button class="m3-rail-item" data-tab="interviews"><span class="m3-rail-icon material-symbols-outlined">event</span><span class="m3-rail-label">Interviews</span></button>
-      <button class="m3-rail-item" data-tab="documents"><span class="m3-rail-icon material-symbols-outlined">folder</span><span class="m3-rail-label">Documents</span></button>
-      <button class="m3-rail-item" data-tab="assessments"><span class="m3-rail-icon material-symbols-outlined">quiz</span><span class="m3-rail-label">Assessments</span></button>
-      <button class="m3-rail-item" data-tab="alerts"><span class="m3-rail-icon material-symbols-outlined">notifications</span><span class="m3-rail-label">Job Alerts</span></button>
-      <button class="m3-rail-item" data-tab="account"><span class="m3-rail-icon material-symbols-outlined">manage_accounts</span><span class="m3-rail-label">Account</span></button>
+      <button class="m3-rail-item active" data-tab="dashboard" onclick="switchTo('dashboard')"><span class="m3-rail-icon material-symbols-outlined">dashboard</span><span class="m3-rail-label">Dashboard</span></button>
+      <button class="m3-rail-item" data-tab="findJobs" onclick="switchTo('findJobs')"><span class="m3-rail-icon material-symbols-outlined">search</span><span class="m3-rail-label">Find Jobs</span></button>
+      <button class="m3-rail-item" data-tab="cv" onclick="switchTo('cv')"><span class="m3-rail-icon material-symbols-outlined">description</span><span class="m3-rail-label">My CV</span></button>
+      <button class="m3-rail-item" data-tab="profile" onclick="switchTo('profile')"><span class="m3-rail-icon material-symbols-outlined">person</span><span class="m3-rail-label">Profile</span></button>
+      <button class="m3-rail-item" data-tab="applications" onclick="switchTo('applications')"><span class="m3-rail-icon material-symbols-outlined">work</span><span class="m3-rail-label">Applications</span></button>
+      <button class="m3-rail-item" data-tab="interviews" onclick="switchTo('interviews')"><span class="m3-rail-icon material-symbols-outlined">event</span><span class="m3-rail-label">Interviews</span></button>
+      <button class="m3-rail-item" data-tab="documents" onclick="switchTo('documents')"><span class="m3-rail-icon material-symbols-outlined">folder</span><span class="m3-rail-label">Documents</span></button>
+      <button class="m3-rail-item" data-tab="assessments" onclick="switchTo('assessments')"><span class="m3-rail-icon material-symbols-outlined">quiz</span><span class="m3-rail-label">Assessments</span></button>
+      <button class="m3-rail-item" data-tab="alerts" onclick="switchTo('alerts')"><span class="m3-rail-icon material-symbols-outlined">notifications</span><span class="m3-rail-label">Job Alerts</span></button>
+      <button class="m3-rail-item" data-tab="account" onclick="switchTo('account')"><span class="m3-rail-icon material-symbols-outlined">manage_accounts</span><span class="m3-rail-label">Account</span></button>
     </nav>
     <main class="m3-content" id="content">
       <div class="empty-tab">Loading…</div>
@@ -111,14 +112,13 @@
       window.location.replace('index.html');
     };
 
-    document.querySelectorAll('.m3-rail-item').forEach(btn => {
-      btn.addEventListener('click', () => {
-        CURRENT_TAB = btn.dataset.tab;
-        document.querySelectorAll('.m3-rail-item').forEach(b =>
-          b.classList.toggle('active', b.dataset.tab === CURRENT_TAB));
-        render();
-      });
-    });
+    window.switchTo = function (tab) {
+      CURRENT_TAB = tab;
+      document.querySelectorAll('.m3-rail-item').forEach(b =>
+        b.classList.toggle('active', b.dataset.tab === tab));
+      render();
+    };
+
     function render() {
       content.innerHTML = '<div class="empty-tab">Loading…</div>';
       const fn = TABS[CURRENT_TAB];
@@ -175,7 +175,7 @@
                   <div class="m3-text-muted" style="font-size:11.5px;margin-top:2px">${ATS.esc(a.jobId || '')} · Applied ${ATS.esc(a.appliedAt || '')}</div>
                   <div style="margin-top:6px"><span class="m3-chip ${ATS.statusClass(a.status)}">${ATS.esc(a.status)}</span></div>
                 </div>
-              `).join('') : '<div class="m3-text-muted" style="font-size:13px;padding:20px;text-align:center">No new applications yet. <a href="index.html">Browse jobs →</a></div>'}
+              `).join('') : '<div class="m3-text-muted" style="font-size:13px;padding:20px;text-align:center">No new applications yet. <a href="#" onclick="switchTo('findJobs');return false;">Browse jobs →</a></div>'}
             </div>
           </div>
           <div class="m3-card" style="padding:20px">
@@ -195,6 +195,87 @@
       `;
     }
 
+    /* ═══ FIND JOBS ═══ */
+    async function renderFindJobs() {
+      const res = await call('portalGetActiveJobs');
+      if (handleAuthError(res)) return;
+      
+      if (!res.ok) {
+        content.innerHTML = '<div class="empty-tab">Could not load jobs</div>';
+        return;
+      }
+
+      const jobs = res.jobs || [];
+      
+      let html = `
+        <div class="hero-card" style="margin-bottom:20px">
+          <h1 class="m3-h3">Find Your Next Role 🚀</h1>
+          <p>Browse our latest openings and apply directly with your portal profile.</p>
+        </div>
+        
+        <div style="margin-bottom:24px">
+          <button class="m3-btn m3-btn-outlined" style="width:100%; border-color:#1A365D; color:#1A365D" onclick="applyTalentPool()">
+            <span class="material-symbols-outlined">work</span> Submit General Application (Talent Pool)
+          </button>
+        </div>
+        
+        <h3 class="m3-h4" style="margin-bottom:12px">Active Openings (${jobs.length})</h3>
+        <div class="card-list">
+      `;
+
+      if (jobs.length === 0) {
+        html += '<div class="empty-tab">No active jobs right now. Check back later!</div>';
+      } else {
+        jobs.forEach(j => {
+          html += `
+            <div class="m3-card item" style="padding:16px; cursor:pointer; display:flex; justify-content:space-between; align-items:center" onclick="applyForJob('${j.jobId}', '${ATS.esc(j.title).replace(/'/g, "\\'")}')">
+              <div class="body">
+                <div class="title" style="font-size:15px; font-weight:800; color:#1A365D">${ATS.esc(j.title)}</div>
+                <div class="meta" style="margin-top:4px">
+                  <span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle">apartment</span> ${ATS.esc(j.company)} 
+                  &nbsp;·&nbsp; 
+                  <span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle">location_on</span> ${ATS.esc(j.location)}
+                </div>
+                <div class="meta" style="margin-top:4px;color:#15803D;font-weight:700">${ATS.esc(j.salaryDisplay)}</div>
+              </div>
+              <button class="m3-btn m3-btn-filled m3-btn-sm" style="pointer-events:none">Apply</button>
+            </div>
+          `;
+        });
+      }
+      
+      html += `</div>`;
+      content.innerHTML = html;
+    }
+
+    window.applyForJob = async function(jobId, jobTitle) {
+      if (!confirm('Apply for ' + jobTitle + '?\\n\\nWe will use your portal profile for this application.')) return;
+      
+      ATS.toast('Submitting application...');
+      const res = await call('portalApplyForJob', { jobId: jobId });
+      
+      if (res.ok) {
+        alert('✅ Application submitted successfully!\\n\\nReference: ' + res.applicationId);
+        switchTo('applications');
+      } else {
+        ATS.toast(res.error || 'Failed to apply', 'error');
+      }
+    };
+
+    window.applyTalentPool = async function() {
+      if (!confirm('Submit a General Application to our Talent Pool?')) return;
+      
+      ATS.toast('Submitting application...');
+      const res = await call('portalApplyForJob', { jobId: 'TALENT-POOL' });
+      
+      if (res.ok) {
+        alert('✅ General Application submitted successfully!\\n\\nReference: ' + res.applicationId);
+        switchTo('applications');
+      } else {
+        ATS.toast(res.error || 'Failed to apply', 'error');
+      }
+    };
+
     /* ═══ CV BUILDER ═══ */
     async function renderCV() {
       const res = await call('portalGetProfile');
@@ -206,7 +287,6 @@
       window._CV_EXP = experience;
       window._CV_EDU = education;
 
-      // Completeness checklist
       const checks = [
         { label: 'Photo uploaded',       ok: !!p.photoUrl },
         { label: 'Full name',            ok: !!p.name },
@@ -346,13 +426,6 @@
       return y + ' yr' + (m > 0 ? ' ' + m + ' mo' : '');
     }
 
-    window.switchTo = function (tab) {
-      CURRENT_TAB = tab;
-      document.querySelectorAll('.m3-rail-item').forEach(b =>
-        b.classList.toggle('active', b.dataset.tab === tab));
-      render();
-    };
-
     window.addExperience = () => openExpModal(-1);
     window.editExperience = (i) => openExpModal(i);
 
@@ -380,8 +453,7 @@
             <input type="checkbox" id="exCurrent" ${e.currentlyWorking ? 'checked' : ''} onchange="document.getElementById('exTo').disabled=this.checked">
             <span>I currently work here</span></label></div>
           <div class="m3-field full"><label class="m3-field-label">Responsibilities &amp; Achievements (one per line)</label>
-            <textarea class="m3-textarea" id="exResp" rows="5" placeholder="Led team of 5 engineers&#10;Reduced cycle time by 20%">${ATS.esc(respText)}</textarea>
-            <p class="m3-text-faint" style="font-size:11px;margin-top:4px">Include responsibilities and key achievements, one per line.</p></div>
+            <textarea class="m3-textarea" id="exResp" rows="5" placeholder="Led team of 5 engineers&#10;Reduced cycle time by 20%">${ATS.esc(respText)}</textarea></div>
         </div>
         <div class="m3-flex m3-justify-end m3-gap-2 m3-mt-4">
           <button class="m3-btn m3-btn-text" onclick="closeModal()">Cancel</button>
@@ -418,78 +490,77 @@
     window.editEducation = (i) => openEduModal(i);
 
     function openEduModal(idx) {
-  const isEdit = idx >= 0;
-  const e = isEdit ? (window._CV_EDU || [])[idx] : {};
-  const opts = ['B.E.','B.Tech','B.Sc','B.Com','B.A','BBA','BCA','MBA','MCA','M.Tech','M.E.','M.Sc','M.Com','PhD','Diploma','ITI','12th','10th','Other'];
+      const isEdit = idx >= 0;
+      const e = isEdit ? (window._CV_EDU || [])[idx] : {};
+      const opts = ['B.E.','B.Tech','B.Sc','B.Com','B.A','BBA','BCA','MBA','MCA','M.Tech','M.E.','M.Sc','M.Com','PhD','Diploma','ITI','12th','10th','Other'];
+      
+      const storedDegree = String(e.degree || "").trim();
+      const isCustom = storedDegree && opts.indexOf(storedDegree) === -1;
+      const selectedDegree = isCustom ? "Other" : storedDegree;
+      const customValue = isCustom ? storedDegree : "";
 
-  // If existing degree isn't in the list → treat as custom ("Other")
-  const storedDegree = String(e.degree || "").trim();
-  const isCustom = storedDegree && opts.indexOf(storedDegree) === -1;
-  const selectedDegree = isCustom ? "Other" : storedDegree;
-  const customValue = isCustom ? storedDegree : "";
+      showModal(`
+        <div class="m3-flex m3-justify-between m3-items-center" style="margin-bottom:16px">
+          <h3 class="m3-h3">${isEdit ? 'Edit' : 'Add'} Education</h3>
+          <button class="m3-btn m3-btn-icon" onclick="closeModal()"><span class="material-symbols-outlined">close</span></button>
+        </div>
+        <div class="form-grid">
+          <div class="m3-field full"><label class="m3-field-label">Degree *</label>
+            <select class="m3-select" id="edDegree" onchange="toggleCustomDegree()">
+              ${opts.map(d => `<option ${selectedDegree === d ? 'selected' : ''}>${d}</option>`).join('')}
+            </select>
+          </div>
+          <div class="m3-field full" id="customDegreeWrap" style="${selectedDegree === 'Other' ? '' : 'display:none'}">
+            <label class="m3-field-label">Specify Degree *</label>
+            <input class="m3-input" id="edCustomDegree" value="${ATS.esc(customValue)}" placeholder="e.g. Post Graduate Diploma in Plastics Engineering">
+          </div>
+          <div class="m3-field full"><label class="m3-field-label">Field of Study *</label>
+            <input class="m3-input" id="edField" value="${ATS.esc(e.field||'')}" placeholder="e.g. Mechanical Engineering"></div>
+          <div class="m3-field full"><label class="m3-field-label">Institution *</label>
+            <input class="m3-input" id="edInst" value="${ATS.esc(e.institution||'')}" placeholder="e.g. XYZ University"></div>
+          <div class="m3-field"><label class="m3-field-label">From (year)</label>
+            <input type="number" class="m3-input" id="edFrom" value="${ATS.esc(e.startDate||'')}" placeholder="2015" min="1950" max="2030"></div>
+          <div class="m3-field"><label class="m3-field-label">To (year) *</label>
+            <input type="number" class="m3-input" id="edTo" value="${ATS.esc(e.endDate||'')}" placeholder="2019" min="1950" max="2030"></div>
+          <div class="m3-field full"><label class="m3-field-label">Grade / CGPA (optional)</label>
+            <input class="m3-input" id="edGrade" value="${ATS.esc(e.grade||'')}" placeholder="e.g. 8.5 CGPA"></div>
+        </div>
+        <div class="m3-flex m3-justify-end m3-gap-2 m3-mt-4">
+          <button class="m3-btn m3-btn-text" onclick="closeModal()">Cancel</button>
+          <button class="m3-btn m3-btn-filled" onclick="saveEducation(${idx})">Save</button>
+        </div>
+      `);
+    }
 
-  showModal(`
-    <div class="m3-flex m3-justify-between m3-items-center" style="margin-bottom:16px">
-      <h3 class="m3-h3">${isEdit ? 'Edit' : 'Add'} Education</h3>
-      <button class="m3-btn m3-btn-icon" onclick="closeModal()"><span class="material-symbols-outlined">close</span></button>
-    </div>
-    <div class="form-grid">
-      <div class="m3-field full"><label class="m3-field-label">Degree *</label>
-        <select class="m3-select" id="edDegree" onchange="toggleCustomDegree()">
-          ${opts.map(d => `<option ${selectedDegree === d ? 'selected' : ''}>${d}</option>`).join('')}
-        </select>
-      </div>
-      <div class="m3-field full" id="customDegreeWrap" style="${selectedDegree === 'Other' ? '' : 'display:none'}">
-        <label class="m3-field-label">Specify Degree *</label>
-        <input class="m3-input" id="edCustomDegree" value="${ATS.esc(customValue)}" placeholder="e.g. Post Graduate Diploma in Plastics Engineering">
-      </div>
-      <div class="m3-field full"><label class="m3-field-label">Field of Study *</label>
-        <input class="m3-input" id="edField" value="${ATS.esc(e.field||'')}" placeholder="e.g. Mechanical Engineering"></div>
-      <div class="m3-field full"><label class="m3-field-label">Institution *</label>
-        <input class="m3-input" id="edInst" value="${ATS.esc(e.institution||'')}" placeholder="e.g. XYZ University"></div>
-      <div class="m3-field"><label class="m3-field-label">From (year)</label>
-        <input type="number" class="m3-input" id="edFrom" value="${ATS.esc(e.startDate||'')}" placeholder="2015" min="1950" max="2030"></div>
-      <div class="m3-field"><label class="m3-field-label">To (year) *</label>
-        <input type="number" class="m3-input" id="edTo" value="${ATS.esc(e.endDate||'')}" placeholder="2019" min="1950" max="2030"></div>
-      <div class="m3-field full"><label class="m3-field-label">Grade / CGPA (optional)</label>
-        <input class="m3-input" id="edGrade" value="${ATS.esc(e.grade||'')}" placeholder="e.g. 8.5 CGPA"></div>
-    </div>
-    <div class="m3-flex m3-justify-end m3-gap-2 m3-mt-4">
-      <button class="m3-btn m3-btn-text" onclick="closeModal()">Cancel</button>
-      <button class="m3-btn m3-btn-filled" onclick="saveEducation(${idx})">Save</button>
-    </div>
-  `);
-}
+    window.toggleCustomDegree = function () {
+      const sel = document.getElementById('edDegree').value;
+      const wrap = document.getElementById('customDegreeWrap');
+      if (wrap) wrap.style.display = (sel === 'Other' ? '' : 'none');
+    };
 
-window.toggleCustomDegree = function () {
-  const sel = document.getElementById('edDegree').value;
-  const wrap = document.getElementById('customDegreeWrap');
-  if (wrap) wrap.style.display = (sel === 'Other' ? '' : 'none');
-};
+    window.saveEducation = async function (idx) {
+      const selectedDegree = document.getElementById('edDegree').value;
+      const field = document.getElementById('edField').value.trim();
+      const inst = document.getElementById('edInst').value.trim();
+      const from = document.getElementById('edFrom').value;
+      const to = document.getElementById('edTo').value;
+      const grade = document.getElementById('edGrade').value.trim();
+      
+      let degree = selectedDegree;
+      if (selectedDegree === 'Other') {
+        degree = document.getElementById('edCustomDegree').value.trim();
+        if (!degree) { ATS.toast('Please specify your degree', 'error'); return; }
+      }
 
-   window.saveEducation = async function (idx) {
-  const selectedDegree = document.getElementById('edDegree').value;
-  const field = document.getElementById('edField').value.trim();
-  const inst = document.getElementById('edInst').value.trim();
-  const from = document.getElementById('edFrom').value;
-  const to = document.getElementById('edTo').value;
-  const grade = document.getElementById('edGrade').value.trim();
+      if (!field || !inst) { ATS.toast('Field and institution are required', 'error'); return; }
+      if (!to) { ATS.toast('End year is required', 'error'); return; }
+      
+      const entry = { degree, field, institution: inst, startDate: from, endDate: to, grade };
+      const arr = (window._CV_EDU || []).slice();
+      if (idx >= 0) arr[idx] = entry; else arr.push(entry);
+      await persistCV({ educationList: arr });
+    };
 
-  // If "Other" → use the custom input as the degree
-  let degree = selectedDegree;
-  if (selectedDegree === 'Other') {
-    degree = document.getElementById('edCustomDegree').value.trim();
-    if (!degree) { ATS.toast('Please specify your degree', 'error'); return; }
-  }
-
-  if (!field || !inst) { ATS.toast('Field and institution are required', 'error'); return; }
-  if (!to) { ATS.toast('End year is required', 'error'); return; }
-
-  const entry = { degree, field, institution: inst, startDate: from, endDate: to, grade };
-  const arr = (window._CV_EDU || []).slice();
-  if (idx >= 0) arr[idx] = entry; else arr.push(entry);
-  await persistCV({ educationList: arr });
-};
     window.deleteEducation = async function (idx) {
       if (!confirm('Remove this education entry?')) return;
       const arr = (window._CV_EDU || []).slice();
@@ -563,7 +634,6 @@ window.toggleCustomDegree = function () {
         </div>
 
         <div class="m3-card" style="padding:24px">
-          <!-- Photo uploader -->
           <div class="photo-uploader">
             <div class="photo-preview" id="photoPreview">
               ${p.photoUrl ? `<img src="${ATS.esc(p.photoUrl)}" alt="Profile photo">` : initials}
@@ -612,7 +682,6 @@ window.toggleCustomDegree = function () {
             <div class="form-grid">
               <div class="m3-field full"><label class="m3-field-label">Skills * (comma-separated)</label>
                 <input class="m3-input" name="skills" value="${ATS.esc(p.skills||'')}" maxlength="1000" placeholder="e.g. CNC, VMC, GD&T, ISO 13485">
-                ${!p.skills ? '<p class="m3-text-faint" style="font-size:11px;margin-top:4px;color:#B45309">⚠ Add skills to appear in your CV</p>' : ''}
               </div>
               <div class="m3-field"><label class="m3-field-label">Certifications (pipe-separated)</label><input class="m3-input" name="certifications" value="${ATS.esc(p.certifications||'')}" maxlength="500" placeholder="e.g. Six Sigma | PMP"></div>
               <div class="m3-field"><label class="m3-field-label">Machines (comma-separated)</label><input class="m3-input" name="machines" value="${ATS.esc(p.machines||'')}" maxlength="500"></div>
@@ -648,7 +717,6 @@ window.toggleCustomDegree = function () {
         </div>
       `;
 
-      // Wire photo upload
       const photoInput = document.getElementById('photoInput');
       photoInput.onchange = handlePhotoUpload;
     }
@@ -699,7 +767,7 @@ window.toggleCustomDegree = function () {
        'currentDesignation','reasonLeaving','skills','certifications','machines',
        'languages','preferredLocations','relocate','willingToTravel','linkedin','portfolioUrl']
         .forEach(k => { const v = fd.get(k); if (v !== null) profile[k] = v; });
-      // Consent checkbox
+      
       const consentEl = e.target.querySelector('input[name="consent"]');
       profile.consent = !!(consentEl && consentEl.checked);
 
@@ -728,7 +796,7 @@ window.toggleCustomDegree = function () {
           </div>`).join('')}</div>` : `<div class="empty-tab">
             <span class="material-symbols-outlined" style="font-size:56px;color:#94A3B8">description</span>
             <p class="m3-mt-3">No applications yet.</p>
-            <a href="index.html" class="m3-btn m3-btn-filled m3-mt-3">Browse jobs</a>
+            <button class="m3-btn m3-btn-filled m3-mt-3" onclick="switchTo('findJobs')">Browse jobs</button>
           </div>`}`;
     }
 
@@ -1025,6 +1093,7 @@ window.toggleCustomDegree = function () {
     /* ═══ TAB MAP ═══ */
     const TABS = {
       dashboard: renderDashboard,
+      findJobs: renderFindJobs,
       cv: renderCV,
       profile: renderProfile,
       applications: renderApplications,
@@ -1035,7 +1104,27 @@ window.toggleCustomDegree = function () {
       account: renderAccount
     };
 
-    render();
+    // Check for direct apply URL (e.g., from career page)
+    const urlParams = new URLSearchParams(window.location.search);
+    const directJobId = urlParams.get('job');
+    const isTalent = urlParams.get('talent');
+    
+    if (directJobId || isTalent === 'true') {
+      switchTo('findJobs');
+      setTimeout(() => {
+        if (directJobId) {
+          if (confirm('You are applying for Job ID: ' + directJobId + '. Continue?')) {
+            applyForJob(directJobId, 'this role');
+          }
+        } else if (isTalent === 'true') {
+          if (confirm('Submit your profile to our Talent Pool?')) {
+            applyTalentPool();
+          }
+        }
+      }, 500);
+    } else {
+      render();
+    }
   })();
   </script>
 </body>
