@@ -119,13 +119,13 @@
       render();
     };
 
-    function render() {
-      content.innerHTML = '<div class="empty-tab"><span class="material-symbols-outlined" style="font-size:32px;animation:spin 1s linear infinite;margin-bottom:8px">refresh</span><br>Loading…</div>';
+       function render() {
+      content.innerHTML = '<div class="empty-tab">Loading…</div>';
       const fn = TABS[CURRENT_TAB];
       if (fn) {
         try {
           fn();
-        } catch(e) {
+        } catch (e) {
           console.error(e);
           content.innerHTML = '<div class="empty-tab" style="color:#DC2626">Error loading page: ' + e.message + '</div>';
         }
@@ -151,7 +151,10 @@
     async function renderDashboard() {
       const res = await call('portalGetDashboard');
       if (handleAuthError(res)) return;
-      if (!res.ok) { content.innerHTML = '<div class="empty-tab">Could not load dashboard</div>'; return; }
+           if (!res.ok) {
+        content.innerHTML = '<div class="empty-tab" style="color:#DC2626">Could not load jobs.<br>' + (res.error || 'Session may have expired.') + '</div>';
+        return;
+      }
       const d = res;
       const justApplied = (d.applications || []).filter(a =>
         ['sourced', 'jd shared'].indexOf(String(a.status || '').toLowerCase()) !== -1
