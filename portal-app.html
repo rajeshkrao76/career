@@ -418,50 +418,78 @@
     window.editEducation = (i) => openEduModal(i);
 
     function openEduModal(idx) {
-      const isEdit = idx >= 0;
-      const e = isEdit ? (window._CV_EDU || [])[idx] : {};
-      const opts = ['B.E.','B.Tech','B.Sc','B.Com','B.A','BBA','BCA','MBA','MCA','M.Tech','M.E.','M.Sc','M.Com','PhD','Diploma','ITI','12th','10th','Other'];
-      showModal(`
-        <div class="m3-flex m3-justify-between m3-items-center" style="margin-bottom:16px">
-          <h3 class="m3-h3">${isEdit ? 'Edit' : 'Add'} Education</h3>
-          <button class="m3-btn m3-btn-icon" onclick="closeModal()"><span class="material-symbols-outlined">close</span></button>
-        </div>
-        <div class="form-grid">
-          <div class="m3-field full"><label class="m3-field-label">Degree *</label>
-            <select class="m3-select" id="edDegree">${opts.map(d => `<option ${e.degree === d ? 'selected' : ''}>${d}</option>`).join('')}</select></div>
-          <div class="m3-field full"><label class="m3-field-label">Field of Study *</label>
-            <input class="m3-input" id="edField" value="${ATS.esc(e.field||'')}" placeholder="e.g. Mechanical Engineering"></div>
-          <div class="m3-field full"><label class="m3-field-label">Institution *</label>
-            <input class="m3-input" id="edInst" value="${ATS.esc(e.institution||'')}" placeholder="e.g. XYZ University"></div>
-          <div class="m3-field"><label class="m3-field-label">From (year)</label>
-            <input type="number" class="m3-input" id="edFrom" value="${ATS.esc(e.startDate||'')}" placeholder="2015" min="1950" max="2030"></div>
-          <div class="m3-field"><label class="m3-field-label">To (year) *</label>
-            <input type="number" class="m3-input" id="edTo" value="${ATS.esc(e.endDate||'')}" placeholder="2019" min="1950" max="2030"></div>
-          <div class="m3-field full"><label class="m3-field-label">Grade / CGPA (optional)</label>
-            <input class="m3-input" id="edGrade" value="${ATS.esc(e.grade||'')}" placeholder="e.g. 8.5 CGPA"></div>
-        </div>
-        <div class="m3-flex m3-justify-end m3-gap-2 m3-mt-4">
-          <button class="m3-btn m3-btn-text" onclick="closeModal()">Cancel</button>
-          <button class="m3-btn m3-btn-filled" onclick="saveEducation(${idx})">Save</button>
-        </div>
-      `);
-    }
+  const isEdit = idx >= 0;
+  const e = isEdit ? (window._CV_EDU || [])[idx] : {};
+  const opts = ['B.E.','B.Tech','B.Sc','B.Com','B.A','BBA','BCA','MBA','MCA','M.Tech','M.E.','M.Sc','M.Com','PhD','Diploma','ITI','12th','10th','Other'];
 
-    window.saveEducation = async function (idx) {
-      const degree = document.getElementById('edDegree').value;
-      const field = document.getElementById('edField').value.trim();
-      const inst = document.getElementById('edInst').value.trim();
-      const from = document.getElementById('edFrom').value;
-      const to = document.getElementById('edTo').value;
-      const grade = document.getElementById('edGrade').value.trim();
-      if (!field || !inst) { ATS.toast('Field and institution are required', 'error'); return; }
-      if (!to) { ATS.toast('End year is required', 'error'); return; }
-      const entry = { degree, field, institution: inst, startDate: from, endDate: to, grade };
-      const arr = (window._CV_EDU || []).slice();
-      if (idx >= 0) arr[idx] = entry; else arr.push(entry);
-      await persistCV({ educationList: arr });
-    };
+  // If existing degree isn't in the list → treat as custom ("Other")
+  const storedDegree = String(e.degree || "").trim();
+  const isCustom = storedDegree && opts.indexOf(storedDegree) === -1;
+  const selectedDegree = isCustom ? "Other" : storedDegree;
+  const customValue = isCustom ? storedDegree : "";
 
+  showModal(`
+    <div class="m3-flex m3-justify-between m3-items-center" style="margin-bottom:16px">
+      <h3 class="m3-h3">${isEdit ? 'Edit' : 'Add'} Education</h3>
+      <button class="m3-btn m3-btn-icon" onclick="closeModal()"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div class="form-grid">
+      <div class="m3-field full"><label class="m3-field-label">Degree *</label>
+        <select class="m3-select" id="edDegree" onchange="toggleCustomDegree()">
+          ${opts.map(d => `<option ${selectedDegree === d ? 'selected' : ''}>${d}</option>`).join('')}
+        </select>
+      </div>
+      <div class="m3-field full" id="customDegreeWrap" style="${selectedDegree === 'Other' ? '' : 'display:none'}">
+        <label class="m3-field-label">Specify Degree *</label>
+        <input class="m3-input" id="edCustomDegree" value="${ATS.esc(customValue)}" placeholder="e.g. Post Graduate Diploma in Plastics Engineering">
+      </div>
+      <div class="m3-field full"><label class="m3-field-label">Field of Study *</label>
+        <input class="m3-input" id="edField" value="${ATS.esc(e.field||'')}" placeholder="e.g. Mechanical Engineering"></div>
+      <div class="m3-field full"><label class="m3-field-label">Institution *</label>
+        <input class="m3-input" id="edInst" value="${ATS.esc(e.institution||'')}" placeholder="e.g. XYZ University"></div>
+      <div class="m3-field"><label class="m3-field-label">From (year)</label>
+        <input type="number" class="m3-input" id="edFrom" value="${ATS.esc(e.startDate||'')}" placeholder="2015" min="1950" max="2030"></div>
+      <div class="m3-field"><label class="m3-field-label">To (year) *</label>
+        <input type="number" class="m3-input" id="edTo" value="${ATS.esc(e.endDate||'')}" placeholder="2019" min="1950" max="2030"></div>
+      <div class="m3-field full"><label class="m3-field-label">Grade / CGPA (optional)</label>
+        <input class="m3-input" id="edGrade" value="${ATS.esc(e.grade||'')}" placeholder="e.g. 8.5 CGPA"></div>
+    </div>
+    <div class="m3-flex m3-justify-end m3-gap-2 m3-mt-4">
+      <button class="m3-btn m3-btn-text" onclick="closeModal()">Cancel</button>
+      <button class="m3-btn m3-btn-filled" onclick="saveEducation(${idx})">Save</button>
+    </div>
+  `);
+}
+
+window.toggleCustomDegree = function () {
+  const sel = document.getElementById('edDegree').value;
+  const wrap = document.getElementById('customDegreeWrap');
+  if (wrap) wrap.style.display = (sel === 'Other' ? '' : 'none');
+};
+
+   window.saveEducation = async function (idx) {
+  const selectedDegree = document.getElementById('edDegree').value;
+  const field = document.getElementById('edField').value.trim();
+  const inst = document.getElementById('edInst').value.trim();
+  const from = document.getElementById('edFrom').value;
+  const to = document.getElementById('edTo').value;
+  const grade = document.getElementById('edGrade').value.trim();
+
+  // If "Other" → use the custom input as the degree
+  let degree = selectedDegree;
+  if (selectedDegree === 'Other') {
+    degree = document.getElementById('edCustomDegree').value.trim();
+    if (!degree) { ATS.toast('Please specify your degree', 'error'); return; }
+  }
+
+  if (!field || !inst) { ATS.toast('Field and institution are required', 'error'); return; }
+  if (!to) { ATS.toast('End year is required', 'error'); return; }
+
+  const entry = { degree, field, institution: inst, startDate: from, endDate: to, grade };
+  const arr = (window._CV_EDU || []).slice();
+  if (idx >= 0) arr[idx] = entry; else arr.push(entry);
+  await persistCV({ educationList: arr });
+};
     window.deleteEducation = async function (idx) {
       if (!confirm('Remove this education entry?')) return;
       const arr = (window._CV_EDU || []).slice();
