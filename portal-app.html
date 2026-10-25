@@ -24,6 +24,18 @@
     .hero-card h1 { color: #fff; }
     .hero-card p { opacity: .9; font-size: 14px; margin-top: 4px; }
     .empty-tab { text-align: center; padding: 48px 20px; color: #64748B; }
+    .strength { display: flex; gap: 3px; margin-top: 6px; }
+    .strength-bar { flex: 1; height: 4px; background: #E2E8F0; border-radius: 2px; transition: background .2s; }
+    .strength-bar.on-1 { background: #DC2626; }
+    .strength-bar.on-2 { background: #F59E0B; }
+    .strength-bar.on-3 { background: #16A34A; }
+
+    /* Modal */
+    .ats-modal-backdrop { position: fixed; inset: 0; background: rgba(15,23,42,.6); backdrop-filter: blur(4px); z-index: 100; display: none; align-items: flex-start; justify-content: center; padding: 24px 12px; overflow-y: auto; }
+    .ats-modal-backdrop.open { display: flex; }
+    .ats-modal { background: #fff; border-radius: 16px; padding: 24px; max-width: 620px; width: 100%; margin: auto; box-shadow: 0 30px 80px -20px rgba(0,0,0,.5); }
+    .ats-modal.wide { max-width: 900px; }
+    @media (max-width: 600px) { .ats-modal { padding: 18px; border-radius: 12px; } }
   </style>
 </head>
 <body class="m3">
@@ -40,18 +52,25 @@
   </header>
 
   <div class="m3-app-body">
-    <nav class="m3-rail" id="rail">
+    <nav class="m3-rail">
       <button class="m3-rail-item active" data-tab="dashboard"><span class="m3-rail-icon material-symbols-outlined">dashboard</span><span class="m3-rail-label">Dashboard</span></button>
-      <button class="m3-rail-item" data-tab="profile"><span class="m3-rail-icon material-symbols-outlined">person</span><span class="m3-rail-label">My Profile</span></button>
-      <button class="m3-rail-item" data-tab="applications"><span class="m3-rail-icon material-symbols-outlined">description</span><span class="m3-rail-label">Applications</span></button>
+      <button class="m3-rail-item" data-tab="cv"><span class="m3-rail-icon material-symbols-outlined">description</span><span class="m3-rail-label">My CV</span></button>
+      <button class="m3-rail-item" data-tab="profile"><span class="m3-rail-icon material-symbols-outlined">person</span><span class="m3-rail-label">Profile</span></button>
+      <button class="m3-rail-item" data-tab="applications"><span class="m3-rail-icon material-symbols-outlined">work</span><span class="m3-rail-label">Applications</span></button>
       <button class="m3-rail-item" data-tab="interviews"><span class="m3-rail-icon material-symbols-outlined">event</span><span class="m3-rail-label">Interviews</span></button>
       <button class="m3-rail-item" data-tab="documents"><span class="m3-rail-icon material-symbols-outlined">folder</span><span class="m3-rail-label">Documents</span></button>
+      <button class="m3-rail-item" data-tab="assessments"><span class="m3-rail-icon material-symbols-outlined">quiz</span><span class="m3-rail-label">Assessments</span></button>
       <button class="m3-rail-item" data-tab="alerts"><span class="m3-rail-icon material-symbols-outlined">notifications</span><span class="m3-rail-label">Job Alerts</span></button>
+      <button class="m3-rail-item" data-tab="account"><span class="m3-rail-icon material-symbols-outlined">manage_accounts</span><span class="m3-rail-label">Account</span></button>
     </nav>
-    <main class="m3-content" id="content"><div class="empty-tab"><div class="spinner" style="width:32px;height:32px;border:3px solid #E2E8F0;border-top-color:#1A365D;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px"></div>Loading…</div></main>
+    <main class="m3-content" id="content">
+      <div class="empty-tab">Loading…</div>
+    </main>
   </div>
 
-  <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+  <div class="ats-modal-backdrop" id="atsModal">
+    <div class="ats-modal" id="atsModalBody"></div>
+  </div>
 
   <script src="app.js"></script>
   <script>
@@ -66,17 +85,9 @@
     async function call(action, extra) {
       return ATS.post(action, Object.assign({ token: session.token }, extra || {}));
     }
-
     function handleAuthError(res) {
-      if (!res.ok && /not authenticated|invalid session|session expired/i.test(res.error || '')) {
-        ATS.toast('Your session expired. Please log in again.', 'error');
-        ATS.clearSession('candidate');
-        setTimeout(() => window.location.replace('portal-login.html'), 800);
-        return true;
-      }
-      return false;
+      return ATS.handleAuthError(res, 'candidate', 'portal-login.html');
     }
-
     window.logout = async function () {
       await call('portalLogout');
       ATS.clearSession('candidate');
@@ -84,29 +95,55 @@
     };
 
     document.querySelectorAll('.m3-rail-item').forEach(btn => {
-      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+      btn.addEventListener('click', () => {
+        CURRENT_TAB = btn.dataset.tab;
+        document.querySelectorAll('.m3-rail-item').forEach(b =>
+          b.classList.toggle('active', b.dataset.tab === CURRENT_TAB));
+        render();
+      });
     });
-
-    function switchTab(tab) {
-      CURRENT_TAB = tab;
-      document.querySelectorAll('.m3-rail-item').forEach(b =>
-        b.classList.toggle('active', b.dataset.tab === tab));
-      render();
-    }
-
     function render() {
       content.innerHTML = '<div class="empty-tab">Loading…</div>';
       const fn = TABS[CURRENT_TAB];
       if (fn) fn();
     }
 
-    /* ═══════ DASHBOARD ═══════ */
+    /* ── MODAL helpers ── */
+    window.showModal = function (html, wide) {
+      const modal = document.getElementById('atsModalBody');
+      modal.innerHTML = html;
+      modal.className = 'ats-modal' + (wide ? ' wide' : '');
+      document.getElementById('atsModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    };
+    window.closeModal = function () {
+      document.getElementById('atsModal').classList.remove('open');
+      document.body.style.overflow = '';
+    };
+    document.getElementById('atsModal').addEventListener('click', e => {
+      if (e.target.id === 'atsModal') closeModal();
+    });
+
+    /* ═══════════════════════════════════════════════════════
+       DASHBOARD
+       ═══════════════════════════════════════════════════════ */
     async function renderDashboard() {
       const res = await call('portalGetDashboard');
       if (handleAuthError(res)) return;
       if (!res.ok) { content.innerHTML = '<div class="empty-tab">Could not load dashboard</div>'; return; }
       const d = res;
-      const statsHtml = `
+
+      // "Just Applied" = status Sourced or JD Shared
+      const justApplied = (d.applications || []).filter(a =>
+        ['sourced', 'jd shared'].indexOf(String(a.status || '').toLowerCase()) !== -1
+      ).slice(0, 20);
+
+      // All future interviews
+      const allUpcoming = (d.upcomingInterviews || []).slice().sort((a, b) =>
+        String(a.when || '').localeCompare(String(b.when || ''))
+      );
+
+      content.innerHTML = `
         <div class="hero-card">
           <h1 class="m3-h3">Hi ${ATS.esc(d.profile.name || 'there')} 👋</h1>
           <p>${ATS.esc(d.profile.email || '')}</p>
@@ -117,98 +154,339 @@
           <div class="m3-stat-card"><div class="m3-stat-label">Interviews</div><div class="m3-stat-value">${d.stats.upcomingInterviews}</div><div class="m3-stat-hint">upcoming</div></div>
           <div class="m3-stat-card"><div class="m3-stat-label">Offers</div><div class="m3-stat-value" style="color:#15803D">${d.stats.offers}</div><div class="m3-stat-hint">received</div></div>
         </div>
-        <div class="m3-grid-2">
-          <div class="m3-card">
-            <h3 class="m3-h4" style="margin-bottom:12px">Recent applications</h3>
-            <div class="card-list">
-              ${(d.applications || []).length
-                ? d.applications.map(a => `
-                  <div class="item" style="border:1px solid #E2E8F0;border-radius:8px">
-                    <div class="body">
-                      <div class="title">${ATS.esc(a.jobTitle || 'Role')}</div>
-                      <div class="meta">${ATS.esc(a.jobId || '')} · ${ATS.esc(a.appliedAt || '')}</div>
-                    </div>
-                    <span class="m3-chip ${ATS.statusClass(a.status)}">${ATS.esc(a.status)}</span>
-                  </div>`).join('')
-                : '<div class="m3-text-muted" style="font-size:13px">No applications yet. <a href="index.html">Browse jobs →</a></div>'}
+        <div class="m3-grid-2" style="gap:16px">
+          <div class="m3-card" style="padding:20px">
+            <h3 class="m3-h4" style="margin-bottom:4px">📥 Just Applied (${justApplied.length})</h3>
+            <p class="m3-text-muted" style="font-size:12px;margin-bottom:12px">Recent applications awaiting recruiter review</p>
+            <div style="max-height:420px;overflow-y:auto">
+              ${justApplied.length ? justApplied.map(a => `
+                <div style="padding:12px;border:1px solid #E2E8F0;border-radius:8px;margin-bottom:8px">
+                  <div style="font-weight:700;font-size:13px">${ATS.esc(a.jobTitle || 'Role')}</div>
+                  <div class="m3-text-muted" style="font-size:11.5px;margin-top:2px">${ATS.esc(a.jobId || '')} · Applied ${ATS.esc(a.appliedAt || '')}</div>
+                  <div style="margin-top:6px"><span class="m3-chip ${ATS.statusClass(a.status)}">${ATS.esc(a.status)}</span></div>
+                </div>
+              `).join('') : '<div class="m3-text-muted" style="font-size:13px;padding:20px;text-align:center">No new applications yet. <a href="index.html">Browse jobs →</a></div>'}
             </div>
           </div>
-          <div class="m3-card">
-            <h3 class="m3-h4" style="margin-bottom:12px">Upcoming interviews</h3>
-            <div class="card-list">
-              ${(d.upcomingInterviews || []).length
-                ? d.upcomingInterviews.map(i => `
-                  <div class="item" style="border:1px solid #E2E8F0;border-radius:8px">
-                    <div class="body">
-                      <div class="title">${ATS.esc(i.position || 'Interview')}</div>
-                      <div class="meta">${ATS.esc(i.date || '')} · ${ATS.esc(i.time || '')} · ${ATS.esc(i.mode || '')}</div>
-                    </div>
-                  </div>`).join('')
-                : '<div class="m3-text-muted" style="font-size:13px">No interviews scheduled.</div>'}
+          <div class="m3-card" style="padding:20px">
+            <h3 class="m3-h4" style="margin-bottom:4px">📅 Upcoming Interviews (${allUpcoming.length})</h3>
+            <p class="m3-text-muted" style="font-size:12px;margin-bottom:12px">All scheduled interviews from today onward</p>
+            <div style="max-height:420px;overflow-y:auto">
+              ${allUpcoming.length ? allUpcoming.map(i => `
+                <div style="padding:12px;border:1px solid #E2E8F0;border-radius:8px;margin-bottom:8px">
+                  <div style="font-weight:700;font-size:13px">${ATS.esc(i.position || 'Interview')}</div>
+                  <div class="m3-text-muted" style="font-size:11.5px;margin-top:2px">${ATS.esc(i.date || '')} · ${ATS.esc(i.time || '')} · ${ATS.esc(i.mode || '')}</div>
+                  <div class="m3-text-faint" style="font-size:11px;margin-top:2px">${ATS.esc(i.company || '')}</div>
+                </div>
+              `).join('') : '<div class="m3-text-muted" style="font-size:13px;padding:20px;text-align:center">No interviews scheduled.</div>'}
             </div>
           </div>
-        </div>`;
-      content.innerHTML = statsHtml;
+        </div>
+      `;
     }
 
-    /* ═══════ PROFILE ═══════ */
-    async function renderProfile() {
+    /* ═══════════════════════════════════════════════════════
+       CV BUILDER
+       ═══════════════════════════════════════════════════════ */
+    async function renderCV() {
       const res = await call('portalGetProfile');
       if (handleAuthError(res)) return;
       if (!res.ok) { content.innerHTML = '<div class="empty-tab">Could not load profile</div>'; return; }
       const p = res.profile || {};
+      let experience = Array.isArray(p.experience) ? p.experience : [];
+      let education = Array.isArray(p.educationList) ? p.educationList : [];
+
+      window._CV_EXP = experience;
+      window._CV_EDU = education;
+
       content.innerHTML = `
-        <div class="m3-card" style="padding:24px;margin-bottom:16px">
-          <div class="m3-flex m3-justify-between m3-items-center" style="margin-bottom:16px">
-            <h1 class="m3-h3">My Profile</h1>
-            <span class="m3-chip m3-chip-primary">${p.profileCompleteness || 0}% complete</span>
+        <div class="m3-flex m3-justify-between m3-items-center" style="margin-bottom:16px;flex-wrap:wrap;gap:10px">
+          <div>
+            <h1 class="m3-h3">My CV</h1>
+            <p class="m3-text-muted" style="font-size:13px;margin-top:4px">Build your professional CV. Changes save automatically.</p>
           </div>
-          <form id="profileForm" class="form-grid" onsubmit="saveProfile(event)">
-            <div class="m3-field"><label class="m3-field-label">Full Name</label><input class="m3-input" name="name" value="${ATS.esc(p.name||'')}"></div>
-            <div class="m3-field"><label class="m3-field-label">Phone</label><input class="m3-input" name="phone" value="${ATS.esc(p.phone||'')}" maxlength="13"></div>
-            <div class="m3-field"><label class="m3-field-label">Education</label><input class="m3-input" name="education" value="${ATS.esc(p.education||'')}"></div>
-            <div class="m3-field"><label class="m3-field-label">Current Location</label><input class="m3-input" name="location" value="${ATS.esc(p.location||'')}"></div>
-            <div class="m3-field"><label class="m3-field-label">Total Experience</label><input class="m3-input" name="totalExp" value="${ATS.esc(p.totalExp||'')}"></div>
-            <div class="m3-field"><label class="m3-field-label">Relevant Experience</label><input class="m3-input" name="relExp" value="${ATS.esc(p.relExp||'')}"></div>
-            <div class="m3-field"><label class="m3-field-label">Current CTC</label><input class="m3-input" name="currentCtc" value="${ATS.esc(p.currentCtc||'')}"></div>
-            <div class="m3-field"><label class="m3-field-label">Expected CTC</label><input class="m3-input" name="expectedCtc" value="${ATS.esc(p.expectedCtc||'')}"></div>
-            <div class="m3-field"><label class="m3-field-label">Notice Period</label><input class="m3-input" name="noticePeriod" value="${ATS.esc(p.noticePeriod||'')}"></div>
-            <div class="m3-field"><label class="m3-field-label">Current Company</label><input class="m3-input" name="currentCompany" value="${ATS.esc(p.currentCompany||'')}"></div>
-            <div class="m3-field"><label class="m3-field-label">Current Designation</label><input class="m3-input" name="currentDesignation" value="${ATS.esc(p.currentDesignation||'')}"></div>
-            <div class="m3-field"><label class="m3-field-label">LinkedIn URL</label><input class="m3-input" name="linkedin" value="${ATS.esc(p.linkedin||'')}" placeholder="https://linkedin.com/in/…"></div>
-            <div class="m3-field"><label class="m3-field-label">Languages Known</label><input class="m3-input" name="languages" value="${ATS.esc(p.languages||'')}"></div>
-            <div class="m3-field"><label class="m3-field-label">Nationality</label><input class="m3-input" name="nationality" value="${ATS.esc(p.nationality||'')}"></div>
-            <div class="m3-field full"><label class="m3-field-label">Skills (comma-separated)</label><input class="m3-input" name="skills" value="${ATS.esc(p.skills||'')}"></div>
-            <div class="m3-field full"><label class="m3-field-label">Portfolio URL</label><input class="m3-input" name="portfolioUrl" value="${ATS.esc(p.portfolioUrl||'')}"></div>
-            <div class="full" style="display:flex;justify-content:flex-end;gap:8px">
-              <button type="button" class="m3-btn m3-btn-outlined" onclick="downloadProfile('pdf')">
-                <span class="material-symbols-outlined">download</span> PDF
-              </button>
-              <button type="button" class="m3-btn m3-btn-outlined" onclick="downloadProfile('docx')">
-                <span class="material-symbols-outlined">download</span> DOCX
-              </button>
-              <button type="submit" class="m3-btn m3-btn-filled" id="saveProfileBtn">Save Profile</button>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="m3-btn m3-btn-outlined" onclick="previewCV()">
+              <span class="material-symbols-outlined">visibility</span> Preview
+            </button>
+            <button class="m3-btn m3-btn-filled" onclick="downloadCV('pdf')">
+              <span class="material-symbols-outlined">download</span> PDF
+            </button>
+            <button class="m3-btn m3-btn-outlined" onclick="downloadCV('docx')">
+              <span class="material-symbols-outlined">description</span> DOCX
+            </button>
+          </div>
+        </div>
+
+        <div class="m3-card" style="padding:20px;margin-bottom:16px">
+          <div class="m3-flex m3-justify-between m3-items-center" style="margin-bottom:12px">
+            <h3 class="m3-h4">Employment History</h3>
+            <button class="m3-btn m3-btn-filled m3-btn-sm" onclick="addExperience()">
+              <span class="material-symbols-outlined">add</span> Add Job
+            </button>
+          </div>
+          <div id="expList">
+            ${experience.length ? experience.map((e, i) => renderExpCard(e, i)).join('')
+              : '<div class="m3-text-muted" style="font-size:13px;padding:20px;text-align:center">No jobs yet. Click "Add Job" to start.</div>'}
+          </div>
+        </div>
+
+        <div class="m3-card" style="padding:20px">
+          <div class="m3-flex m3-justify-between m3-items-center" style="margin-bottom:12px">
+            <h3 class="m3-h4">Education</h3>
+            <button class="m3-btn m3-btn-filled m3-btn-sm" onclick="addEducation()">
+              <span class="material-symbols-outlined">add</span> Add Education
+            </button>
+          </div>
+          <div id="eduList">
+            ${education.length ? education.map((e, i) => renderEduCard(e, i)).join('')
+              : '<div class="m3-text-muted" style="font-size:13px;padding:20px;text-align:center">No education entries yet.</div>'}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderExpCard(e, i) {
+      const from = e.startDate || '—';
+      const to = e.currentlyWorking ? 'Present' : (e.endDate || '—');
+      const duration = calcDuration(e.startDate, e.endDate, e.currentlyWorking);
+      const respCount = (e.description || []).length;
+      return `
+        <div class="m3-card" style="padding:14px;margin-bottom:10px;border:1px solid #E2E8F0">
+          <div class="m3-flex m3-justify-between" style="align-items:flex-start;gap:10px">
+            <div style="flex:1;min-width:0">
+              <div style="font-weight:700;font-size:14px">${ATS.esc(e.title || 'Untitled role')}</div>
+              <div class="m3-text-muted" style="font-size:12.5px;margin-top:2px">${ATS.esc(e.company || '')}${e.location ? ' · ' + ATS.esc(e.location) : ''}</div>
+              <div class="m3-text-faint" style="font-size:11px;margin-top:4px">${from} – ${to}${duration ? ' · ' + duration : ''}</div>
+              <div class="m3-text-muted" style="font-size:11px;margin-top:2px">${respCount} responsibilit${respCount === 1 ? 'y' : 'ies'} / achievement${respCount === 1 ? '' : 's'}</div>
             </div>
-          </form>
+            <div style="display:flex;gap:4px">
+              <button class="m3-btn m3-btn-icon" onclick="editExperience(${i})" title="Edit"><span class="material-symbols-outlined" style="font-size:18px">edit</span></button>
+              <button class="m3-btn m3-btn-icon" onclick="deleteExperience(${i})" title="Delete" style="color:#DC2626"><span class="material-symbols-outlined" style="font-size:18px">delete</span></button>
+            </div>
+          </div>
         </div>`;
     }
 
-    window.saveProfile = async function (e) {
-      e.preventDefault();
-      const btn = document.getElementById('saveProfileBtn');
-      const fd = new FormData(e.target);
-      const profile = {};
-      ['name','phone','education','location','totalExp','relExp','currentCtc','expectedCtc',
-       'noticePeriod','currentCompany','currentDesignation','linkedin','languages','nationality','skills','portfolioUrl']
-        .forEach(k => { profile[k] = fd.get(k); });
-      btn.disabled = true; btn.textContent = 'Saving…';
-      const res = await call('portalUpdateProfile', { profile });
-      btn.disabled = false; btn.textContent = 'Save Profile';
-      if (res.ok) { ATS.toast('Profile saved', 'success'); renderProfile(); }
-      else ATS.toast(res.error || 'Save failed', 'error');
+    function renderEduCard(e, i) {
+      const range = (e.startDate || e.endDate) ? ((e.startDate || '?') + ' – ' + (e.endDate || 'Present')) : '';
+      return `
+        <div class="m3-card" style="padding:14px;margin-bottom:10px;border:1px solid #E2E8F0">
+          <div class="m3-flex m3-justify-between" style="align-items:flex-start;gap:10px">
+            <div style="flex:1;min-width:0">
+              <div style="font-weight:700;font-size:14px">${ATS.esc((e.degree || '') + (e.field ? ' ' + e.field : ''))}</div>
+              <div class="m3-text-muted" style="font-size:12.5px;margin-top:2px">${ATS.esc(e.institution || '')}</div>
+              <div class="m3-text-faint" style="font-size:11px;margin-top:4px">${ATS.esc(range)}${e.grade ? ' · ' + ATS.esc(e.grade) : ''}</div>
+            </div>
+            <div style="display:flex;gap:4px">
+              <button class="m3-btn m3-btn-icon" onclick="editEducation(${i})"><span class="material-symbols-outlined" style="font-size:18px">edit</span></button>
+              <button class="m3-btn m3-btn-icon" onclick="deleteEducation(${i})" style="color:#DC2626"><span class="material-symbols-outlined" style="font-size:18px">delete</span></button>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function calcDuration(from, to, current) {
+      if (!from) return '';
+      const fromParts = String(from).match(/(\d{4})(?:-(\d{2}))?/);
+      if (!fromParts) return '';
+      const fromY = parseInt(fromParts[1], 10);
+      const fromM = fromParts[2] ? parseInt(fromParts[2], 10) : 1;
+      let toY, toM;
+      if (current) { const now = new Date(); toY = now.getFullYear(); toM = now.getMonth() + 1; }
+      else {
+        const toParts = String(to || '').match(/(\d{4})(?:-(\d{2}))?/);
+        if (!toParts) return '';
+        toY = parseInt(toParts[1], 10);
+        toM = toParts[2] ? parseInt(toParts[2], 10) : 12;
+      }
+      let months = (toY - fromY) * 12 + (toM - fromM);
+      if (months < 0) return '';
+      if (months < 12) return months + ' mo';
+      const y = Math.floor(months / 12);
+      const m = months % 12;
+      return y + ' yr' + (m > 0 ? ' ' + m + ' mo' : '');
+    }
+
+    window.addExperience = () => openExpModal(-1);
+    window.editExperience = (i) => openExpModal(i);
+
+    function openExpModal(idx) {
+      const isEdit = idx >= 0;
+      const e = isEdit ? (window._CV_EXP || [])[idx] : {};
+      const respText = (e.description || []).join('\n');
+      showModal(`
+        <div class="m3-flex m3-justify-between m3-items-center" style="margin-bottom:16px">
+          <h3 class="m3-h3">${isEdit ? 'Edit' : 'Add'} Work Experience</h3>
+          <button class="m3-btn m3-btn-icon" onclick="closeModal()"><span class="material-symbols-outlined">close</span></button>
+        </div>
+        <div class="form-grid">
+          <div class="m3-field full">
+            <label class="m3-field-label">Job Title *</label>
+            <input class="m3-input" id="exTitle" value="${ATS.esc(e.title||'')}" placeholder="e.g. Senior Engineer">
+          </div>
+          <div class="m3-field full">
+            <label class="m3-field-label">Company *</label>
+            <input class="m3-input" id="exCompany" value="${ATS.esc(e.company||'')}" placeholder="e.g. ABC Ltd">
+          </div>
+          <div class="m3-field full">
+            <label class="m3-field-label">Location</label>
+            <input class="m3-input" id="exLocation" value="${ATS.esc(e.location||'')}" placeholder="e.g. Bangalore">
+          </div>
+          <div class="m3-field">
+            <label class="m3-field-label">From *</label>
+            <input type="month" class="m3-input" id="exFrom" value="${ATS.esc(e.startDate||'')}">
+          </div>
+          <div class="m3-field">
+            <label class="m3-field-label">To</label>
+            <input type="month" class="m3-input" id="exTo" value="${ATS.esc(e.endDate||'')}" ${e.currentlyWorking ? 'disabled' : ''}>
+          </div>
+          <div class="full">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+              <input type="checkbox" id="exCurrent" ${e.currentlyWorking ? 'checked' : ''} onchange="document.getElementById('exTo').disabled=this.checked">
+              <span>I currently work here</span>
+            </label>
+          </div>
+          <div class="m3-field full">
+            <label class="m3-field-label">Responsibilities &amp; Achievements (one per line)</label>
+            <textarea class="m3-textarea" id="exResp" rows="5" placeholder="Led team of 5 engineers&#10;Reduced cycle time by 20%&#10;Owned end-to-end delivery">${ATS.esc(respText)}</textarea>
+            <p class="m3-text-faint" style="font-size:11px;margin-top:4px">Include both responsibilities and key achievements, one per line.</p>
+          </div>
+        </div>
+        <div class="m3-flex m3-justify-end m3-gap-2 m3-mt-4">
+          <button class="m3-btn m3-btn-text" onclick="closeModal()">Cancel</button>
+          <button class="m3-btn m3-btn-filled" onclick="saveExperience(${idx})">Save</button>
+        </div>
+      `);
+    }
+
+    window.saveExperience = async function (idx) {
+      const title = document.getElementById('exTitle').value.trim();
+      const company = document.getElementById('exCompany').value.trim();
+      const location = document.getElementById('exLocation').value.trim();
+      const from = document.getElementById('exFrom').value;
+      const to = document.getElementById('exTo').value;
+      const current = document.getElementById('exCurrent').checked;
+      const resp = document.getElementById('exResp').value.split('\n').map(s => s.trim()).filter(Boolean);
+      if (!title || !company) { ATS.toast('Job title and company are required', 'error'); return; }
+      if (!from) { ATS.toast('From date is required', 'error'); return; }
+      if (!current && !to) { ATS.toast('To date is required (or check "currently work here")', 'error'); return; }
+      const entry = { title, company, location, startDate: from, endDate: current ? '' : to, currentlyWorking: current, description: resp };
+      const arr = (window._CV_EXP || []).slice();
+      if (idx >= 0) arr[idx] = entry; else arr.push(entry);
+      await persistCV({ experience: arr });
     };
 
-    window.downloadProfile = async function (format) {
+    window.deleteExperience = async function (idx) {
+      if (!confirm('Remove this job entry?')) return;
+      const arr = (window._CV_EXP || []).slice();
+      arr.splice(idx, 1);
+      await persistCV({ experience: arr });
+    };
+
+    window.addEducation = () => openEduModal(-1);
+    window.editEducation = (i) => openEduModal(i);
+
+    function openEduModal(idx) {
+      const isEdit = idx >= 0;
+      const e = isEdit ? (window._CV_EDU || [])[idx] : {};
+      const degreeOptions = ['B.E.','B.Tech','B.Sc','B.Com','B.A','BBA','BCA','MBA','MCA','M.Tech','M.E.','M.Sc','M.Com','PhD','Diploma','ITI','12th','10th','Other'];
+      showModal(`
+        <div class="m3-flex m3-justify-between m3-items-center" style="margin-bottom:16px">
+          <h3 class="m3-h3">${isEdit ? 'Edit' : 'Add'} Education</h3>
+          <button class="m3-btn m3-btn-icon" onclick="closeModal()"><span class="material-symbols-outlined">close</span></button>
+        </div>
+        <div class="form-grid">
+          <div class="m3-field full">
+            <label class="m3-field-label">Degree *</label>
+            <select class="m3-select" id="edDegree">
+              ${degreeOptions.map(d => `<option ${e.degree === d ? 'selected' : ''}>${d}</option>`).join('')}
+            </select>
+          </div>
+          <div class="m3-field full">
+            <label class="m3-field-label">Field of Study *</label>
+            <input class="m3-input" id="edField" value="${ATS.esc(e.field||'')}" placeholder="e.g. Mechanical Engineering">
+          </div>
+          <div class="m3-field full">
+            <label class="m3-field-label">Institution *</label>
+            <input class="m3-input" id="edInst" value="${ATS.esc(e.institution||'')}" placeholder="e.g. XYZ University">
+          </div>
+          <div class="m3-field">
+            <label class="m3-field-label">From (year)</label>
+            <input type="number" class="m3-input" id="edFrom" value="${ATS.esc(e.startDate||'')}" placeholder="2015" min="1950" max="2030">
+          </div>
+          <div class="m3-field">
+            <label class="m3-field-label">To (year) *</label>
+            <input type="number" class="m3-input" id="edTo" value="${ATS.esc(e.endDate||'')}" placeholder="2019" min="1950" max="2030">
+          </div>
+          <div class="m3-field full">
+            <label class="m3-field-label">Grade / CGPA (optional)</label>
+            <input class="m3-input" id="edGrade" value="${ATS.esc(e.grade||'')}" placeholder="e.g. 8.5 CGPA">
+          </div>
+        </div>
+        <div class="m3-flex m3-justify-end m3-gap-2 m3-mt-4">
+          <button class="m3-btn m3-btn-text" onclick="closeModal()">Cancel</button>
+          <button class="m3-btn m3-btn-filled" onclick="saveEducation(${idx})">Save</button>
+        </div>
+      `);
+    }
+
+    window.saveEducation = async function (idx) {
+      const degree = document.getElementById('edDegree').value;
+      const field = document.getElementById('edField').value.trim();
+      const inst = document.getElementById('edInst').value.trim();
+      const from = document.getElementById('edFrom').value;
+      const to = document.getElementById('edTo').value;
+      const grade = document.getElementById('edGrade').value.trim();
+      if (!field || !inst) { ATS.toast('Field and institution are required', 'error'); return; }
+      if (!to) { ATS.toast('End year is required', 'error'); return; }
+      const entry = { degree, field, institution: inst, startDate: from, endDate: to, grade };
+      const arr = (window._CV_EDU || []).slice();
+      if (idx >= 0) arr[idx] = entry; else arr.push(entry);
+      await persistCV({ educationList: arr });
+    };
+
+    window.deleteEducation = async function (idx) {
+      if (!confirm('Remove this education entry?')) return;
+      const arr = (window._CV_EDU || []).slice();
+      arr.splice(idx, 1);
+      await persistCV({ educationList: arr });
+    };
+
+    async function persistCV(payload) {
+      const res = await call('portalUpdateProfile', { profile: payload });
+      if (res.ok) { ATS.toast('CV updated', 'success'); closeModal(); renderCV(); }
+      else ATS.toast(res.error || 'Save failed', 'error');
+    }
+
+    window.previewCV = async function () {
+      ATS.toast('Generating preview…');
+      const res = await call('portalDownloadProfile', { format: 'pdf' });
+      if (!res.ok) { ATS.toast(res.error || 'Preview failed', 'error'); return; }
+      const bytes = Uint8Array.from(atob(res.base64), c => c.charCodeAt(0));
+      const blob = new Blob([bytes], { type: res.mimeType });
+      const url = URL.createObjectURL(blob);
+
+      showModal(`
+        <div class="m3-flex m3-justify-between m3-items-center" style="margin-bottom:12px">
+          <h3 class="m3-h3">CV Preview</h3>
+          <button class="m3-btn m3-btn-icon" onclick="closeModal(); URL.revokeObjectURL('${url}')"><span class="material-symbols-outlined">close</span></button>
+        </div>
+        <iframe src="${url}" style="width:100%;height:65vh;border:none;border-radius:8px;background:#F1F5F9" title="CV Preview"></iframe>
+        <div class="m3-flex m3-justify-end m3-mt-3">
+          <button class="m3-btn m3-btn-filled" onclick="downloadFromUrl('${url}', '${res.filename}')">
+            <span class="material-symbols-outlined">download</span> Download
+          </button>
+        </div>
+      `, true);
+    };
+
+    window.downloadFromUrl = function (url, filename) {
+      const a = document.createElement('a');
+      a.href = url; a.download = filename; a.click();
+    };
+
+    window.downloadCV = async function (format) {
       ATS.toast('Preparing ' + format.toUpperCase() + '…');
       const res = await call('portalDownloadProfile', { format });
       if (!res.ok) { ATS.toast(res.error || 'Download failed', 'error'); return; }
@@ -217,11 +495,108 @@
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url; a.download = res.filename; a.click();
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
       ATS.toast('Downloaded', 'success');
     };
 
-    /* ═══════ APPLICATIONS ═══════ */
+    /* ═══════════════════════════════════════════════════════
+       PROFILE (28 fields)
+       ═══════════════════════════════════════════════════════ */
+    async function renderProfile() {
+      const res = await call('portalGetProfile');
+      if (handleAuthError(res)) return;
+      if (!res.ok) { content.innerHTML = '<div class="empty-tab">Could not load profile</div>'; return; }
+      const p = res.profile || {};
+      const relocateOpts = ['', 'Yes', 'No', 'Yes (travel only)', 'Prefers specific'];
+      const travelOpts = ['', 'Yes', 'No', 'Limited'];
+      const genderOpts = ['', 'Male', 'Female', 'Other', 'Prefer not to say'];
+      content.innerHTML = `
+        <div class="m3-flex m3-justify-between m3-items-center" style="margin-bottom:16px;flex-wrap:wrap;gap:10px">
+          <div>
+            <h1 class="m3-h3">My Profile</h1>
+            <p class="m3-text-muted" style="font-size:13px;margin-top:4px">Keep your information up to date</p>
+          </div>
+          <span class="m3-chip m3-chip-primary">${p.profileCompleteness || 0}% complete</span>
+        </div>
+        <div class="m3-card" style="padding:24px">
+          <form id="profileForm" onsubmit="saveProfile(event)">
+            <h3 class="m3-h4" style="margin-bottom:12px">Identity</h3>
+            <div class="form-grid">
+              <div class="m3-field"><label class="m3-field-label">Full Name</label><input class="m3-input" name="name" value="${ATS.esc(p.name||'')}" maxlength="100"></div>
+              <div class="m3-field"><label class="m3-field-label">Phone</label><input class="m3-input" name="phone" value="${ATS.esc(p.phone||'')}" maxlength="13"></div>
+              <div class="m3-field"><label class="m3-field-label">Date of Birth</label><input type="date" class="m3-input" name="dateOfBirth" value="${ATS.esc(p.dateOfBirth||'')}"></div>
+              <div class="m3-field"><label class="m3-field-label">Gender</label>
+                <select class="m3-select" name="gender">${genderOpts.map(o => `<option ${p.gender === o ? 'selected' : ''}>${o}</option>`).join('')}</select>
+              </div>
+              <div class="m3-field"><label class="m3-field-label">Nationality</label><input class="m3-input" name="nationality" value="${ATS.esc(p.nationality||'')}" maxlength="50"></div>
+              <div class="m3-field"><label class="m3-field-label">Current Location</label><input class="m3-input" name="location" value="${ATS.esc(p.location||'')}" maxlength="100"></div>
+            </div>
+
+            <h3 class="m3-h4" style="margin-top:20px;margin-bottom:12px">Career</h3>
+            <div class="form-grid">
+              <div class="m3-field"><label class="m3-field-label">Education</label><input class="m3-input" name="education" value="${ATS.esc(p.education||'')}" maxlength="200"></div>
+              <div class="m3-field"><label class="m3-field-label">Total Experience</label><input class="m3-input" name="totalExp" value="${ATS.esc(p.totalExp||'')}" maxlength="30"></div>
+              <div class="m3-field"><label class="m3-field-label">Relevant Experience</label><input class="m3-input" name="relExp" value="${ATS.esc(p.relExp||'')}" maxlength="30"></div>
+              <div class="m3-field"><label class="m3-field-label">Current CTC</label><input class="m3-input" name="currentCtc" value="${ATS.esc(p.currentCtc||'')}" maxlength="30"></div>
+              <div class="m3-field"><label class="m3-field-label">Expected CTC</label><input class="m3-input" name="expectedCtc" value="${ATS.esc(p.expectedCtc||'')}" maxlength="30"></div>
+              <div class="m3-field"><label class="m3-field-label">Notice Period</label><input class="m3-input" name="noticePeriod" value="${ATS.esc(p.noticePeriod||'')}" maxlength="50"></div>
+              <div class="m3-field"><label class="m3-field-label">Current Company</label><input class="m3-input" name="currentCompany" value="${ATS.esc(p.currentCompany||'')}" maxlength="200"></div>
+              <div class="m3-field"><label class="m3-field-label">Current Designation</label><input class="m3-input" name="currentDesignation" value="${ATS.esc(p.currentDesignation||'')}" maxlength="200"></div>
+              <div class="m3-field full"><label class="m3-field-label">Reason for Leaving</label><textarea class="m3-textarea" name="reasonLeaving" rows="2" maxlength="500">${ATS.esc(p.reasonLeaving||'')}</textarea></div>
+            </div>
+
+            <h3 class="m3-h4" style="margin-top:20px;margin-bottom:12px">Skills &amp; Preferences</h3>
+            <div class="form-grid">
+              <div class="m3-field full"><label class="m3-field-label">Skills (comma-separated)</label><input class="m3-input" name="skills" value="${ATS.esc(p.skills||'')}" maxlength="1000"></div>
+              <div class="m3-field"><label class="m3-field-label">Certifications (pipe-separated)</label><input class="m3-input" name="certifications" value="${ATS.esc(p.certifications||'')}" maxlength="500"></div>
+              <div class="m3-field"><label class="m3-field-label">Machines (comma-separated)</label><input class="m3-input" name="machines" value="${ATS.esc(p.machines||'')}" maxlength="500"></div>
+              <div class="m3-field"><label class="m3-field-label">Languages Known</label><input class="m3-input" name="languages" value="${ATS.esc(p.languages||'')}" maxlength="200"></div>
+              <div class="m3-field"><label class="m3-field-label">Preferred Locations</label><input class="m3-input" name="preferredLocations" value="${ATS.esc(p.preferredLocations||'')}" maxlength="200"></div>
+              <div class="m3-field"><label class="m3-field-label">Willing to Relocate</label>
+                <select class="m3-select" name="relocate">${relocateOpts.map(o => `<option ${p.relocate === o ? 'selected' : ''}>${o}</option>`).join('')}</select>
+              </div>
+              <div class="m3-field"><label class="m3-field-label">Willing to Travel</label>
+                <select class="m3-select" name="willingToTravel">${travelOpts.map(o => `<option ${p.willingToTravel === o ? 'selected' : ''}>${o}</option>`).join('')}</select>
+              </div>
+            </div>
+
+            <h3 class="m3-h4" style="margin-top:20px;margin-bottom:12px">Links</h3>
+            <div class="form-grid">
+              <div class="m3-field"><label class="m3-field-label">LinkedIn URL</label><input class="m3-input" name="linkedin" value="${ATS.esc(p.linkedin||'')}" placeholder="https://linkedin.com/in/…"></div>
+              <div class="m3-field"><label class="m3-field-label">Portfolio URL</label><input class="m3-input" name="portfolioUrl" value="${ATS.esc(p.portfolioUrl||'')}" placeholder="https://…"></div>
+            </div>
+
+            <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:24px">
+              <button type="button" class="m3-btn m3-btn-outlined" onclick="downloadCV('pdf')">
+                <span class="material-symbols-outlined">download</span> Download PDF
+              </button>
+              <button type="submit" class="m3-btn m3-btn-filled" id="saveProfileBtn">Save Profile</button>
+            </div>
+          </form>
+        </div>
+      `;
+    }
+
+    window.saveProfile = async function (e) {
+      e.preventDefault();
+      const btn = document.getElementById('saveProfileBtn');
+      const fd = new FormData(e.target);
+      const profile = {};
+      ['name','phone','dateOfBirth','gender','nationality','location','education',
+       'totalExp','relExp','currentCtc','expectedCtc','noticePeriod','currentCompany',
+       'currentDesignation','reasonLeaving','skills','certifications','machines',
+       'languages','preferredLocations','relocate','willingToTravel','linkedin','portfolioUrl']
+        .forEach(k => { const v = fd.get(k); if (v !== null) profile[k] = v; });
+      btn.disabled = true; btn.textContent = 'Saving…';
+      const res = await call('portalUpdateProfile', { profile });
+      btn.disabled = false; btn.textContent = 'Save Profile';
+      if (res.ok) { ATS.toast('Profile saved', 'success'); renderProfile(); }
+      else ATS.toast(res.error || 'Save failed', 'error');
+    };
+
+    /* ═══════════════════════════════════════════════════════
+       APPLICATIONS
+       ═══════════════════════════════════════════════════════ */
     async function renderApplications() {
       const res = await call('portalGetApplications');
       if (handleAuthError(res)) return;
@@ -250,31 +625,41 @@
       else ATS.toast(res.error || 'Could not withdraw', 'error');
     };
 
-    /* ═══════ INTERVIEWS ═══════ */
+    /* ═══════════════════════════════════════════════════════
+       INTERVIEWS
+       ═══════════════════════════════════════════════════════ */
     async function renderInterviews() {
       const res = await call('portalGetInterviews');
       if (handleAuthError(res)) return;
       if (!res.ok) { content.innerHTML = '<div class="empty-tab">Could not load</div>'; return; }
       const upcoming = res.upcoming || [];
       const past = res.past || [];
+
+      window._INTERVIEWS_CACHE = { upcoming, past };
+
       content.innerHTML = `
         <h1 class="m3-h3" style="margin-bottom:16px">Interviews</h1>
         ${upcoming.length ? `<h3 class="m3-h4" style="margin-bottom:10px">Upcoming (${upcoming.length})</h3>
-        <div class="card-list">${upcoming.map(i => `
+        <div class="card-list" style="margin-bottom:24px">${upcoming.map((i, idx) => `
           <div class="m3-card item">
             <div class="body">
               <div class="title">${ATS.esc(i.jobTitle || 'Interview')}</div>
               <div class="meta">${ATS.esc(i.date || '')} · ${ATS.esc(i.time || '')} · ${ATS.esc(i.mode || '')} · ${ATS.esc(i.company || '')}</div>
             </div>
             <span class="m3-chip ${ATS.statusClass('interview-scheduled')}">${ATS.esc(i.candidateResponse || 'Pending')}</span>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              ${i.candidateResponse !== 'Confirmed' ? `<button class="m3-btn m3-btn-text m3-btn-sm" onclick="respondInterview(${idx}, 'upcoming', 'Confirmed')">Confirm</button>` : ''}
+              <button class="m3-btn m3-btn-text m3-btn-sm" onclick="openRescheduleModal(${idx})">Reschedule</button>
+            </div>
           </div>`).join('')}</div>` : ''}
         ${past.length ? `<h3 class="m3-h4" style="margin:20px 0 10px">Past (${past.length})</h3>
-        <div class="card-list">${past.slice(0, 10).map(i => `
+        <div class="card-list">${past.slice(0, 20).map(i => `
           <div class="m3-card item" style="opacity:.75">
             <div class="body">
               <div class="title">${ATS.esc(i.jobTitle || 'Interview')}</div>
               <div class="meta">${ATS.esc(i.date || '')} · ${ATS.esc(i.mode || '')}</div>
             </div>
+            <span class="m3-chip ${ATS.statusClass('interview-scheduled')}">${ATS.esc(i.candidateResponse || 'Completed')}</span>
           </div>`).join('')}</div>` : ''}
         ${(!upcoming.length && !past.length) ? `<div class="empty-tab">
           <span class="material-symbols-outlined" style="font-size:56px;color:#94A3B8">event_busy</span>
@@ -282,13 +667,89 @@
         </div>` : ''}`;
     }
 
-    /* ═══════ DOCUMENTS ═══════ */
+    window.respondInterview = async function (idx, bucket, response) {
+      const list = (window._INTERVIEWS_CACHE || {})[bucket] || [];
+      const iv = list[idx];
+      if (!iv) return;
+      if (!confirm('Set response to "' + response + '"?')) return;
+      const res = await call('portalRespondInterview', {
+        interviewId: iv.interviewId,
+        response: response
+      });
+      if (res.ok) { ATS.toast('Response recorded', 'success'); renderInterviews(); }
+      else ATS.toast(res.error || 'Failed', 'error');
+    };
+
+    window.openRescheduleModal = function (idx) {
+      const iv = ((window._INTERVIEWS_CACHE || {}).upcoming || [])[idx];
+      if (!iv) return;
+      showModal(`
+        <div class="m3-flex m3-justify-between m3-items-center" style="margin-bottom:16px">
+          <div>
+            <h3 class="m3-h3">Request Reschedule</h3>
+            <p class="m3-text-muted" style="font-size:12px;margin-top:2px">${ATS.esc(iv.jobTitle)} · ${ATS.esc(iv.date)} ${ATS.esc(iv.time)}</p>
+          </div>
+          <button class="m3-btn m3-btn-icon" onclick="closeModal()"><span class="material-symbols-outlined">close</span></button>
+        </div>
+        <div class="m3-field" style="margin-bottom:12px">
+          <label class="m3-field-label">Proposed Slot 1 *</label>
+          <input type="datetime-local" class="m3-input" id="rsSlot1">
+        </div>
+        <div class="m3-field" style="margin-bottom:12px">
+          <label class="m3-field-label">Proposed Slot 2 (optional)</label>
+          <input type="datetime-local" class="m3-input" id="rsSlot2">
+        </div>
+        <div class="m3-field" style="margin-bottom:12px">
+          <label class="m3-field-label">Proposed Slot 3 (optional)</label>
+          <input type="datetime-local" class="m3-input" id="rsSlot3">
+        </div>
+        <div class="m3-field" style="margin-bottom:16px">
+          <label class="m3-field-label">Reason (optional)</label>
+          <textarea class="m3-textarea" id="rsNote" rows="2" placeholder="e.g. Travel conflict, medical emergency, etc."></textarea>
+        </div>
+        <div id="rsErr" style="color:#DC2626;font-size:12px;margin-bottom:8px"></div>
+        <div class="m3-flex m3-justify-end m3-gap-2">
+          <button class="m3-btn m3-btn-text" onclick="closeModal()">Cancel</button>
+          <button class="m3-btn m3-btn-filled" id="rsBtn" onclick="submitReschedule('${iv.interviewId}')">Submit Request</button>
+        </div>
+      `);
+    };
+
+    window.submitReschedule = async function (interviewId) {
+      const s1 = document.getElementById('rsSlot1').value;
+      const s2 = document.getElementById('rsSlot2').value;
+      const s3 = document.getElementById('rsSlot3').value;
+      const note = document.getElementById('rsNote').value.trim();
+      const errEl = document.getElementById('rsErr');
+      errEl.textContent = '';
+      const slots = [s1, s2, s3].filter(Boolean);
+      if (!slots.length) { errEl.textContent = 'Please propose at least one slot'; return; }
+      const btn = document.getElementById('rsBtn');
+      btn.disabled = true; btn.textContent = 'Submitting…';
+      const res = await call('portalRespondInterview', {
+        interviewId: interviewId,
+        response: 'Reschedule Requested',
+        proposedSlots: slots,
+        note: note
+      });
+      btn.disabled = false; btn.textContent = 'Submit Request';
+      if (!res.ok) { errEl.textContent = res.error || 'Failed'; return; }
+      ATS.toast('Reschedule request submitted', 'success');
+      closeModal();
+      renderInterviews();
+    };
+
+    /* ═══════════════════════════════════════════════════════
+       DOCUMENTS
+       ═══════════════════════════════════════════════════════ */
     async function renderDocuments() {
       const res = await call('portalGetDocuments');
       if (handleAuthError(res)) return;
       if (!res.ok) { content.innerHTML = '<div class="empty-tab">Could not load</div>'; return; }
       const docs = res.documents || [];
       const types = res.types || [];
+      window._DOC_TYPES = types;
+
       content.innerHTML = `
         <div class="m3-flex m3-justify-between m3-items-center" style="margin-bottom:16px">
           <h1 class="m3-h3">My Documents</h1>
@@ -301,7 +762,9 @@
             <div class="m3-field"><label class="m3-field-label">Document Type</label>
               <select class="m3-select" name="docType">${types.map(t => `<option>${ATS.esc(t)}</option>`).join('')}</select>
             </div>
-            <div class="m3-field"><label class="m3-field-label">File</label><input type="file" class="m3-input" name="file" required></div>
+            <div class="m3-field"><label class="m3-field-label">File (max 10 MB)</label>
+              <input type="file" class="m3-input" name="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" required>
+            </div>
             <div class="full" style="display:flex;justify-content:flex-end;gap:8px">
               <button type="button" class="m3-btn m3-btn-text" onclick="document.getElementById('uploadDocPanel').style.display='none'">Cancel</button>
               <button type="submit" class="m3-btn m3-btn-filled" id="uploadBtn">Upload</button>
@@ -310,7 +773,7 @@
         </div>
         ${docs.length ? `<div class="card-list">${docs.map(d => `
           <div class="m3-card item">
-            <span class="material-symbols-outlined" style="color:#1A365D">description</span>
+            <span class="material-symbols-outlined" style="color:#1A365D;font-size:28px">description</span>
             <div class="body">
               <div class="title">${ATS.esc(d.docName)}</div>
               <div class="meta">${ATS.esc(d.docType)} · ${ATS.esc(d.uploadedAt)} · ${Math.round((d.sizeBytes||0)/1024)} KB</div>
@@ -334,7 +797,9 @@
       btn.disabled = true; btn.textContent = 'Uploading…';
       const b64 = await ATS.fileToBase64(file);
       const res = await call('portalUploadDocument', {
-        docType: fd.get('docType'), fileData: 'data:' + b64.type + ';base64,' + b64.base64, fileName: b64.name
+        docType: fd.get('docType'),
+        fileData: 'data:' + b64.type + ';base64,' + b64.base64,
+        fileName: b64.name
       });
       btn.disabled = false; btn.textContent = 'Upload';
       if (res.ok) { ATS.toast('Uploaded', 'success'); renderDocuments(); }
@@ -348,34 +813,71 @@
       else ATS.toast(res.error || 'Delete failed', 'error');
     };
 
-    /* ═══════ ALERTS ═══════ */
+    /* ═══════════════════════════════════════════════════════
+       ASSESSMENTS
+       ═══════════════════════════════════════════════════════ */
+    async function renderAssessments() {
+      const res = await call('portalGetAssessments');
+      if (handleAuthError(res)) return;
+      if (!res.ok) {
+        content.innerHTML = '<div class="empty-tab"><span class="material-symbols-outlined" style="font-size:56px;color:#94A3B8">quiz</span><p class="m3-mt-3">Assessments are not available right now.</p></div>';
+        return;
+      }
+      const list = res.assessments || [];
+      content.innerHTML = `
+        <h1 class="m3-h3" style="margin-bottom:16px">My Assessments (${list.length})</h1>
+        ${list.length ? `<div class="card-list">${list.map(a => `
+          <div class="m3-card" style="padding:16px">
+            <div class="m3-flex m3-justify-between" style="align-items:flex-start;gap:10px;margin-bottom:8px">
+              <div>
+                <div style="font-weight:700;font-size:14px">${ATS.esc(a.name)}</div>
+                <div class="m3-text-muted" style="font-size:12px;margin-top:2px">${ATS.esc(a.type || '')} · ${ATS.esc(a.mode || '')}</div>
+              </div>
+              <span class="m3-chip ${a.result === 'Pass' ? 'm3-chip-success' : a.result === 'Fail' ? 'm3-chip-error' : 'm3-chip-warning'}">${ATS.esc(a.result || a.status)}</span>
+            </div>
+            ${a.dueDate ? `<div class="m3-text-faint" style="font-size:11.5px;margin-bottom:6px">Due: ${ATS.esc(a.dueDate)}</div>` : ''}
+            ${a.instructions ? `<div class="m3-text-muted" style="font-size:12px;white-space:pre-line;margin-top:6px">${ATS.esc(a.instructions)}</div>` : ''}
+            ${a.score !== '' && a.score !== null && a.score !== undefined ? `<div style="margin-top:8px;font-size:13px"><b>Score:</b> ${ATS.esc(a.score)} / ${ATS.esc(a.maxScore)}</div>` : ''}
+            ${a.mode === 'External' && a.link ? `<a href="${ATS.esc(a.link)}" target="_blank" rel="noopener" class="m3-btn m3-btn-filled m3-btn-sm m3-mt-3">Open Assessment</a>` : ''}
+          </div>`).join('')}</div>`
+          : `<div class="empty-tab"><span class="material-symbols-outlined" style="font-size:56px;color:#94A3B8">quiz</span>
+              <p class="m3-mt-3">No assessments assigned.</p></div>`}`;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       ALERTS (weekly)
+       ═══════════════════════════════════════════════════════ */
     async function renderAlerts() {
       const res = await call('portalGetAlertPrefs');
       if (handleAuthError(res)) return;
       if (!res.ok) { content.innerHTML = '<div class="empty-tab">Could not load</div>'; return; }
       content.innerHTML = `
-        <div class="m3-card" style="padding:24px">
-          <h1 class="m3-h3" style="margin-bottom:8px">Job Alerts</h1>
-          <p class="m3-text-muted" style="margin-bottom:20px">Get a daily email when matching jobs are posted.</p>
+        <div class="m3-card" style="padding:24px;max-width:720px">
+          <h1 class="m3-h3" style="margin-bottom:4px">Job Alerts</h1>
+          <p class="m3-text-muted" style="margin-bottom:20px">Get a <b>weekly email every Monday</b> with new jobs matching your preferences.</p>
           <form id="alertForm" onsubmit="saveAlerts(event)">
             <div class="m3-field" style="margin-bottom:16px">
-              <label class="m3-field-label" style="display:flex;align-items:center;gap:8px">
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
                 <input type="checkbox" id="alertEnabled" ${res.enabled ? 'checked' : ''}>
-                <span>Enable job alerts</span>
+                <span class="m3-field-label" style="margin-bottom:0;text-transform:none;font-size:13px">Enable weekly job alerts</span>
               </label>
             </div>
             <div class="form-grid">
-              <div class="m3-field full"><label class="m3-field-label">Keywords (comma-separated)</label>
-                <input class="m3-input" name="keywords" value="${ATS.esc(res.keywords||'')}" placeholder="e.g. CNC, VMC, Quality"></div>
-              <div class="m3-field full"><label class="m3-field-label">Preferred Locations</label>
-                <input class="m3-input" name="locations" value="${ATS.esc(res.locations||'')}" placeholder="e.g. Bangalore, Chennai"></div>
+              <div class="m3-field full">
+                <label class="m3-field-label">Keywords (comma-separated)</label>
+                <input class="m3-input" name="keywords" value="${ATS.esc(res.keywords||'')}" placeholder="e.g. CNC, VMC, Quality">
+              </div>
+              <div class="m3-field full">
+                <label class="m3-field-label">Preferred Locations</label>
+                <input class="m3-input" name="locations" value="${ATS.esc(res.locations||'')}" placeholder="e.g. Bangalore, Chennai">
+              </div>
             </div>
             <p class="m3-text-caption" style="margin-top:12px">Leave keywords and locations blank to receive alerts for <b>all new jobs</b>.</p>
             <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px">
               <button type="submit" class="m3-btn m3-btn-filled" id="saveAlertBtn">Save Preferences</button>
             </div>
           </form>
-          ${res.lastSent ? `<p class="m3-text-caption" style="margin-top:16px">Last digest sent: ${ATS.esc(res.lastSent)}</p>` : ''}
+          ${res.lastSent ? `<p class="m3-text-caption" style="margin-top:16px">Last week's digest sent: ${ATS.esc(res.lastSent)}</p>` : '<p class="m3-text-caption" style="margin-top:16px">No digest sent yet.</p>'}
         </div>`;
     }
 
@@ -386,21 +888,83 @@
       btn.disabled = true; btn.textContent = 'Saving…';
       const res = await call('portalUpdateAlertPrefs', {
         enabled: document.getElementById('alertEnabled').checked,
-        keywords: fd.get('keywords'), locations: fd.get('locations')
+        keywords: fd.get('keywords'),
+        locations: fd.get('locations')
       });
       btn.disabled = false; btn.textContent = 'Save Preferences';
       if (res.ok) ATS.toast('Preferences saved', 'success');
       else ATS.toast(res.error || 'Save failed', 'error');
     };
 
-    /* ═══════ TAB MAP ═══════ */
+    /* ═══════════════════════════════════════════════════════
+       ACCOUNT (change password)
+       ═══════════════════════════════════════════════════════ */
+    async function renderAccount() {
+      content.innerHTML = `
+        <div class="m3-card" style="padding:24px;max-width:600px;margin-bottom:20px">
+          <h1 class="m3-h3" style="margin-bottom:4px">Account</h1>
+          <p class="m3-text-muted" style="margin-bottom:20px">${ATS.esc(session.email)}</p>
+          <h3 class="m3-h4" style="margin-bottom:12px">Change Password</h3>
+          <div class="m3-field" style="margin-bottom:12px">
+            <label class="m3-field-label">Current Password</label>
+            <input type="password" class="m3-input" id="chCurPw" autocomplete="current-password">
+          </div>
+          <div class="m3-field" style="margin-bottom:12px">
+            <label class="m3-field-label">New Password</label>
+            <input type="password" class="m3-input" id="chNewPw" autocomplete="new-password" oninput="updatePwStrength()">
+            <div class="strength" id="chStrength"><div class="strength-bar"></div><div class="strength-bar"></div><div class="strength-bar"></div></div>
+          </div>
+          <div class="m3-field" style="margin-bottom:16px">
+            <label class="m3-field-label">Confirm New Password</label>
+            <input type="password" class="m3-input" id="chConfirmPw" autocomplete="new-password">
+          </div>
+          <div id="chErr" style="color:#DC2626;font-size:12px;margin-bottom:8px"></div>
+          <button class="m3-btn m3-btn-filled" id="chBtn" onclick="doChangePassword()">Update Password</button>
+        </div>`;
+    }
+
+    window.updatePwStrength = function () {
+      const s = ATS.passwordStrength(document.getElementById('chNewPw').value);
+      document.querySelectorAll('#chStrength .strength-bar').forEach((bar, i) => {
+        bar.className = 'strength-bar' + (i < s.score ? ' on-' + s.score : '');
+      });
+    };
+
+    window.doChangePassword = async function () {
+      const cur = document.getElementById('chCurPw').value;
+      const nw = document.getElementById('chNewPw').value;
+      const cf = document.getElementById('chConfirmPw').value;
+      const errEl = document.getElementById('chErr');
+      errEl.textContent = '';
+      if (!cur || !nw) { errEl.textContent = 'All fields are required'; return; }
+      if (nw !== cf) { errEl.textContent = 'New passwords do not match'; return; }
+      if (!ATS.passwordStrength(nw).valid) { errEl.textContent = 'Password does not meet requirements'; return; }
+      const btn = document.getElementById('chBtn');
+      btn.disabled = true; btn.textContent = 'Updating…';
+      const res = await call('portalChangePassword', { currentPassword: cur, newPassword: nw });
+      btn.disabled = false; btn.textContent = 'Update Password';
+      if (res.ok) {
+        ATS.toast('Password updated', 'success');
+        document.getElementById('chCurPw').value = '';
+        document.getElementById('chNewPw').value = '';
+        document.getElementById('chConfirmPw').value = '';
+        updatePwStrength();
+      } else errEl.textContent = res.error || 'Update failed';
+    };
+
+    /* ═══════════════════════════════════════════════════════
+       TAB MAP
+       ═══════════════════════════════════════════════════════ */
     const TABS = {
       dashboard: renderDashboard,
+      cv: renderCV,
       profile: renderProfile,
       applications: renderApplications,
       interviews: renderInterviews,
       documents: renderDocuments,
-      alerts: renderAlerts
+      assessments: renderAssessments,
+      alerts: renderAlerts,
+      account: renderAccount
     };
 
     render();
