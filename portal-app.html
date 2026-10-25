@@ -120,9 +120,16 @@
     };
 
     function render() {
-      content.innerHTML = '<div class="empty-tab">Loading…</div>';
+      content.innerHTML = '<div class="empty-tab"><span class="material-symbols-outlined" style="font-size:32px;animation:spin 1s linear infinite;margin-bottom:8px">refresh</span><br>Loading…</div>';
       const fn = TABS[CURRENT_TAB];
-      if (fn) fn();
+      if (fn) {
+        try {
+          fn();
+        } catch(e) {
+          console.error(e);
+          content.innerHTML = '<div class="empty-tab" style="color:#DC2626">Error loading page: ' + e.message + '</div>';
+        }
+      }
     }
 
     window.showModal = function (html, wide) {
@@ -196,12 +203,12 @@
     }
 
     /* ═══ FIND JOBS ═══ */
-    async function renderFindJobs() {
+     async function renderFindJobs() {
       const res = await call('portalGetActiveJobs');
       if (handleAuthError(res)) return;
       
       if (!res.ok) {
-        content.innerHTML = '<div class="empty-tab">Could not load jobs</div>';
+        content.innerHTML = '<div class="empty-tab" style="color:#DC2626">Could not load jobs.<br><br>' + (res.error || 'Please try again later.') + '</div>';
         return;
       }
 
