@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hire Talent — Raveone Consultants</title>
+  <meta name="description" content="Submit your hiring requirement to Raveone Consultants. We'll find the right candidates for you.">
+  <link rel="stylesheet" href="design-system.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+  <style>
+    .wrap { max-width: 640px; margin: 40px auto; padding: 0 20px 60px; }
+    .card { padding: 28px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .full { grid-column: 1 / -1; }
+    @media (max-width: 500px) { .grid { grid-template-columns: 1fr; } }
+    .success { text-align: center; padding: 20px; }
+    .success .check { width: 72px; height: 72px; border-radius: 50%; background: #D1FAE5; color: #15803D; font-size: 44px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+  </style>
+</head>
+<body class="m3">
+  <header class="m3-app-bar">
+    <div class="m3-app-bar-brand">
+      <div class="m3-brand-mark">R</div>
+      <div><div class="m3-brand-name">Raveone Careers</div><div class="m3-brand-sub">Hire Talent</div></div>
+    </div>
+    <div class="m3-app-bar-spacer"></div>
+    <a href="index.html" class="m3-btn m3-btn-text m3-btn-sm">← All jobs</a>
+  </header>
+  <div class="wrap">
+    <div class="m3-card card">
+      <h1 class="m3-h3" style="margin-bottom:8px">Hire with Raveone</h1>
+      <p class="m3-text-muted" style="margin-bottom:20px">Share your hiring requirement — our team will respond within 24 hours.</p>
+      <form id="eForm" class="grid" onsubmit="submitE(event)">
+        <div class="m3-field"><label class="m3-field-label">Company <span class="m3-field-required">*</span></label>
+          <input type="text" class="m3-input" name="company" required></div>
+        <div class="m3-field"><label class="m3-field-label">Contact Name <span class="m3-field-required">*</span></label>
+          <input type="text" class="m3-input" name="contact" required></div>
+        <div class="m3-field"><label class="m3-field-label">Email <span class="m3-field-required">*</span></label>
+          <input type="email" class="m3-input" name="email" required></div>
+        <div class="m3-field"><label class="m3-field-label">Phone <span class="m3-field-required">*</span></label>
+          <input type="tel" class="m3-input" name="phone" required></div>
+        <div class="m3-field"><label class="m3-field-label">Role <span class="m3-field-required">*</span></label>
+          <input type="text" class="m3-input" name="role" required></div>
+        <div class="m3-field"><label class="m3-field-label">Location</label>
+          <input type="text" class="m3-input" name="location"></div>
+        <div class="m3-field"><label class="m3-field-label">Min Salary (₹/yr)</label>
+          <input type="text" class="m3-input" name="salaryMin" placeholder="e.g. 500000"></div>
+        <div class="m3-field"><label class="m3-field-label">Max Salary (₹/yr)</label>
+          <input type="text" class="m3-input" name="salaryMax" placeholder="e.g. 800000"></div>
+        <div class="m3-field full"><label class="m3-field-label">Requirements / JD</label>
+          <textarea class="m3-textarea" name="jd" rows="5" placeholder="Describe the role, skills, experience required…"></textarea></div>
+        <div class="m3-field full"><label class="m3-field-label">Attach JD (optional)</label>
+          <input type="file" class="m3-input" name="file" accept=".pdf,.doc,.docx"></div>
+        <div class="full" style="display:flex;justify-content:flex-end;margin-top:8px">
+          <button type="submit" class="m3-btn m3-btn-filled" id="eBtn">Submit Requirement</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <script src="app.js"></script>
+  <script>
+  async function submitE(e) {
+    e.preventDefault();
+    const btn = document.getElementById('eBtn');
+    const fd = new FormData(e.target);
+    btn.disabled = true; btn.textContent = 'Submitting…';
+    try {
+      let fileData = '', fileName = '';
+      const f = fd.get('file');
+      if (f && f.size) {
+        const b64 = await ATS.fileToBase64(f);
+        fileData = b64.base64; fileName = b64.name;
+      }
+      const res = await ATS.post('submitEmployerJob', {
+        company: fd.get('company').trim(), contact: fd.get('contact').trim(),
+        email: fd.get('email').trim(), phone: fd.get('phone').trim(),
+        role: fd.get('role').trim(), location: fd.get('location').trim(),
+        salaryMin: fd.get('salaryMin').trim(), salaryMax: fd.get('salaryMax').trim(),
+        jd: fd.get('jd').trim(), fileData, fileName
+      });
+      if (!res.ok) throw new Error(res.error || 'Submission failed');
+      document.querySelector('.card').innerHTML = `
+        <div class="success">
+          <div class="check"><span class="material-symbols-outlined" style="font-size:44px">check</span></div>
+          <h2 class="m3-h3">Requirement received</h2>
+          <p class="m3-text-muted m3-mt-3">Our team will respond within 24 hours.</p>
+          <a href="index.html" class="m3-btn m3-btn-filled m3-mt-4">Back to home</a>
+        </div>`;
+    } catch (err) {
+      ATS.toast(err.message, 'error');
+      btn.disabled = false; btn.textContent = 'Submit Requirement';
+    }
+  }
+  </script>
+</body>
+</html>
