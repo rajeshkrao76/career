@@ -164,12 +164,47 @@
       return 'FULL_TIME';
     }
 
-    function buildJobPostingSchema(job) {
+      function buildJobPostingSchema(job) {
       const postedIso = ATS.toIsoDate(job.postedDate);
       const validThrough = ATS.addDays(postedIso, 90);
-      const descriptionHtml = String(job.description || '')
+
+      // 1. Map Employment Type
+      function mapEmploymentType(t) {
+        const s = String(t || '').toLowerCase();
+        if (s.includes('part')) return 'PART_TIME';
+        if (s.includes('contract')) return 'CONTRACTOR';
+        if (s.includes('temp')) return 'TEMPORARY';
+        if (s.includes('intern')) return 'INTERN';
+        if (s.includes('free')) return 'OTHER';
+        return 'FULL_TIME';
+      }
+
+      // 2. Convert Salary (LPA to actual INR)
+      function toInrAmount(raw) {
+        const n = parseFloat(String(raw || '0').replace(/[^\d.]/g, ''));
+        if (!n || isNaN(n)) return 0;
+        // If value is under 100, assume it's LPA (e.g., 4 = 4,00,000)
+        return n < 100 ? Math.round(n * 100000) : Math.round(n);
+      }
+      const minVal = toInrAmount(job.minSalary);
+      const maxVal = toInrAmount(job.maxSalary) || minVal;
+
+      // 3. Build the Description (Append Education & Experience here to avoid Google enum errors)
+      let descriptionHtml = String(job.description || '')
         .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
         .split(/\n\n+/).map(p => '<p>' + p.replace(/\n/g, '<br>') + '</p>').join('');
+        
+      if (job.education) {
+        descriptionHtml += '<p><strong>Education:</strong> ' + job.education + '</p>';
+      }
+      if (job.minExp || job.maxExp) {
+        descriptionHtml += '<p><strong>Experience:</strong> ' + (job.minExp || '0') + ' - ' + (job.maxExp || '+') + ' years</p>';
+      }
+
+      // 4. Address Parsing
+      const locationParts = String(job.location || 'India').split(',');
+      const city = locationParts[0].trim() || 'India';
+      const region = locationParts[1] ? locationParts[1].trim() : 'Karnataka'; // Default for Bangalore
 
       const schema = {
         '@context': 'https://schema.org',
@@ -185,32 +220,36 @@
           '@type': 'Organization',
           name: job.company || 'Raveone Consultants',
           sameAs: job.website || 'https://www.raveone.in',
-          logo: 'https://careers.raveone.in/logo.jpg'
+          logo: 'https://careers.raveone.in/logo.jpg' // <-- UPDATED TO JPG
         },
         jobLocation: {
           '@type': 'Place',
           address: {
             '@type': 'PostalAddress',
-            addressLocality: (job.location || 'India').split(',')[0].trim(),
+            addressLocality: city,
+            addressRegion: region,
             addressCountry: 'IN'
           }
         }
       };
 
-      if (job.minSalary || job.maxSalary) {
-        const minVal = parseInt(String(job.minSalary || '0').replace(/\D/g, ''), 10) || 0;
-        const maxVal = parseInt(String(job.maxSalary || minVal || '0').replace(/\D/g, ''), 10) || minVal;
-        if (minVal > 0) {
-          schema.baseSalary = {
-            '@type': 'MonetaryAmount',
-            currency: 'INR',
-            value: { '@type': 'QuantitativeValue', minValue: minVal, maxValue: maxVal || minVal, unitText: 'YEAR' }
-          };
-        }
+      // Base Salary
+      if (minVal > 0) {
+        schema.baseSalary = {
+          '@type': 'MonetaryAmount',
+          currency: 'INR',
+          value: { '@type': 'QuantitativeValue', minValue: minVal, maxValue: maxVal, unitText: 'YEAR' }
+        };
       }
-      if (job.education) schema.educationRequirements = String(job.education);
-      if (job.minExp || job.maxExp) schema.experienceRequirements = `${job.minExp || '0'}-${job.maxExp || '+'} years`;
-      if (Array.isArray(job.skills) && job.skills.length) schema.skills = job.skills.join(', ');
+
+      // Skills
+      if (Array.isArray(job.skills) && job.skills.length) {
+        schema.skills = job.skills.join(', ');
+      }
+
+      // We intentionally removed educationRequirements and experienceRequirements 
+      // from the schema to prevent Google enum warnings (they are now in the description).
+
       return schema;
     }
 
