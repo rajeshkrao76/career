@@ -41,18 +41,6 @@
     .loader { text-align: center; padding: 80px 20px; color: #64748B; }
     .spinner { width: 32px; height: 32px; border: 3px solid #E2E8F0; border-top-color: #1A365D; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* Apply modal */
-    .modal-backdrop { position: fixed; inset: 0; background: rgba(15,23,42,.6); backdrop-filter: blur(4px); display: none; align-items: flex-start; justify-content: center; padding: 24px 12px; z-index: 100; overflow-y: auto; }
-    .modal-backdrop.open { display: flex; }
-    .modal { background: #fff; border-radius: 20px; max-width: 640px; width: 100%; box-shadow: 0 30px 80px -20px rgba(0,0,0,.5); margin: auto; }
-    .modal-head { padding: 20px 24px; border-bottom: 1px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center; }
-    .modal-body { padding: 24px; }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    @media (max-width: 500px) { .form-grid { grid-template-columns: 1fr; } }
-    .full { grid-column: 1 / -1; }
-    .success { text-align: center; padding: 24px 12px; }
-    .success .check { width: 72px; height: 72px; border-radius: 50%; background: #D1FAE5; color: #15803D; font-size: 40px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
   </style>
 </head>
 <body class="m3">
@@ -67,78 +55,12 @@
     <div class="m3-app-bar-spacer"></div>
     <div class="m3-app-bar-actions">
       <a href="index.html" class="m3-btn m3-btn-text m3-btn-sm">All jobs</a>
+      <a href="portal-login.html" class="m3-btn m3-btn-outlined m3-btn-sm">Candidate Login</a>
     </div>
   </header>
 
   <div class="wrap" id="wrap">
     <div class="loader"><div class="spinner"></div>Loading role…</div>
-  </div>
-
-  <!-- Apply Modal -->
-  <div class="modal-backdrop" id="applyModal">
-    <div class="modal">
-      <div class="modal-head">
-        <div>
-          <h3 class="m3-h4" id="applyTitle">Apply</h3>
-          <p class="m3-text-caption" id="applySubtitle"></p>
-        </div>
-        <button class="m3-btn m3-btn-icon" onclick="closeApply()" aria-label="Close">
-          <span class="material-symbols-outlined">close</span>
-        </button>
-      </div>
-      <div class="modal-body" id="applyBody">
-        <form id="applyForm" class="form-grid" onsubmit="submitApply(event)">
-          <div class="m3-field full">
-            <label class="m3-field-label">Full Name <span class="m3-field-required">*</span></label>
-            <input type="text" class="m3-input" name="name" required minlength="2" maxlength="80" placeholder="e.g. Priya Sharma">
-          </div>
-          <div class="m3-field">
-            <label class="m3-field-label">Email <span class="m3-field-required">*</span></label>
-            <input type="email" class="m3-input" name="email" required placeholder="you@example.com">
-          </div>
-          <div class="m3-field">
-            <label class="m3-field-label">Phone <span class="m3-field-required">*</span></label>
-            <input type="tel" class="m3-input" name="phone" required pattern="[6-9][0-9]{9}" placeholder="10-digit mobile" maxlength="10">
-          </div>
-          <div class="m3-field">
-            <label class="m3-field-label">Total Experience</label>
-            <input type="text" class="m3-input" name="totalExp" placeholder="e.g. 5 years">
-          </div>
-          <div class="m3-field">
-            <label class="m3-field-label">Relevant Experience</label>
-            <input type="text" class="m3-input" name="relExp" placeholder="e.g. 4 years">
-          </div>
-          <div class="m3-field">
-            <label class="m3-field-label">Current CTC</label>
-            <input type="text" class="m3-input" name="currentCtc" placeholder="e.g. 6 LPA">
-          </div>
-          <div class="m3-field">
-            <label class="m3-field-label">Expected CTC</label>
-            <input type="text" class="m3-input" name="expectedCtc" placeholder="e.g. 8 LPA">
-          </div>
-          <div class="m3-field">
-            <label class="m3-field-label">Notice Period</label>
-            <input type="text" class="m3-input" name="noticePeriod" placeholder="e.g. 30 days">
-          </div>
-          <div class="m3-field">
-            <label class="m3-field-label">Current Location</label>
-            <input type="text" class="m3-input" name="location" placeholder="e.g. Bangalore">
-          </div>
-          <div class="m3-field full">
-            <label class="m3-field-label">Education</label>
-            <input type="text" class="m3-input" name="education" placeholder="e.g. B.E. Mechanical">
-          </div>
-          <div class="m3-field full">
-            <label class="m3-field-label">Resume (PDF / DOC / DOCX, max 7 MB)</label>
-            <input type="file" class="m3-input" name="resume" accept=".pdf,.doc,.docx">
-          </div>
-          <div class="full" style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
-            <button type="button" class="m3-btn m3-btn-text" onclick="closeApply()">Cancel</button>
-            <button type="submit" class="m3-btn m3-btn-filled" id="applyBtn">Submit Application</button>
-          </div>
-        </form>
-      </div>
-    </div>
   </div>
 
   <script src="app.js"></script>
@@ -147,7 +69,6 @@
     const params = new URLSearchParams(window.location.search);
     const jobId = params.get('job');
     const wrap = document.getElementById('wrap');
-    let CURRENT_JOB = null;
 
     if (!jobId) {
       wrap.innerHTML = `<div class="empty">No job ID provided. <a href="index.html">View all jobs</a></div>`;
@@ -164,28 +85,9 @@
       return 'FULL_TIME';
     }
 
-         function buildJobPostingSchema(job) {
+    function buildJobPostingSchema(job) {
       const postedIso = ATS.toIsoDate(job.postedDate);
-      // Use your exact column, or fallback to +90 days
       const validThrough = job.validThrough ? ATS.toIsoDate(job.validThrough) : ATS.addDays(postedIso, 90);
-
-      function mapEmploymentType(t) {
-        const s = String(t || '').toLowerCase();
-        if (s.includes('part')) return 'PART_TIME';
-        if (s.includes('contract')) return 'CONTRACTOR';
-        if (s.includes('temp')) return 'TEMPORARY';
-        if (s.includes('intern')) return 'INTERN';
-        return 'FULL_TIME';
-      }
-
-      // Convert Salary (e.g. "4" LPA to 400000 INR)
-      function toInrAmount(raw) {
-        const n = parseFloat(String(raw || '0').replace(/[^\d.]/g, ''));
-        if (!n || isNaN(n)) return 0;
-        return n < 100 ? Math.round(n * 100000) : Math.round(n);
-      }
-      const minVal = toInrAmount(job.minSalary);
-      const maxVal = toInrAmount(job.maxSalary) || minVal;
 
       let descriptionHtml = String(job.description || '')
         .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -194,7 +96,6 @@
       if (job.education) descriptionHtml += '<p><strong>Education:</strong> ' + job.education + '</p>';
       if (job.minExp || job.maxExp) descriptionHtml += '<p><strong>Experience:</strong> ' + (job.minExp || '0') + ' - ' + (job.maxExp || '+') + ' years</p>';
 
-      // Build the Address using your EXACT columns
       const address = {
         '@type': 'PostalAddress',
         addressLocality: job.addressLocality || job.location || 'India',
@@ -203,8 +104,16 @@
       if (job.addressRegion) address.addressRegion = job.addressRegion;
       if (job.postalCode) address.postalCode = job.postalCode;
 
+      function toInrAmount(raw) {
+        const n = parseFloat(String(raw || '0').replace(/[^\d.]/g, ''));
+        if (!n || isNaN(n)) return 0;
+        return n < 100 ? Math.round(n * 100000) : Math.round(n);
+      }
+      const minVal = toInrAmount(job.minSalary);
+      const maxVal = toInrAmount(job.maxSalary) || minVal;
+
       const schema = {
-        '@context': 'https://schema.org',
+        '@context': 'https://schema.org/',
         '@type': 'JobPosting',
         title: job.title,
         description: descriptionHtml,
@@ -229,21 +138,14 @@
         schema.baseSalary = {
           '@type': 'MonetaryAmount',
           currency: job.salaryCurrency || 'INR',
-          value: { 
-            '@type': 'QuantitativeValue', 
-            minValue: minVal, 
-            maxValue: maxVal, 
-            unitText: job.salaryUnit || 'YEAR' 
-          }
+          value: { '@type': 'QuantitativeValue', minValue: minVal, maxValue: maxVal, unitText: job.salaryUnit || 'YEAR' }
         };
       }
-
-      if (Array.isArray(job.skills) && job.skills.length) {
-        schema.skills = job.skills.join(', ');
-      }
+      if (Array.isArray(job.skills) && job.skills.length) schema.skills = job.skills.join(', ');
 
       return schema;
     }
+
     function renderJob(job) {
       const url = 'https://careers.raveone.in/job.html?job=' + encodeURIComponent(job.jobId);
       document.getElementById('pageTitle').textContent = job.title + ' at ' + (job.company || 'Raveone') + ' | Raveone Careers';
@@ -274,13 +176,16 @@
             <span class="salary">${ATS.esc(job.salaryDisplay || 'Salary not disclosed')}</span>
           </div>
           <div class="m3-text-caption">Job ID: <b>${ATS.esc(job.jobId)}</b> · Posted ${ATS.fmtDate(job.postedDate)} · ${ATS.esc(String(job.positions || 1))} position${job.positions > 1 ? 's' : ''}</div>
+          
+          <!-- UPDATED: Buttons now redirect to the Candidate Portal -->
           <div class="actions">
-            <button class="m3-btn m3-btn-filled" onclick="openApply()">
+            <a href="portal-login.html?job=${encodeURIComponent(job.jobId)}" class="m3-btn m3-btn-filled">
               <span class="material-symbols-outlined">send</span> Apply Now
-            </button>
-            <a href="talent-pool.html" class="m3-btn m3-btn-outlined">Save CV for future roles</a>
+            </a>
+            <a href="portal-login.html?talent=true" class="m3-btn m3-btn-outlined">Save CV for future roles</a>
           </div>
         </div>
+        
         <div class="body-grid">
           <div>
             <div class="m3-card" style="padding:24px;margin-bottom:16px">
@@ -321,80 +226,8 @@
           </aside>
         </div>`;
 
-      // Inject schema
       document.getElementById('jobPostingSchema').textContent = JSON.stringify(buildJobPostingSchema(job));
     }
-
-    /* Apply modal */
-    window.openApply = function () {
-      document.getElementById('applyTitle').textContent = 'Apply — ' + (CURRENT_JOB.title || 'Role');
-      document.getElementById('applySubtitle').textContent = CURRENT_JOB.company + ' · ' + CURRENT_JOB.jobId;
-      document.getElementById('applyModal').classList.add('open');
-      document.body.style.overflow = 'hidden';
-    };
-    window.closeApply = function () {
-      document.getElementById('applyModal').classList.remove('open');
-      document.body.style.overflow = '';
-    };
-
-    document.getElementById('applyModal').addEventListener('click', function (e) {
-      if (e.target.id === 'applyModal') closeApply();
-    });
-
-    window.submitApply = async function (e) {
-      e.preventDefault();
-      const form = e.target;
-      const btn = document.getElementById('applyBtn');
-      const fd = new FormData(form);
-      btn.disabled = true; btn.textContent = 'Submitting…';
-
-      try {
-        let resumeData = '', resumeName = '';
-        const file = fd.get('resume');
-        if (file && file.size) {
-          if (file.size > 7 * 1024 * 1024) throw new Error('Resume must be under 7 MB');
-          const b64 = await ATS.fileToBase64(file);
-          resumeData = b64.base64;
-          resumeName = b64.name;
-        }
-
-        const payload = {
-          jobId: CURRENT_JOB.jobId,
-          name: fd.get('name').trim(),
-          email: fd.get('email').trim(),
-          phone: fd.get('phone').trim(),
-          totalExp: fd.get('totalExp').trim(),
-          relExp: fd.get('relExp').trim(),
-          currentCtc: fd.get('currentCtc').trim(),
-          expectedCtc: fd.get('expectedCtc').trim(),
-          noticePeriod: fd.get('noticePeriod').trim(),
-          location: fd.get('location').trim(),
-          education: fd.get('education').trim(),
-          resumeData: resumeData,
-          resumeName: resumeName
-        };
-
-        const res = await ATS.post('submitCandidate', payload);
-        if (!res.ok) throw new Error(res.error || 'Submission failed');
-
-        document.getElementById('applyBody').innerHTML = `
-          <div class="success">
-            <div class="check"><span class="material-symbols-outlined" style="font-size:44px">check</span></div>
-            <h3 class="m3-h3">Application submitted!</h3>
-            <p class="m3-text-muted m3-mt-3" style="line-height:1.7">
-              Your reference is <b>${ATS.esc(res.applicationId)}</b>.<br>
-              We've emailed a confirmation to <b>${ATS.esc(payload.email)}</b>. Our team will reach out within 2–3 working days.
-            </p>
-            <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;flex-wrap:wrap">
-              <a href="portal-login.html" class="m3-btn m3-btn-filled">Track in Portal</a>
-              <a href="index.html" class="m3-btn m3-btn-outlined">Browse more roles</a>
-            </div>
-          </div>`;
-      } catch (err) {
-        ATS.toast(err.message || 'Submission failed', 'error');
-        btn.disabled = false; btn.textContent = 'Submit Application';
-      }
-    };
 
     (async function load() {
       const job = await ATS.getJob(jobId);
@@ -407,7 +240,6 @@
         </div>`;
         return;
       }
-      CURRENT_JOB = job;
       renderJob(job);
     })();
   })();
