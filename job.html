@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="pageTitle">Loading… | Raveone Careers</title>
+  <meta name="description" id="pageDesc" content="Apply for this role at Raveone Consultants.">
+  <link rel="canonical" id="canonicalUrl" href="">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" id="ogTitle" content="">
+  <meta property="og:description" id="ogDesc" content="">
+  <meta property="og:url" id="ogUrl" content="">
+  <meta property="og:site_name" content="Raveone Careers">
+
+  <link rel="stylesheet" href="design-system.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;700;800;900&family=Roboto:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+
+  <!-- JobPosting schema injected here by JS after fetch -->
+  <script id="jobPostingSchema" type="application/ld+json"></script>
+
+  <style>
+    .wrap { max-width: 960px; margin: 0 auto; padding: 32px 20px 60px; }
+    .back { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; color: #64748B; text-decoration: none; margin-bottom: 16px; font-weight: 600; }
+    .head { padding: 28px; margin-bottom: 20px; }
+    .head h1 { font-size: 28px; margin-bottom: 12px; }
+    .head .meta { display: flex; flex-wrap: wrap; gap: 16px; font-size: 14px; color: #475569; margin-bottom: 16px; }
+    .head .meta span { display: inline-flex; align-items: center; gap: 4px; }
+    .head .salary { font-weight: 700; color: #15803D; font-size: 15px; }
+    .head .actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+    .body-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+    @media (max-width: 800px) { .body-grid { grid-template-columns: 1fr; } }
+    .desc { white-space: pre-line; line-height: 1.75; color: #334155; }
+    .desc p { margin-bottom: 12px; }
+    .side-card { padding: 20px; }
+    .side-card h4 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748B; margin-bottom: 10px; }
+    .side-card ul { list-style: none; padding: 0; }
+    .side-card li { padding: 6px 0; font-size: 13px; color: #334155; display: flex; gap: 8px; align-items: flex-start; }
+    .side-card li::before { content: '•'; color: #1A365D; font-weight: 700; }
+    .loader { text-align: center; padding: 80px 20px; color: #64748B; }
+    .spinner { width: 32px; height: 32px; border: 3px solid #E2E8F0; border-top-color: #1A365D; border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Apply modal */
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(15,23,42,.6); backdrop-filter: blur(4px); display: none; align-items: flex-start; justify-content: center; padding: 24px 12px; z-index: 100; overflow-y: auto; }
+    .modal-backdrop.open { display: flex; }
+    .modal { background: #fff; border-radius: 20px; max-width: 640px; width: 100%; box-shadow: 0 30px 80px -20px rgba(0,0,0,.5); margin: auto; }
+    .modal-head { padding: 20px 24px; border-bottom: 1px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center; }
+    .modal-body { padding: 24px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 500px) { .form-grid { grid-template-columns: 1fr; } }
+    .full { grid-column: 1 / -1; }
+    .success { text-align: center; padding: 24px 12px; }
+    .success .check { width: 72px; height: 72px; border-radius: 50%; background: #D1FAE5; color: #15803D; font-size: 40px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; }
+  </style>
+</head>
+<body class="m3">
+  <header class="m3-app-bar">
+    <div class="m3-app-bar-brand">
+      <div class="m3-brand-mark">R</div>
+      <div>
+        <div class="m3-brand-name">Raveone Careers</div>
+        <div class="m3-brand-sub">Role detail</div>
+      </div>
+    </div>
+    <div class="m3-app-bar-spacer"></div>
+    <div class="m3-app-bar-actions">
+      <a href="index.html" class="m3-btn m3-btn-text m3-btn-sm">All jobs</a>
+    </div>
+  </header>
+
+  <div class="wrap" id="wrap">
+    <div class="loader"><div class="spinner"></div>Loading role…</div>
+  </div>
+
+  <!-- Apply Modal -->
+  <div class="modal-backdrop" id="applyModal">
+    <div class="modal">
+      <div class="modal-head">
+        <div>
+          <h3 class="m3-h4" id="applyTitle">Apply</h3>
+          <p class="m3-text-caption" id="applySubtitle"></p>
+        </div>
+        <button class="m3-btn m3-btn-icon" onclick="closeApply()" aria-label="Close">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="modal-body" id="applyBody">
+        <form id="applyForm" class="form-grid" onsubmit="submitApply(event)">
+          <div class="m3-field full">
+            <label class="m3-field-label">Full Name <span class="m3-field-required">*</span></label>
+            <input type="text" class="m3-input" name="name" required minlength="2" maxlength="80" placeholder="e.g. Priya Sharma">
+          </div>
+          <div class="m3-field">
+            <label class="m3-field-label">Email <span class="m3-field-required">*</span></label>
+            <input type="email" class="m3-input" name="email" required placeholder="you@example.com">
+          </div>
+          <div class="m3-field">
+            <label class="m3-field-label">Phone <span class="m3-field-required">*</span></label>
+            <input type="tel" class="m3-input" name="phone" required pattern="[6-9][0-9]{9}" placeholder="10-digit mobile" maxlength="10">
+          </div>
+          <div class="m3-field">
+            <label class="m3-field-label">Total Experience</label>
+            <input type="text" class="m3-input" name="totalExp" placeholder="e.g. 5 years">
+          </div>
+          <div class="m3-field">
+            <label class="m3-field-label">Relevant Experience</label>
+            <input type="text" class="m3-input" name="relExp" placeholder="e.g. 4 years">
+          </div>
+          <div class="m3-field">
+            <label class="m3-field-label">Current CTC</label>
+            <input type="text" class="m3-input" name="currentCtc" placeholder="e.g. 6 LPA">
+          </div>
+          <div class="m3-field">
+            <label class="m3-field-label">Expected CTC</label>
+            <input type="text" class="m3-input" name="expectedCtc" placeholder="e.g. 8 LPA">
+          </div>
+          <div class="m3-field">
+            <label class="m3-field-label">Notice Period</label>
+            <input type="text" class="m3-input" name="noticePeriod" placeholder="e.g. 30 days">
+          </div>
+          <div class="m3-field">
+            <label class="m3-field-label">Current Location</label>
+            <input type="text" class="m3-input" name="location" placeholder="e.g. Bangalore">
+          </div>
+          <div class="m3-field full">
+            <label class="m3-field-label">Education</label>
+            <input type="text" class="m3-input" name="education" placeholder="e.g. B.E. Mechanical">
+          </div>
+          <div class="m3-field full">
+            <label class="m3-field-label">Resume (PDF / DOC / DOCX, max 7 MB)</label>
+            <input type="file" class="m3-input" name="resume" accept=".pdf,.doc,.docx">
+          </div>
+          <div class="full" style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
+            <button type="button" class="m3-btn m3-btn-text" onclick="closeApply()">Cancel</button>
+            <button type="submit" class="m3-btn m3-btn-filled" id="applyBtn">Submit Application</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+  (function () {
+    const params = new URLSearchParams(window.location.search);
+    const jobId = params.get('job');
+    const wrap = document.getElementById('wrap');
+    let CURRENT_JOB = null;
+
+    if (!jobId) {
+      wrap.innerHTML = `<div class="empty">No job ID provided. <a href="index.html">View all jobs</a></div>`;
+      return;
+    }
+
+    function mapEmploymentType(t) {
+      const s = String(t || '').toLowerCase();
+      if (s.includes('part')) return 'PART_TIME';
+      if (s.includes('contract')) return 'CONTRACTOR';
+      if (s.includes('temp')) return 'TEMPORARY';
+      if (s.includes('intern')) return 'INTERN';
+      if (s.includes('free')) return 'OTHER';
+      return 'FULL_TIME';
+    }
+
+    function buildJobPostingSchema(job) {
+      const postedIso = ATS.toIsoDate(job.postedDate);
+      const validThrough = ATS.addDays(postedIso, 90);
+      const descriptionHtml = String(job.description || '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .split(/\n\n+/).map(p => '<p>' + p.replace(/\n/g, '<br>') + '</p>').join('');
+
+      const schema = {
+        '@context': 'https://schema.org',
+        '@type': 'JobPosting',
+        title: job.title,
+        description: descriptionHtml,
+        datePosted: postedIso,
+        validThrough: validThrough,
+        employmentType: mapEmploymentType(job.employmentType),
+        directApply: true,
+        identifier: { '@type': 'PropertyValue', name: 'Raveone Consultants', value: job.jobId },
+        hiringOrganization: {
+          '@type': 'Organization',
+          name: job.company || 'Raveone Consultants',
+          sameAs: job.website || 'https://www.raveone.in',
+          logo: 'https://careers.raveone.in/logo.png'
+        },
+        jobLocation: {
+          '@type': 'Place',
+          address: {
+            '@type': 'PostalAddress',
+            addressLocality: (job.location || 'India').split(',')[0].trim(),
+            addressCountry: 'IN'
+          }
+        }
+      };
+
+      if (job.minSalary || job.maxSalary) {
+        const minVal = parseInt(String(job.minSalary || '0').replace(/\D/g, ''), 10) || 0;
+        const maxVal = parseInt(String(job.maxSalary || minVal || '0').replace(/\D/g, ''), 10) || minVal;
+        if (minVal > 0) {
+          schema.baseSalary = {
+            '@type': 'MonetaryAmount',
+            currency: 'INR',
+            value: { '@type': 'QuantitativeValue', minValue: minVal, maxValue: maxVal || minVal, unitText: 'YEAR' }
+          };
+        }
+      }
+      if (job.education) schema.educationRequirements = String(job.education);
+      if (job.minExp || job.maxExp) schema.experienceRequirements = `${job.minExp || '0'}-${job.maxExp || '+'} years`;
+      if (Array.isArray(job.skills) && job.skills.length) schema.skills = job.skills.join(', ');
+      return schema;
+    }
+
+    function renderJob(job) {
+      const url = 'https://careers.raveone.in/job.html?job=' + encodeURIComponent(job.jobId);
+      document.getElementById('pageTitle').textContent = job.title + ' at ' + (job.company || 'Raveone') + ' | Raveone Careers';
+      document.getElementById('pageDesc').setAttribute('content',
+        (job.title + ' at ' + (job.company || 'Raveone') + ' in ' + (job.location || 'India') + '. Apply now.').substring(0, 160));
+      document.getElementById('canonicalUrl').setAttribute('href', url);
+      document.getElementById('ogTitle').setAttribute('content', job.title + ' · ' + (job.company || ''));
+      document.getElementById('ogDesc').setAttribute('content', (job.description || '').substring(0, 160));
+      document.getElementById('ogUrl').setAttribute('content', url);
+
+      const exp = (job.minExp || job.maxExp) ? `${ATS.esc(job.minExp || '0')}–${ATS.esc(job.maxExp || '+')} years` : 'Any experience';
+      const skillsHtml = (job.skills || []).map(s =>
+        `<span class="m3-chip m3-chip-neutral" style="margin-right:4px">${ATS.esc(s)}</span>`).join('');
+      const benHtml = (job.benefits || []).map(b => `<li>${ATS.esc(b)}</li>`).join('');
+
+      wrap.innerHTML = `
+        <a href="index.html" class="back">
+          <span class="material-symbols-outlined" style="font-size:18px">arrow_back</span>
+          All open roles
+        </a>
+        <div class="m3-card head">
+          <h1 class="m3-h2">${ATS.esc(job.title)}</h1>
+          <div class="meta">
+            <span><span class="material-symbols-outlined" style="font-size:18px">apartment</span>${ATS.esc(job.company || '—')}</span>
+            <span><span class="material-symbols-outlined" style="font-size:18px">location_on</span>${ATS.esc(job.location || '—')}</span>
+            <span><span class="material-symbols-outlined" style="font-size:18px">work_history</span>${exp}</span>
+            <span><span class="material-symbols-outlined" style="font-size:18px">schedule</span>${ATS.esc(job.employmentType || 'Full Time')}</span>
+            <span class="salary">${ATS.esc(job.salaryDisplay || 'Salary not disclosed')}</span>
+          </div>
+          <div class="m3-text-caption">Job ID: <b>${ATS.esc(job.jobId)}</b> · Posted ${ATS.fmtDate(job.postedDate)} · ${ATS.esc(String(job.positions || 1))} position${job.positions > 1 ? 's' : ''}</div>
+          <div class="actions">
+            <button class="m3-btn m3-btn-filled" onclick="openApply()">
+              <span class="material-symbols-outlined">send</span> Apply Now
+            </button>
+            <a href="talent-pool.html" class="m3-btn m3-btn-outlined">Save CV for future roles</a>
+          </div>
+        </div>
+        <div class="body-grid">
+          <div>
+            <div class="m3-card" style="padding:24px;margin-bottom:16px">
+              <h3 class="m3-h4" style="margin-bottom:12px">Job Description</h3>
+              <div class="desc">${ATS.esc(job.description || 'No description provided.')}</div>
+            </div>
+            ${job.requirements ? `<div class="m3-card" style="padding:24px;margin-bottom:16px">
+              <h3 class="m3-h4" style="margin-bottom:12px">Requirements</h3>
+              <div class="desc">${ATS.esc(job.requirements)}</div>
+            </div>` : ''}
+            ${benHtml ? `<div class="m3-card" style="padding:24px;margin-bottom:16px">
+              <h3 class="m3-h4" style="margin-bottom:12px">Benefits</h3>
+              <ul style="padding-left:20px;line-height:2;color:#334155">${benHtml}</ul>
+            </div>` : ''}
+          </div>
+          <aside>
+            <div class="m3-card side-card" style="margin-bottom:16px">
+              <h4>Key Skills</h4>
+              <div>${skillsHtml || '<span class="m3-text-muted">—</span>'}</div>
+            </div>
+            <div class="m3-card side-card" style="margin-bottom:16px">
+              <h4>Quick Facts</h4>
+              <ul>
+                ${job.education ? `<li>${ATS.esc(job.education)}</li>` : ''}
+                ${job.industry ? `<li>${ATS.esc(job.industry)}</li>` : ''}
+                ${job.category ? `<li>${ATS.esc(job.category)}</li>` : ''}
+                ${job.address ? `<li>${ATS.esc(job.address)}</li>` : ''}
+                ${job.website ? `<li><a href="${ATS.esc(job.website)}" target="_blank" rel="noopener">${ATS.esc(job.website)}</a></li>` : ''}
+              </ul>
+            </div>
+            <div class="m3-card side-card">
+              <h4>About the client</h4>
+              <p class="m3-text-muted" style="font-size:13px;line-height:1.7">
+                ${ATS.esc(job.company || 'Confidential')} · ${ATS.esc(job.location || '')}
+                ${job.website ? `<br><a href="${ATS.esc(job.website)}" target="_blank" rel="noopener" style="color:#2A5487">Visit website →</a>` : ''}
+              </p>
+            </div>
+          </aside>
+        </div>`;
+
+      // Inject schema
+      document.getElementById('jobPostingSchema').textContent = JSON.stringify(buildJobPostingSchema(job));
+    }
+
+    /* Apply modal */
+    window.openApply = function () {
+      document.getElementById('applyTitle').textContent = 'Apply — ' + (CURRENT_JOB.title || 'Role');
+      document.getElementById('applySubtitle').textContent = CURRENT_JOB.company + ' · ' + CURRENT_JOB.jobId;
+      document.getElementById('applyModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    };
+    window.closeApply = function () {
+      document.getElementById('applyModal').classList.remove('open');
+      document.body.style.overflow = '';
+    };
+
+    document.getElementById('applyModal').addEventListener('click', function (e) {
+      if (e.target.id === 'applyModal') closeApply();
+    });
+
+    window.submitApply = async function (e) {
+      e.preventDefault();
+      const form = e.target;
+      const btn = document.getElementById('applyBtn');
+      const fd = new FormData(form);
+      btn.disabled = true; btn.textContent = 'Submitting…';
+
+      try {
+        let resumeData = '', resumeName = '';
+        const file = fd.get('resume');
+        if (file && file.size) {
+          if (file.size > 7 * 1024 * 1024) throw new Error('Resume must be under 7 MB');
+          const b64 = await ATS.fileToBase64(file);
+          resumeData = b64.base64;
+          resumeName = b64.name;
+        }
+
+        const payload = {
+          jobId: CURRENT_JOB.jobId,
+          name: fd.get('name').trim(),
+          email: fd.get('email').trim(),
+          phone: fd.get('phone').trim(),
+          totalExp: fd.get('totalExp').trim(),
+          relExp: fd.get('relExp').trim(),
+          currentCtc: fd.get('currentCtc').trim(),
+          expectedCtc: fd.get('expectedCtc').trim(),
+          noticePeriod: fd.get('noticePeriod').trim(),
+          location: fd.get('location').trim(),
+          education: fd.get('education').trim(),
+          resumeData: resumeData,
+          resumeName: resumeName
+        };
+
+        const res = await ATS.post('submitCandidate', payload);
+        if (!res.ok) throw new Error(res.error || 'Submission failed');
+
+        document.getElementById('applyBody').innerHTML = `
+          <div class="success">
+            <div class="check"><span class="material-symbols-outlined" style="font-size:44px">check</span></div>
+            <h3 class="m3-h3">Application submitted!</h3>
+            <p class="m3-text-muted m3-mt-3" style="line-height:1.7">
+              Your reference is <b>${ATS.esc(res.applicationId)}</b>.<br>
+              We've emailed a confirmation to <b>${ATS.esc(payload.email)}</b>. Our team will reach out within 2–3 working days.
+            </p>
+            <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;flex-wrap:wrap">
+              <a href="portal-login.html" class="m3-btn m3-btn-filled">Track in Portal</a>
+              <a href="index.html" class="m3-btn m3-btn-outlined">Browse more roles</a>
+            </div>
+          </div>`;
+      } catch (err) {
+        ATS.toast(err.message || 'Submission failed', 'error');
+        btn.disabled = false; btn.textContent = 'Submit Application';
+      }
+    };
+
+    (async function load() {
+      const job = await ATS.getJob(jobId);
+      if (!job) {
+        wrap.innerHTML = `<div class="empty m3-card">
+          <span class="material-symbols-outlined" style="font-size:64px;color:#94A3B8">work_off</span>
+          <h2 class="m3-h3 m3-mt-3">Role not found</h2>
+          <p class="m3-mt-2">This job may have been filled or removed.</p>
+          <a href="index.html" class="m3-btn m3-btn-filled m3-mt-4">View all open roles</a>
+        </div>`;
+        return;
+      }
+      CURRENT_JOB = job;
+      renderJob(job);
+    })();
+  })();
+  </script>
+</body>
+</html>
