@@ -1,0 +1,1496 @@
+/* ============================================================================
+   Raveone Careers — Design System (Material 3)
+   File: design-system.css
+
+   Foundation for all portal UIs. Google-like, brand-tinted navy.
+   Import once, use everywhere.
+
+   USAGE:
+     <link rel="stylesheet" href="design-system.css">
+     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;700;800;900&family=Roboto:wght@400;500;700&display=swap">
+     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+
+     <body class="m3">
+       <div class="m3-app">
+         <header class="m3-app-bar">...</header>
+         <div class="m3-app-body">
+           <nav class="m3-rail">...</nav>
+           <main class="m3-content">...</main>
+         </div>
+       </div>
+     </body>
+   ============================================================================ */
+
+/* ============================================================================
+   1. DESIGN TOKENS (Material 3)
+   ============================================================================ */
+
+:root {
+  /* ── Brand palette (navy = primary) ── */
+  --m3-primary:               #1A365D;
+  --m3-on-primary:            #FFFFFF;
+  --m3-primary-container:     #D6E2FF;
+  --m3-on-primary-container:  #001A41;
+  --m3-primary-hover:         #15294A;
+  --m3-primary-active:        #0F1F38;
+
+  --m3-secondary:             #2A5487;
+  --m3-on-secondary:          #FFFFFF;
+  --m3-secondary-container:   #DCE5F5;
+  --m3-on-secondary-container: #0A1F38;
+
+  --m3-tertiary:              #0E7490;
+  --m3-on-tertiary:           #FFFFFF;
+  --m3-tertiary-container:    #CFF9FF;
+  --m3-on-tertiary-container: #001F26;
+
+  /* ── Error / Success / Warning ── */
+  --m3-error:                 #DC2626;
+  --m3-on-error:              #FFFFFF;
+  --m3-error-container:       #FEE2E2;
+  --m3-on-error-container:    #7F1D1D;
+
+  --m3-success:               #16A34A;
+  --m3-on-success:            #FFFFFF;
+  --m3-success-container:     #DCFCE7;
+  --m3-on-success-container:  #14532D;
+
+  --m3-warning:               #D97706;
+  --m3-on-warning:            #FFFFFF;
+  --m3-warning-container:     #FEF3C7;
+  --m3-on-warning-container:  #78350F;
+
+  --m3-info:                  #2563EB;
+  --m3-on-info:               #FFFFFF;
+  --m3-info-container:        #DBEAFE;
+  --m3-on-info-container:     #1E3A8A;
+
+  /* ── Surface (Material 3 tonal elevation levels) ── */
+  --m3-surface:               #FFFFFF;
+  --m3-surface-1:             #FBFCFE;
+  --m3-surface-2:             #F8FAFC;
+  --m3-surface-3:             #F1F5F9;
+  --m3-surface-4:             #E8EEF5;
+  --m3-surface-5:             #E2E8F0;
+
+  --m3-surface-variant:       #F1F5F9;
+  --m3-on-surface:            #0F172A;
+  --m3-on-surface-variant:    #475569;
+
+  /* ── Outline / borders ── */
+  --m3-outline:               #94A3B8;
+  --m3-outline-variant:       #CBD5E1;
+  --m3-border:                #E2E8F0;
+  --m3-border-strong:         #CBD5E1;
+
+  /* ── Elevation (Material 3 shadow scale) ── */
+  --m3-elev-0: none;
+  --m3-elev-1: 0 1px 2px 0 rgba(15,23,42,.08);
+  --m3-elev-2: 0 2px 4px 0 rgba(15,23,42,.10), 0 1px 2px 0 rgba(15,23,42,.06);
+  --m3-elev-3: 0 4px 12px -2px rgba(15,23,42,.12), 0 2px 6px -1px rgba(15,23,42,.08);
+  --m3-elev-4: 0 8px 24px -4px rgba(15,23,42,.14), 0 4px 10px -2px rgba(15,23,42,.08);
+  --m3-elev-5: 0 16px 40px -8px rgba(15,23,42,.20), 0 8px 20px -4px rgba(15,23,42,.10);
+
+  /* ── Radius ── */
+  --m3-radius-xs:             4px;
+  --m3-radius-sm:             8px;
+  --m3-radius-md:             12px;
+  --m3-radius-lg:             16px;
+  --m3-radius-xl:             24px;
+  --m3-radius-full:           999px;
+
+  /* ── Spacing (8px grid) ── */
+  --m3-space-1:  4px;
+  --m3-space-2:  8px;
+  --m3-space-3:  12px;
+  --m3-space-4:  16px;
+  --m3-space-5:  20px;
+  --m3-space-6:  24px;
+  --m3-space-8:  32px;
+  --m3-space-10: 40px;
+  --m3-space-12: 48px;
+  --m3-space-16: 64px;
+
+  /* ── Typography ── */
+  --m3-font-brand:            'Google Sans Flex', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --m3-font-body:             'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --m3-font-mono:             'SF Mono', 'Monaco', 'Consolas', 'Courier New', monospace;
+
+  --m3-fs-display:            32px;
+  --m3-fs-headline:           24px;
+  --m3-fs-title:              20px;
+  --m3-fs-subtitle:           16px;
+  --m3-fs-body:               14px;
+  --m3-fs-label:              12px;
+  --m3-fs-caption:            11px;
+
+  --m3-fw-regular:            400;
+  --m3-fw-medium:             500;
+  --m3-fw-semibold:           600;
+  --m3-fw-bold:               700;
+  --m3-fw-extrabold:          800;
+  --m3-fw-black:              900;
+
+  --m3-lh-tight:              1.2;
+  --m3-lh-snug:               1.4;
+  --m3-lh-normal:             1.6;
+  --m3-lh-relaxed:            1.75;
+
+  /* ── Motion ── */
+  --m3-ease-standard:         cubic-bezier(0.2, 0, 0, 1);
+  --m3-ease-emphasized:       cubic-bezier(0.05, 0.7, 0.1, 1);
+  --m3-ease-linear:           linear;
+
+  --m3-dur-1:                 100ms;
+  --m3-dur-2:                 150ms;
+  --m3-dur-3:                 200ms;
+  --m3-dur-4:                 250ms;
+  --m3-dur-5:                 300ms;
+  --m3-dur-6:                 400ms;
+
+  /* ── Layout ── */
+  --m3-appbar-h:              56px;
+  --m3-rail-w-collapsed:      72px;
+  --m3-rail-w-expanded:       240px;
+  --m3-container-max:         1200px;
+  --m3-container-padding:     20px;
+
+  /* ── Z-index ── */
+  --m3-z-fab:                 20;
+  --m3-z-sticky:              30;
+  --m3-z-appbar:              40;
+  --m3-z-rail:                35;
+  --m3-z-snackbar:            90;
+  --m3-z-dialog:              100;
+  --m3-z-palette:             110;
+}
+
+/* ============================================================================
+   2. RESET & BASE
+   ============================================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  line-height: var(--m3-lh-normal);
+}
+
+body.m3 {
+  font-family: var(--m3-font-body);
+  font-size: var(--m3-fs-body);
+  color: var(--m3-on-surface);
+  background: var(--m3-surface-2);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.m3 img,
+.m3 svg,
+.m3 video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.m3 a {
+  color: var(--m3-primary);
+  text-decoration: none;
+  transition: color var(--m3-dur-2) var(--m3-ease-standard);
+}
+
+.m3 a:hover {
+  color: var(--m3-primary-hover);
+}
+
+.m3 button {
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+.m3 input,
+.m3 select,
+.m3 textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+.m3 ul,
+.m3 ol {
+  list-style: none;
+}
+
+.m3 :focus-visible {
+  outline: 2px solid var(--m3-primary);
+  outline-offset: 2px;
+  border-radius: var(--m3-radius-sm);
+}
+
+.m3 ::selection {
+  background: var(--m3-primary-container);
+  color: var(--m3-on-primary-container);
+}
+
+/* ============================================================================
+   3. TYPOGRAPHY
+   ============================================================================ */
+
+.m3-h1,
+.m3-h2,
+.m3-h3,
+.m3-h4 {
+  font-family: var(--m3-font-brand);
+  color: var(--m3-on-surface);
+  letter-spacing: -0.02em;
+  line-height: var(--m3-lh-tight);
+}
+
+.m3-h1 { font-size: var(--m3-fs-display); font-weight: var(--m3-fw-black); }
+.m3-h2 { font-size: var(--m3-fs-headline); font-weight: var(--m3-fw-extrabold); }
+.m3-h3 { font-size: var(--m3-fs-title); font-weight: var(--m3-fw-bold); }
+.m3-h4 { font-size: var(--m3-fs-subtitle); font-weight: var(--m3-fw-semibold); }
+
+.m3-text-lead {
+  font-size: var(--m3-fs-subtitle);
+  color: var(--m3-on-surface-variant);
+  line-height: var(--m3-lh-relaxed);
+}
+
+.m3-text-muted {
+  color: var(--m3-on-surface-variant);
+}
+
+.m3-text-faint {
+  color: var(--m3-outline);
+}
+
+.m3-text-label {
+  font-size: var(--m3-fs-label);
+  font-weight: var(--m3-fw-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--m3-on-surface-variant);
+}
+
+.m3-text-caption {
+  font-size: var(--m3-fs-caption);
+  color: var(--m3-on-surface-variant);
+}
+
+.m3-mono {
+  font-family: var(--m3-font-mono);
+  font-size: 0.9em;
+}
+
+/* ============================================================================
+   4. APP SHELL
+   ============================================================================ */
+
+.m3-app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ── App bar (top) ── */
+
+.m3-app-bar {
+  position: sticky;
+  top: 0;
+  z-index: var(--m3-z-appbar);
+  height: var(--m3-appbar-h);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--m3-space-4);
+  gap: var(--m3-space-3);
+  background: var(--m3-surface);
+  border-bottom: 1px solid var(--m3-border);
+  box-shadow: var(--m3-elev-1);
+}
+
+.m3-app-bar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--m3-space-3);
+  flex-shrink: 0;
+}
+
+.m3-brand-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--m3-radius-md);
+  background: linear-gradient(135deg, var(--m3-primary) 0%, var(--m3-secondary) 100%);
+  color: var(--m3-on-primary);
+  font-family: var(--m3-font-brand);
+  font-weight: var(--m3-fw-black);
+  font-size: 15px;
+  box-shadow: var(--m3-elev-1);
+}
+
+.m3-brand-name {
+  font-family: var(--m3-font-brand);
+  font-size: 15px;
+  font-weight: var(--m3-fw-extrabold);
+  color: var(--m3-on-surface);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.m3-brand-sub {
+  font-size: 10px;
+  color: var(--m3-on-surface-variant);
+  font-weight: var(--m3-fw-medium);
+  margin-top: 1px;
+}
+
+.m3-app-bar-spacer {
+  flex: 1;
+}
+
+.m3-app-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--m3-space-2);
+  flex-shrink: 0;
+}
+
+/* ── App body (rail + content) ── */
+
+.m3-app-body {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+/* ── Navigation rail (left) ── */
+
+.m3-rail {
+  width: var(--m3-rail-w-collapsed);
+  background: var(--m3-surface);
+  border-right: 1px solid var(--m3-border);
+  display: flex;
+  flex-direction: column;
+  padding: var(--m3-space-2) 0;
+  flex-shrink: 0;
+  transition: width var(--m3-dur-4) var(--m3-ease-standard);
+  position: sticky;
+  top: var(--m3-appbar-h);
+  height: calc(100vh - var(--m3-appbar-h));
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.m3-rail:hover,
+.m3-rail.expanded {
+  width: var(--m3-rail-w-expanded);
+  box-shadow: var(--m3-elev-2);
+}
+
+.m3-rail-item {
+  display: flex;
+  align-items: center;
+  gap: var(--m3-space-3);
+  padding: var(--m3-space-3) var(--m3-space-5);
+  margin: 0 var(--m3-space-2);
+  border-radius: var(--m3-radius-full);
+  color: var(--m3-on-surface-variant);
+  font-size: 13px;
+  font-weight: var(--m3-fw-semibold);
+  cursor: pointer;
+  border: none;
+  background: none;
+  text-align: left;
+  width: calc(100% - var(--m3-space-4));
+  white-space: nowrap;
+  overflow: hidden;
+  transition: background-color var(--m3-dur-2) var(--m3-ease-standard),
+              color var(--m3-dur-2) var(--m3-ease-standard);
+}
+
+.m3-rail-item:hover {
+  background: var(--m3-surface-3);
+  color: var(--m3-on-surface);
+}
+
+.m3-rail-item.active {
+  background: var(--m3-primary-container);
+  color: var(--m3-on-primary-container);
+}
+
+.m3-rail-icon {
+  font-family: 'Material Symbols Outlined';
+  font-size: 22px;
+  font-weight: 400;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.m3-rail-label {
+  opacity: 0;
+  transition: opacity var(--m3-dur-2) var(--m3-ease-standard);
+}
+
+.m3-rail:hover .m3-rail-label,
+.m3-rail.expanded .m3-rail-label {
+  opacity: 1;
+}
+
+/* ── Content area ── */
+
+.m3-content {
+  flex: 1;
+  min-width: 0;
+  padding: var(--m3-space-6) var(--m3-space-6);
+  max-width: var(--m3-container-max);
+  margin: 0 auto;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .m3-rail {
+    display: none;
+  }
+  .m3-content {
+    padding: var(--m3-space-4);
+  }
+}
+
+/* ============================================================================
+   5. BUTTONS
+   ============================================================================ */
+
+.m3-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--m3-space-2);
+  padding: var(--m3-space-3) var(--m3-space-5);
+  font-family: var(--m3-font-body);
+  font-size: 13px;
+  font-weight: var(--m3-fw-bold);
+  letter-spacing: 0.01em;
+  border-radius: var(--m3-radius-full);
+  transition: all var(--m3-dur-2) var(--m3-ease-standard);
+  white-space: nowrap;
+  cursor: pointer;
+  border: none;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.m3-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Filled (default) */
+.m3-btn-filled {
+  background: var(--m3-primary);
+  color: var(--m3-on-primary);
+  box-shadow: var(--m3-elev-1);
+}
+
+.m3-btn-filled:hover:not(:disabled) {
+  background: var(--m3-primary-hover);
+  box-shadow: var(--m3-elev-2);
+}
+
+.m3-btn-filled:active:not(:disabled) {
+  background: var(--m3-primary-active);
+  box-shadow: var(--m3-elev-0);
+}
+
+/* Outlined */
+.m3-btn-outlined {
+  background: transparent;
+  color: var(--m3-primary);
+  border: 1.5px solid var(--m3-outline-variant);
+}
+
+.m3-btn-outlined:hover:not(:disabled) {
+  background: var(--m3-primary-container);
+  border-color: var(--m3-primary);
+}
+
+/* Text */
+.m3-btn-text {
+  background: transparent;
+  color: var(--m3-primary);
+  padding: var(--m3-space-2) var(--m3-space-3);
+}
+
+.m3-btn-text:hover:not(:disabled) {
+  background: var(--m3-primary-container);
+}
+
+/* Tonal (soft) */
+.m3-btn-tonal {
+  background: var(--m3-secondary-container);
+  color: var(--m3-on-secondary-container);
+}
+
+.m3-btn-tonal:hover:not(:disabled) {
+  background: var(--m3-secondary-container);
+  filter: brightness(0.96);
+}
+
+/* Danger */
+.m3-btn-danger {
+  background: var(--m3-error);
+  color: var(--m3-on-error);
+}
+
+.m3-btn-danger:hover:not(:disabled) {
+  filter: brightness(0.92);
+}
+
+/* Icon-only */
+.m3-btn-icon {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: var(--m3-radius-full);
+  background: transparent;
+  color: var(--m3-on-surface-variant);
+}
+
+.m3-btn-icon:hover:not(:disabled) {
+  background: var(--m3-surface-3);
+  color: var(--m3-on-surface);
+}
+
+/* Sizes */
+.m3-btn-sm {
+  padding: var(--m3-space-2) var(--m3-space-3);
+  font-size: 12px;
+  height: 32px;
+}
+
+.m3-btn-lg {
+  padding: var(--m3-space-4) var(--m3-space-6);
+  font-size: 14px;
+  height: 48px;
+}
+
+/* FAB (floating action button) */
+.m3-fab {
+  position: fixed;
+  bottom: var(--m3-space-6);
+  right: var(--m3-space-6);
+  width: 56px;
+  height: 56px;
+  border-radius: var(--m3-radius-lg);
+  background: var(--m3-primary);
+  color: var(--m3-on-primary);
+  box-shadow: var(--m3-elev-4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+  z-index: var(--m3-z-fab);
+  transition: all var(--m3-dur-3) var(--m3-ease-standard);
+}
+
+.m3-fab:hover {
+  background: var(--m3-primary-hover);
+  box-shadow: var(--m3-elev-5);
+  transform: translateY(-2px);
+}
+
+.m3-fab-icon {
+  font-family: 'Material Symbols Outlined';
+  font-size: 24px;
+}
+
+/* ============================================================================
+   6. CARDS
+   ============================================================================ */
+
+.m3-card {
+  background: var(--m3-surface);
+  border: 1px solid var(--m3-border);
+  border-radius: var(--m3-radius-lg);
+  padding: var(--m3-space-5);
+  transition: all var(--m3-dur-2) var(--m3-ease-standard);
+}
+
+.m3-card-outlined {
+  background: transparent;
+  border: 1.5px solid var(--m3-border-strong);
+}
+
+.m3-card-elevated {
+  border: none;
+  box-shadow: var(--m3-elev-2);
+}
+
+.m3-card-hover:hover {
+  box-shadow: var(--m3-elev-3);
+  border-color: var(--m3-primary);
+  transform: translateY(-1px);
+}
+
+.m3-card-interactive {
+  cursor: pointer;
+}
+
+.m3-card-interactive:hover {
+  box-shadow: var(--m3-elev-3);
+  border-color: var(--m3-primary);
+  transform: translateY(-2px);
+}
+
+.m3-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--m3-space-3);
+  margin-bottom: var(--m3-space-3);
+}
+
+.m3-card-title {
+  font-size: var(--m3-fs-subtitle);
+  font-weight: var(--m3-fw-bold);
+  color: var(--m3-on-surface);
+  letter-spacing: -0.01em;
+  line-height: var(--m3-lh-snug);
+}
+
+.m3-card-subtitle {
+  font-size: 13px;
+  color: var(--m3-on-surface-variant);
+  margin-top: var(--m3-space-1);
+}
+
+.m3-card-body {
+  font-size: var(--m3-fs-body);
+  color: var(--m3-on-surface-variant);
+  line-height: var(--m3-lh-normal);
+}
+
+.m3-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--m3-space-3);
+  padding-top: var(--m3-space-3);
+  margin-top: var(--m3-space-3);
+  border-top: 1px solid var(--m3-border);
+}
+
+/* Stat card (KPI) */
+.m3-stat-card {
+  background: var(--m3-surface);
+  border: 1px solid var(--m3-border);
+  border-radius: var(--m3-radius-lg);
+  padding: var(--m3-space-4);
+  text-align: center;
+}
+
+.m3-stat-label {
+  font-size: var(--m3-fs-label);
+  font-weight: var(--m3-fw-extrabold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--m3-on-surface-variant);
+}
+
+.m3-stat-value {
+  font-family: var(--m3-font-brand);
+  font-size: 28px;
+  font-weight: var(--m3-fw-black);
+  color: var(--m3-primary);
+  line-height: 1;
+  margin-top: var(--m3-space-2);
+  letter-spacing: -0.03em;
+}
+
+.m3-stat-hint {
+  font-size: 11px;
+  color: var(--m3-outline);
+  margin-top: var(--m3-space-1);
+  font-weight: var(--m3-fw-medium);
+}
+
+/* ============================================================================
+   7. TEXT FIELDS
+   ============================================================================ */
+
+.m3-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--m3-space-1);
+}
+
+.m3-field-label {
+  font-size: var(--m3-fs-label);
+  font-weight: var(--m3-fw-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--m3-on-surface-variant);
+}
+
+.m3-field-required {
+  color: var(--m3-error);
+}
+
+.m3-input {
+  width: 100%;
+  padding: var(--m3-space-3) var(--m3-space-3);
+  font-size: 14px;
+  color: var(--m3-on-surface);
+  background: var(--m3-surface);
+  border: 1.5px solid var(--m3-border);
+  border-radius: var(--m3-radius-sm);
+  outline: none;
+  transition: all var(--m3-dur-2) var(--m3-ease-standard);
+  line-height: var(--m3-lh-snug);
+  font-family: var(--m3-font-body);
+}
+
+.m3-input::placeholder {
+  color: var(--m3-outline);
+}
+
+.m3-input:hover:not(:focus):not(:disabled) {
+  border-color: var(--m3-outline);
+}
+
+.m3-input:focus {
+  border-color: var(--m3-primary);
+  box-shadow: 0 0 0 3px rgba(26, 54, 93, 0.12);
+}
+
+.m3-input:disabled {
+  background: var(--m3-surface-3);
+  color: var(--m3-outline);
+  cursor: not-allowed;
+}
+
+.m3-input.error {
+  border-color: var(--m3-error);
+}
+
+.m3-input.error:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+}
+
+.m3-input-hint {
+  font-size: 11px;
+  color: var(--m3-outline);
+}
+
+.m3-input-hint.error {
+  color: var(--m3-error);
+}
+
+.m3-select {
+  width: 100%;
+  padding: var(--m3-space-3) var(--m3-space-8) var(--m3-space-3) var(--m3-space-3);
+  font-size: 14px;
+  background: var(--m3-surface);
+  border: 1.5px solid var(--m3-border);
+  border-radius: var(--m3-radius-sm);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23475569' d='M6 8 0 0h12z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--m3-space-3) center;
+  outline: none;
+  transition: all var(--m3-dur-2) var(--m3-ease-standard);
+  cursor: pointer;
+  font-family: var(--m3-font-body);
+}
+
+.m3-select:focus {
+  border-color: var(--m3-primary);
+  box-shadow: 0 0 0 3px rgba(26, 54, 93, 0.12);
+}
+
+.m3-textarea {
+  width: 100%;
+  padding: var(--m3-space-3);
+  font-size: 14px;
+  font-family: var(--m3-font-body);
+  background: var(--m3-surface);
+  border: 1.5px solid var(--m3-border);
+  border-radius: var(--m3-radius-sm);
+  resize: vertical;
+  outline: none;
+  min-height: 80px;
+  line-height: var(--m3-lh-normal);
+  transition: all var(--m3-dur-2) var(--m3-ease-standard);
+}
+
+.m3-textarea:focus {
+  border-color: var(--m3-primary);
+  box-shadow: 0 0 0 3px rgba(26, 54, 93, 0.12);
+}
+
+/* Search field with icon */
+.m3-search {
+  position: relative;
+  width: 100%;
+}
+
+.m3-search input {
+  width: 100%;
+  padding: var(--m3-space-2) var(--m3-space-3) var(--m3-space-2) var(--m3-space-10);
+  font-size: 14px;
+  background: var(--m3-surface-3);
+  border: 1.5px solid transparent;
+  border-radius: var(--m3-radius-full);
+  outline: none;
+  transition: all var(--m3-dur-2) var(--m3-ease-standard);
+}
+
+.m3-search input:focus {
+  background: var(--m3-surface);
+  border-color: var(--m3-primary);
+  box-shadow: 0 0 0 3px rgba(26, 54, 93, 0.12);
+}
+
+.m3-search-icon {
+  position: absolute;
+  left: var(--m3-space-3);
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'Material Symbols Outlined';
+  font-size: 18px;
+  color: var(--m3-on-surface-variant);
+  pointer-events: none;
+}
+
+/* ============================================================================
+   8. CHIPS & BADGES
+   ============================================================================ */
+
+.m3-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--m3-space-1);
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: var(--m3-fw-bold);
+  letter-spacing: 0.02em;
+  border-radius: var(--m3-radius-full);
+  white-space: nowrap;
+  border: none;
+  line-height: 1.4;
+}
+
+.m3-chip-primary   { background: var(--m3-primary-container); color: var(--m3-on-primary-container); }
+.m3-chip-secondary { background: var(--m3-secondary-container); color: var(--m3-on-secondary-container); }
+.m3-chip-success   { background: var(--m3-success-container); color: var(--m3-on-success-container); }
+.m3-chip-warning   { background: var(--m3-warning-container); color: var(--m3-on-warning-container); }
+.m3-chip-error     { background: var(--m3-error-container); color: var(--m3-on-error-container); }
+.m3-chip-info      { background: var(--m3-info-container); color: var(--m3-on-info-container); }
+.m3-chip-neutral   { background: var(--m3-surface-3); color: var(--m3-on-surface-variant); }
+
+/* Status-specific (matching ATS statuses) */
+.m3-status-sourced        { background: #DBEAFE; color: #1E40AF; }
+.m3-status-jd-shared      { background: #DBEAFE; color: #1E40AF; }
+.m3-status-shortlisted    { background: #FEF3C7; color: #B45309; }
+.m3-status-submitted      { background: #FEF3C7; color: #B45309; }
+.m3-status-interview      { background: #EDE9FE; color: #6D28D9; }
+.m3-status-offered        { background: #D1FAE5; color: #15803D; }
+.m3-status-hired          { background: #D1FAE5; color: #15803D; }
+.m3-status-rejected       { background: #FEE2E2; color: #B91C1C; }
+.m3-status-withdrawn      { background: #F1F5F9; color: #475569; }
+
+/* Filter chip (clickable) */
+.m3-chip-filter {
+  padding: 6px 14px;
+  font-size: 12px;
+  background: var(--m3-surface);
+  border: 1.5px solid var(--m3-border-strong);
+  color: var(--m3-on-surface-variant);
+  cursor: pointer;
+  transition: all var(--m3-dur-2) var(--m3-ease-standard);
+}
+
+.m3-chip-filter:hover {
+  background: var(--m3-surface-3);
+}
+
+.m3-chip-filter.active {
+  background: var(--m3-primary-container);
+  border-color: var(--m3-primary);
+  color: var(--m3-on-primary-container);
+}
+
+/* ============================================================================
+   9. AVATAR
+   ============================================================================ */
+
+.m3-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--m3-radius-full);
+  background: var(--m3-primary);
+  color: var(--m3-on-primary);
+  font-family: var(--m3-font-brand);
+  font-weight: var(--m3-fw-bold);
+  font-size: 15px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.m3-avatar-sm { width: 32px; height: 32px; font-size: 12px; }
+.m3-avatar-lg { width: 56px; height: 56px; font-size: 20px; }
+.m3-avatar-xl { width: 80px; height: 80px; font-size: 28px; }
+
+.m3-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ============================================================================
+   10. TAB BAR
+   ============================================================================ */
+
+.m3-tabs {
+  display: flex;
+  gap: 2px;
+  border-bottom: 1px solid var(--m3-border);
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin-bottom: var(--m3-space-5);
+}
+
+.m3-tabs::-webkit-scrollbar { display: none; }
+
+.m3-tab {
+  padding: var(--m3-space-3) var(--m3-space-4);
+  font-size: 13px;
+  font-weight: var(--m3-fw-bold);
+  color: var(--m3-on-surface-variant);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  margin-bottom: -1px;
+  transition: all var(--m3-dur-2) var(--m3-ease-standard);
+  font-family: var(--m3-font-body);
+}
+
+.m3-tab:hover {
+  color: var(--m3-on-surface);
+  background: var(--m3-surface-3);
+  border-radius: var(--m3-radius-sm) var(--m3-radius-sm) 0 0;
+}
+
+.m3-tab.active {
+  color: var(--m3-primary);
+  border-bottom-color: var(--m3-primary);
+}
+
+/* ============================================================================
+   11. DIALOG / MODAL
+   ============================================================================ */
+
+.m3-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: var(--m3-z-dialog);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: var(--m3-space-4);
+  animation: m3-fade-in var(--m3-dur-3) var(--m3-ease-standard);
+}
+
+.m3-dialog-backdrop.open {
+  display: flex;
+}
+
+.m3-dialog {
+  background: var(--m3-surface);
+  border-radius: var(--m3-radius-xl);
+  box-shadow: var(--m3-elev-5);
+  max-width: 90vw;
+  width: 640px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  animation: m3-dialog-in var(--m3-dur-4) var(--m3-ease-emphasized);
+}
+
+.m3-dialog-head {
+  padding: var(--m3-space-5);
+  border-bottom: 1px solid var(--m3-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--m3-space-3);
+}
+
+.m3-dialog-title {
+  font-family: var(--m3-font-brand);
+  font-size: var(--m3-fs-title);
+  font-weight: var(--m3-fw-bold);
+  color: var(--m3-on-surface);
+  letter-spacing: -0.01em;
+}
+
+.m3-dialog-body {
+  padding: var(--m3-space-5);
+  overflow-y: auto;
+  flex: 1;
+}
+
+.m3-dialog-footer {
+  padding: var(--m3-space-4) var(--m3-space-5);
+  border-top: 1px solid var(--m3-border);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--m3-space-2);
+  background: var(--m3-surface-2);
+  border-radius: 0 0 var(--m3-radius-xl) var(--m3-radius-xl);
+}
+
+/* ============================================================================
+   12. SNACKBAR (toast)
+   ============================================================================ */
+
+.m3-snackbar {
+  position: fixed;
+  bottom: var(--m3-space-6);
+  left: 50%;
+  transform: translate(-50%, 100px);
+  background: #1E293B;
+  color: #F8FAFC;
+  padding: var(--m3-space-3) var(--m3-space-5);
+  border-radius: var(--m3-radius-full);
+  font-size: 13px;
+  font-weight: var(--m3-fw-semibold);
+  box-shadow: var(--m3-elev-5);
+  z-index: var(--m3-z-snackbar);
+  opacity: 0;
+  transition: all var(--m3-dur-4) var(--m3-ease-standard);
+  max-width: 90vw;
+  pointer-events: none;
+}
+
+.m3-snackbar.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.m3-snackbar.success { background: var(--m3-success); }
+.m3-snackbar.error   { background: var(--m3-error); }
+
+/* ============================================================================
+   13. TABLES
+   ============================================================================ */
+
+.m3-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.m3-table th {
+  padding: var(--m3-space-3);
+  text-align: left;
+  font-size: 11px;
+  font-weight: var(--m3-fw-extrabold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--m3-on-surface-variant);
+  background: var(--m3-surface-2);
+  border-bottom: 1px solid var(--m3-border);
+  white-space: nowrap;
+}
+
+.m3-table td {
+  padding: var(--m3-space-3);
+  border-bottom: 1px solid var(--m3-border);
+  color: var(--m3-on-surface);
+  vertical-align: middle;
+}
+
+.m3-table tbody tr {
+  transition: background-color var(--m3-dur-1) var(--m3-ease-standard);
+}
+
+.m3-table tbody tr:hover {
+  background: var(--m3-surface-2);
+}
+
+.m3-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ============================================================================
+   14. LIST ITEMS
+   ============================================================================ */
+
+.m3-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.m3-list-item {
+  display: flex;
+  align-items: center;
+  gap: var(--m3-space-3);
+  padding: var(--m3-space-3) var(--m3-space-4);
+  border-bottom: 1px solid var(--m3-border);
+  transition: background-color var(--m3-dur-1) var(--m3-ease-standard);
+  text-decoration: none;
+  color: inherit;
+}
+
+.m3-list-item:last-child {
+  border-bottom: none;
+}
+
+.m3-list-item:hover {
+  background: var(--m3-surface-2);
+}
+
+.m3-list-item-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.m3-list-item-title {
+  font-size: 13px;
+  font-weight: var(--m3-fw-bold);
+  color: var(--m3-on-surface);
+  line-height: var(--m3-lh-snug);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.m3-list-item-meta {
+  font-size: 11.5px;
+  color: var(--m3-on-surface-variant);
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ============================================================================
+   15. SKELETON LOADERS
+   ============================================================================ */
+
+.m3-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--m3-surface-3) 25%,
+    var(--m3-surface-4) 50%,
+    var(--m3-surface-3) 75%
+  );
+  background-size: 200% 100%;
+  border-radius: var(--m3-radius-sm);
+  animation: m3-shimmer 1.4s infinite linear;
+}
+
+.m3-skeleton-text { height: 12px; margin-bottom: 8px; }
+.m3-skeleton-title { height: 20px; width: 60%; margin-bottom: 12px; }
+.m3-skeleton-card { height: 120px; border-radius: var(--m3-radius-lg); }
+
+@keyframes m3-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ============================================================================
+   16. PROGRESS BAR
+   ============================================================================ */
+
+.m3-progress {
+  height: 8px;
+  background: var(--m3-surface-3);
+  border-radius: var(--m3-radius-full);
+  overflow: hidden;
+}
+
+.m3-progress-bar {
+  height: 100%;
+  background: var(--m3-primary);
+  border-radius: var(--m3-radius-full);
+  transition: width var(--m3-dur-4) var(--m3-ease-standard);
+}
+
+/* ============================================================================
+   17. EMPTY STATE
+   ============================================================================ */
+
+.m3-empty {
+  padding: var(--m3-space-12) var(--m3-space-6);
+  text-align: center;
+  color: var(--m3-on-surface-variant);
+}
+
+.m3-empty-icon {
+  font-family: 'Material Symbols Outlined';
+  font-size: 56px;
+  color: var(--m3-outline);
+  margin-bottom: var(--m3-space-4);
+  display: block;
+}
+
+.m3-empty-title {
+  font-size: var(--m3-fs-subtitle);
+  font-weight: var(--m3-fw-bold);
+  color: var(--m3-on-surface);
+  margin-bottom: var(--m3-space-2);
+}
+
+.m3-empty-text {
+  font-size: 13px;
+  line-height: var(--m3-lh-relaxed);
+  max-width: 400px;
+  margin: 0 auto var(--m3-space-4);
+}
+
+/* ============================================================================
+   18. DIVIDER
+   ============================================================================ */
+
+.m3-divider {
+  height: 1px;
+  background: var(--m3-border);
+  margin: var(--m3-space-4) 0;
+  border: none;
+}
+
+.m3-divider-text {
+  display: flex;
+  align-items: center;
+  gap: var(--m3-space-3);
+  color: var(--m3-outline);
+  font-size: 11px;
+  font-weight: var(--m3-fw-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: var(--m3-space-5) 0;
+}
+
+.m3-divider-text::before,
+.m3-divider-text::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--m3-border);
+}
+
+/* ============================================================================
+   19. UTILITY CLASSES
+   ============================================================================ */
+
+/* Flex */
+.m3-flex          { display: flex; }
+.m3-flex-col      { flex-direction: column; }
+.m3-flex-wrap     { flex-wrap: wrap; }
+.m3-items-center  { align-items: center; }
+.m3-items-start   { align-items: flex-start; }
+.m3-items-end     { align-items: flex-end; }
+.m3-justify-center  { justify-content: center; }
+.m3-justify-between { justify-content: space-between; }
+.m3-justify-end   { justify-content: flex-end; }
+.m3-flex-1        { flex: 1; }
+.m3-flex-shrink-0 { flex-shrink: 0; }
+.m3-gap-1         { gap: var(--m3-space-1); }
+.m3-gap-2         { gap: var(--m3-space-2); }
+.m3-gap-3         { gap: var(--m3-space-3); }
+.m3-gap-4         { gap: var(--m3-space-4); }
+.m3-gap-5         { gap: var(--m3-space-5); }
+.m3-gap-6         { gap: var(--m3-space-6); }
+
+/* Grid */
+.m3-grid          { display: grid; }
+.m3-grid-2        { grid-template-columns: repeat(2, 1fr); }
+.m3-grid-3        { grid-template-columns: repeat(3, 1fr); }
+.m3-grid-4        { grid-template-columns: repeat(4, 1fr); }
+
+@media (max-width: 768px) {
+  .m3-grid-2,
+  .m3-grid-3,
+  .m3-grid-4 { grid-template-columns: 1fr; }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .m3-grid-3,
+  .m3-grid-4 { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Spacing */
+.m3-mt-1 { margin-top: var(--m3-space-1); }
+.m3-mt-2 { margin-top: var(--m3-space-2); }
+.m3-mt-3 { margin-top: var(--m3-space-3); }
+.m3-mt-4 { margin-top: var(--m3-space-4); }
+.m3-mt-5 { margin-top: var(--m3-space-5); }
+.m3-mt-6 { margin-top: var(--m3-space-6); }
+.m3-mb-1 { margin-bottom: var(--m3-space-1); }
+.m3-mb-2 { margin-bottom: var(--m3-space-2); }
+.m3-mb-3 { margin-bottom: var(--m3-space-3); }
+.m3-mb-4 { margin-bottom: var(--m3-space-4); }
+.m3-mb-5 { margin-bottom: var(--m3-space-5); }
+.m3-mb-6 { margin-bottom: var(--m3-space-6); }
+.m3-p-2  { padding: var(--m3-space-2); }
+.m3-p-3  { padding: var(--m3-space-3); }
+.m3-p-4  { padding: var(--m3-space-4); }
+.m3-p-5  { padding: var(--m3-space-5); }
+.m3-p-6  { padding: var(--m3-space-6); }
+
+/* Text */
+.m3-text-center { text-align: center; }
+.m3-text-right  { text-align: right; }
+.m3-text-truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.m3-hidden      { display: none !important; }
+.m3-sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ============================================================================
+   20. ANIMATIONS
+   ============================================================================ */
+
+@keyframes m3-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes m3-dialog-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes m3-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.m3-animate-fade-up {
+  animation: m3-fade-up var(--m3-dur-4) var(--m3-ease-standard);
+}
+
+/* ============================================================================
+   21. REDUCED MOTION
+   ============================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================================
+   22. DARK MODE (opt-in via data-theme="dark" on <html>)
+   ============================================================================ */
+
+[data-theme="dark"] {
+  --m3-surface:               #0F172A;
+  --m3-surface-1:             #131C2E;
+  --m3-surface-2:             #0B1220;
+  --m3-surface-3:             #1E293B;
+  --m3-surface-4:             #293548;
+  --m3-surface-5:             #334155;
+
+  --m3-surface-variant:       #1E293B;
+  --m3-on-surface:            #F1F5F9;
+  --m3-on-surface-variant:    #CBD5E1;
+
+  --m3-border:                #293548;
+  --m3-border-strong:         #475569;
+  --m3-outline:               #64748B;
+  --m3-outline-variant:       #334155;
+
+  --m3-primary:               #7AA5E8;
+  --m3-primary-hover:         #93B7EC;
+  --m3-on-primary:            #0F172A;
+
+  --m3-primary-container:     #1E3A6E;
+  --m3-on-primary-container:  #D6E2FF;
+}
+
+[data-theme="dark"] body.m3 {
+  background: var(--m3-surface-2);
+  color: var(--m3-on-surface);
+}
+
+/* ============================================================================
+   23. PRINT
+   ============================================================================ */
+
+@media print {
+  .m3-app-bar,
+  .m3-rail,
+  .m3-fab,
+  .m3-snackbar,
+  .m3-dialog-backdrop,
+  .m3-btn {
+    display: none !important;
+  }
+
+  body.m3 {
+    background: #fff;
+    color: #000;
+  }
+
+  .m3-card {
+    box-shadow: none;
+    border: 1px solid #ccc;
+    page-break-inside: avoid;
+  }
+}
