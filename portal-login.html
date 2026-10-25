@@ -337,8 +337,20 @@
   document.getElementById('signinEmail').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('signinPassword').focus(); });
   document.getElementById('forgotEmail').addEventListener('keydown', e => { if (e.key === 'Enter') doForgotRequest(); });
 
-  /* Already logged in? */
-  if (ATS.isLoggedIn('candidate')) window.location.replace('portal-app.html');
+   /* Already logged in? */
+  if (ATS.isLoggedIn('candidate')) {
+    const urlParams = new URLSearchParams(window.location.search);
+    let redirectUrl = 'portal-app.html';
+    if (urlParams.get('job')) redirectUrl += '?job=' + encodeURIComponent(urlParams.get('job'));
+    if (urlParams.get('talent')) redirectUrl += '?talent=' + encodeURIComponent(urlParams.get('talent'));
+    window.location.replace(redirectUrl);
+  } else {
+    // New user coming from an Apply link? Auto-open the Register screen.
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('job') || urlParams.get('talent')) {
+      goTo('register');
+    }
+  }
   </script>
 </body>
 </html>
