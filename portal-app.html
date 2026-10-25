@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Portal — Raveone Careers</title>
+  <meta name="robots" content="noindex">
+  <link rel="stylesheet" href="design-system.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;700;800;900&family=Roboto:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+  <style>
+    .m3-content { padding: 24px; }
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+    @media (max-width: 700px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+    .card-list { display: flex; flex-direction: column; gap: 10px; }
+    .item { display: flex; gap: 12px; align-items: center; padding: 16px; }
+    .item .body { flex: 1; min-width: 0; }
+    .item .title { font-weight: 700; font-size: 14px; margin-bottom: 2px; }
+    .item .meta { font-size: 12px; color: #64748B; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-grid .full { grid-column: 1 / -1; }
+    @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+    .hero-card { background: linear-gradient(135deg, #1A365D, #2A5487); color: #fff; padding: 24px; border-radius: 16px; margin-bottom: 20px; }
+    .hero-card h1 { color: #fff; }
+    .hero-card p { opacity: .9; font-size: 14px; margin-top: 4px; }
+    .empty-tab { text-align: center; padding: 48px 20px; color: #64748B; }
+  </style>
+</head>
+<body class="m3">
+  <header class="m3-app-bar">
+    <div class="m3-app-bar-brand">
+      <div class="m3-brand-mark">R</div>
+      <div><div class="m3-brand-name">My Portal</div><div class="m3-brand-sub" id="userSub">—</div></div>
+    </div>
+    <div class="m3-app-bar-spacer"></div>
+    <div class="m3-app-bar-actions">
+      <a href="index.html" class="m3-btn m3-btn-text m3-btn-sm">Jobs</a>
+      <button class="m3-btn m3-btn-text m3-btn-sm" onclick="logout()">Sign out</button>
+    </div>
+  </header>
+
+  <div class="m3-app-body">
+    <nav class="m3-rail" id="rail">
+      <button class="m3-rail-item active" data-tab="dashboard"><span class="m3-rail-icon material-symbols-outlined">dashboard</span><span class="m3-rail-label">Dashboard</span></button>
+      <button class="m3-rail-item" data-tab="profile"><span class="m3-rail-icon material-symbols-outlined">person</span><span class="m3-rail-label">My Profile</span></button>
+      <button class="m3-rail-item" data-tab="applications"><span class="m3-rail-icon material-symbols-outlined">description</span><span class="m3-rail-label">Applications</span></button>
+      <button class="m3-rail-item" data-tab="interviews"><span class="m3-rail-icon material-symbols-outlined">event</span><span class="m3-rail-label">Interviews</span></button>
+      <button class="m3-rail-item" data-tab="documents"><span class="m3-rail-icon material-symbols-outlined">folder</span><span class="m3-rail-label">Documents</span></button>
+      <button class="m3-rail-item" data-tab="alerts"><span class="m3-rail-icon material-symbols-outlined">notifications</span><span class="m3-rail-label">Job Alerts</span></button>
+    </nav>
+    <main class="m3-content" id="content"><div class="empty-tab"><div class="spinner" style="width:32px;height:32px;border:3px solid #E2E8F0;border-top-color:#1A365D;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px"></div>Loading…</div></main>
+  </div>
+
+  <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+
+  <script src="app.js"></script>
+  <script>
+  (function () {
+    if (!ATS.requireAuth('candidate', 'portal-login.html')) return;
+    const session = ATS.getSession('candidate');
+    document.getElementById('userSub').textContent = session.name || session.email;
+    const content = document.getElementById('content');
+    let CURRENT_TAB = 'dashboard';
+    let CACHE = {};
+
+    async function call(action, extra) {
+      return ATS.post(action, Object.assign({ token: session.token }, extra || {}));
+    }
+
+    function handleAuthError(res) {
+      if (!res.ok && /not authenticated|invalid session|session expired/i.test(res.error || '')) {
+        ATS.toast('Your session expired. Please log in again.', 'error');
+        ATS.clearSession('candidate');
+        setTimeout(() => window.location.replace('portal-login.html'), 800);
+        return true;
+      }
+      return false;
+    }
+
+    window.logout = async function () {
+      await call('portalLogout');
+      ATS.clearSession('candidate');
+      window.location.replace('index.html');
+    };
+
+    document.querySelectorAll('.m3-rail-item').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+
+    function switchTab(tab) {
+      CURRENT_TAB = tab;
+      document.querySelectorAll('.m3-rail-item').forEach(b =>
+        b.classList.toggle('active', b.dataset.tab === tab));
+      render();
+    }
+
+    function render() {
+      content.innerHTML = '<div class="empty-tab">Loading…</div>';
+      const fn = TABS[CURRENT_TAB];
+      if (fn) fn();
+    }
+
+    /* ═══════ DASHBOARD ═══════ */
+    async function renderDashboard() {
+      const res = await call('portalGetDashboard');
+      if (handleAuthError(res)) return;
+      if (!res.ok) { content.innerHTML = '<div class="empty-tab">Could not load dashboard</div>'; return; }
+      const d = res;
+      const statsHtml = `
+        <div class="hero-card">
+          <h1 class="m3-h3">Hi ${ATS.esc(d.profile.name || 'there')} 👋</h1>
+          <p>${ATS.esc(d.profile.email || '')}</p>
+        </div>
+        <div class="stats">
+          <div class="m3-stat-card"><div class="m3-stat-label">Total</div><div class="m3-stat-value">${d.stats.totalApplications}</div><div class="m3-stat-hint">applications</div></div>
+          <div class="m3-stat-card"><div class="m3-stat-label">Active</div><div class="m3-stat-value">${d.stats.activeApplications}</div><div class="m3-stat-hint">in progress</div></div>
+          <div class="m3-stat-card"><div class="m3-stat-label">Interviews</div><div class="m3-stat-value">${d.stats.upcomingInterviews}</div><div class="m3-stat-hint">upcoming</div></div>
+          <div class="m3-stat-card"><div class="m3-stat-label">Offers</div><div class="m3-stat-value" style="color:#15803D">${d.stats.offers}</div><div class="m3-stat-hint">received</div></div>
+        </div>
+        <div class="m3-grid-2">
+          <div class="m3-card">
+            <h3 class="m3-h4" style="margin-bottom:12px">Recent applications</h3>
+            <div class="card-list">
+              ${(d.applications || []).length
+                ? d.applications.map(a => `
+                  <div class="item" style="border:1px solid #E2E8F0;border-radius:8px">
+                    <div class="body">
+                      <div class="title">${ATS.esc(a.jobTitle || 'Role')}</div>
+                      <div class="meta">${ATS.esc(a.jobId || '')} · ${ATS.esc(a.appliedAt || '')}</div>
+                    </div>
+                    <span class="m3-chip ${ATS.statusClass(a.status)}">${ATS.esc(a.status)}</span>
+                  </div>`).join('')
+                : '<div class="m3-text-muted" style="font-size:13px">No applications yet. <a href="index.html">Browse jobs →</a></div>'}
+            </div>
+          </div>
+          <div class="m3-card">
+            <h3 class="m3-h4" style="margin-bottom:12px">Upcoming interviews</h3>
+            <div class="card-list">
+              ${(d.upcomingInterviews || []).length
+                ? d.upcomingInterviews.map(i => `
+                  <div class="item" style="border:1px solid #E2E8F0;border-radius:8px">
+                    <div class="body">
+                      <div class="title">${ATS.esc(i.position || 'Interview')}</div>
+                      <div class="meta">${ATS.esc(i.date || '')} · ${ATS.esc(i.time || '')} · ${ATS.esc(i.mode || '')}</div>
+                    </div>
+                  </div>`).join('')
+                : '<div class="m3-text-muted" style="font-size:13px">No interviews scheduled.</div>'}
+            </div>
+          </div>
+        </div>`;
+      content.innerHTML = statsHtml;
+    }
+
+    /* ═══════ PROFILE ═══════ */
+    async function renderProfile() {
+      const res = await call('portalGetProfile');
+      if (handleAuthError(res)) return;
+      if (!res.ok) { content.innerHTML = '<div class="empty-tab">Could not load profile</div>'; return; }
+      const p = res.profile || {};
+      content.innerHTML = `
+        <div class="m3-card" style="padding:24px;margin-bottom:16px">
+          <div class="m3-flex m3-justify-between m3-items-center" style="margin-bottom:16px">
+            <h1 class="m3-h3">My Profile</h1>
+            <span class="m3-chip m3-chip-primary">${p.profileCompleteness || 0}% complete</span>
+          </div>
+          <form id="profileForm" class="form-grid" onsubmit="saveProfile(event)">
+            <div class="m3-field"><label class="m3-field-label">Full Name</label><input class="m3-input" name="name" value="${ATS.esc(p.name||'')}"></div>
+            <div class="m3-field"><label class="m3-field-label">Phone</label><input class="m3-input" name="phone" value="${ATS.esc(p.phone||'')}" maxlength="13"></div>
+            <div class="m3-field"><label class="m3-field-label">Education</label><input class="m3-input" name="education" value="${ATS.esc(p.education||'')}"></div>
+            <div class="m3-field"><label class="m3-field-label">Current Location</label><input class="m3-input" name="location" value="${ATS.esc(p.location||'')}"></div>
+            <div class="m3-field"><label class="m3-field-label">Total Experience</label><input class="m3-input" name="totalExp" value="${ATS.esc(p.totalExp||'')}"></div>
+            <div class="m3-field"><label class="m3-field-label">Relevant Experience</label><input class="m3-input" name="relExp" value="${ATS.esc(p.relExp||'')}"></div>
+            <div class="m3-field"><label class="m3-field-label">Current CTC</label><input class="m3-input" name="currentCtc" value="${ATS.esc(p.currentCtc||'')}"></div>
+            <div class="m3-field"><label class="m3-field-label">Expected CTC</label><input class="m3-input" name="expectedCtc" value="${ATS.esc(p.expectedCtc||'')}"></div>
+            <div class="m3-field"><label class="m3-field-label">Notice Period</label><input class="m3-input" name="noticePeriod" value="${ATS.esc(p.noticePeriod||'')}"></div>
+            <div class="m3-field"><label class="m3-field-label">Current Company</label><input class="m3-input" name="currentCompany" value="${ATS.esc(p.currentCompany||'')}"></div>
+            <div class="m3-field"><label class="m3-field-label">Current Designation</label><input class="m3-input" name="currentDesignation" value="${ATS.esc(p.currentDesignation||'')}"></div>
+            <div class="m3-field"><label class="m3-field-label">LinkedIn URL</label><input class="m3-input" name="linkedin" value="${ATS.esc(p.linkedin||'')}" placeholder="https://linkedin.com/in/…"></div>
+            <div class="m3-field"><label class="m3-field-label">Languages Known</label><input class="m3-input" name="languages" value="${ATS.esc(p.languages||'')}"></div>
+            <div class="m3-field"><label class="m3-field-label">Nationality</label><input class="m3-input" name="nationality" value="${ATS.esc(p.nationality||'')}"></div>
+            <div class="m3-field full"><label class="m3-field-label">Skills (comma-separated)</label><input class="m3-input" name="skills" value="${ATS.esc(p.skills||'')}"></div>
+            <div class="m3-field full"><label class="m3-field-label">Portfolio URL</label><input class="m3-input" name="portfolioUrl" value="${ATS.esc(p.portfolioUrl||'')}"></div>
+            <div class="full" style="display:flex;justify-content:flex-end;gap:8px">
+              <button type="button" class="m3-btn m3-btn-outlined" onclick="downloadProfile('pdf')">
+                <span class="material-symbols-outlined">download</span> PDF
+              </button>
+              <button type="button" class="m3-btn m3-btn-outlined" onclick="downloadProfile('docx')">
+                <span class="material-symbols-outlined">download</span> DOCX
+              </button>
+              <button type="submit" class="m3-btn m3-btn-filled" id="saveProfileBtn">Save Profile</button>
+            </div>
+          </form>
+        </div>`;
+    }
+
+    window.saveProfile = async function (e) {
+      e.preventDefault();
+      const btn = document.getElementById('saveProfileBtn');
+      const fd = new FormData(e.target);
+      const profile = {};
+      ['name','phone','education','location','totalExp','relExp','currentCtc','expectedCtc',
+       'noticePeriod','currentCompany','currentDesignation','linkedin','languages','nationality','skills','portfolioUrl']
+        .forEach(k => { profile[k] = fd.get(k); });
+      btn.disabled = true; btn.textContent = 'Saving…';
+      const res = await call('portalUpdateProfile', { profile });
+      btn.disabled = false; btn.textContent = 'Save Profile';
+      if (res.ok) { ATS.toast('Profile saved', 'success'); renderProfile(); }
+      else ATS.toast(res.error || 'Save failed', 'error');
+    };
+
+    window.downloadProfile = async function (format) {
+      ATS.toast('Preparing ' + format.toUpperCase() + '…');
+      const res = await call('portalDownloadProfile', { format });
+      if (!res.ok) { ATS.toast(res.error || 'Download failed', 'error'); return; }
+      const bytes = Uint8Array.from(atob(res.base64), c => c.charCodeAt(0));
+      const blob = new Blob([bytes], { type: res.mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = res.filename; a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      ATS.toast('Downloaded', 'success');
+    };
+
+    /* ═══════ APPLICATIONS ═══════ */
+    async function renderApplications() {
+      const res = await call('portalGetApplications');
+      if (handleAuthError(res)) return;
+      if (!res.ok) { content.innerHTML = '<div class="empty-tab">Could not load</div>'; return; }
+      content.innerHTML = `
+        <h1 class="m3-h3" style="margin-bottom:16px">My Applications (${res.stats.total})</h1>
+        ${res.applications.length ? `<div class="card-list">${res.applications.map(a => `
+          <div class="m3-card item">
+            <div class="body">
+              <div class="title">${ATS.esc(a.jobTitle || 'Role')}</div>
+              <div class="meta">${ATS.esc(a.jobId)} · ${ATS.esc(a.submittedDate || '')} · ${ATS.esc(a.jobLocation || '')}</div>
+            </div>
+            <span class="m3-chip ${ATS.statusClass(a.status)}">${ATS.esc(a.status)}</span>
+            ${a.canWithdraw ? `<button class="m3-btn m3-btn-text m3-btn-sm" onclick="withdrawApp('${a.appId}')">Withdraw</button>` : ''}
+          </div>`).join('')}</div>` : `<div class="empty-tab">
+            <span class="material-symbols-outlined" style="font-size:56px;color:#94A3B8">description</span>
+            <p class="m3-mt-3">No applications yet.</p>
+            <a href="index.html" class="m3-btn m3-btn-filled m3-mt-3">Browse jobs</a>
+          </div>`}`;
+    }
+
+    window.withdrawApp = async function (appId) {
+      if (!confirm('Withdraw this application?')) return;
+      const res = await call('portalWithdrawApplication', { appId });
+      if (res.ok) { ATS.toast('Application withdrawn', 'success'); renderApplications(); }
+      else ATS.toast(res.error || 'Could not withdraw', 'error');
+    };
+
+    /* ═══════ INTERVIEWS ═══════ */
+    async function renderInterviews() {
+      const res = await call('portalGetInterviews');
+      if (handleAuthError(res)) return;
+      if (!res.ok) { content.innerHTML = '<div class="empty-tab">Could not load</div>'; return; }
+      const upcoming = res.upcoming || [];
+      const past = res.past || [];
+      content.innerHTML = `
+        <h1 class="m3-h3" style="margin-bottom:16px">Interviews</h1>
+        ${upcoming.length ? `<h3 class="m3-h4" style="margin-bottom:10px">Upcoming (${upcoming.length})</h3>
+        <div class="card-list">${upcoming.map(i => `
+          <div class="m3-card item">
+            <div class="body">
+              <div class="title">${ATS.esc(i.jobTitle || 'Interview')}</div>
+              <div class="meta">${ATS.esc(i.date || '')} · ${ATS.esc(i.time || '')} · ${ATS.esc(i.mode || '')} · ${ATS.esc(i.company || '')}</div>
+            </div>
+            <span class="m3-chip ${ATS.statusClass('interview-scheduled')}">${ATS.esc(i.candidateResponse || 'Pending')}</span>
+          </div>`).join('')}</div>` : ''}
+        ${past.length ? `<h3 class="m3-h4" style="margin:20px 0 10px">Past (${past.length})</h3>
+        <div class="card-list">${past.slice(0, 10).map(i => `
+          <div class="m3-card item" style="opacity:.75">
+            <div class="body">
+              <div class="title">${ATS.esc(i.jobTitle || 'Interview')}</div>
+              <div class="meta">${ATS.esc(i.date || '')} · ${ATS.esc(i.mode || '')}</div>
+            </div>
+          </div>`).join('')}</div>` : ''}
+        ${(!upcoming.length && !past.length) ? `<div class="empty-tab">
+          <span class="material-symbols-outlined" style="font-size:56px;color:#94A3B8">event_busy</span>
+          <p class="m3-mt-3">No interviews scheduled.</p>
+        </div>` : ''}`;
+    }
+
+    /* ═══════ DOCUMENTS ═══════ */
+    async function renderDocuments() {
+      const res = await call('portalGetDocuments');
+      if (handleAuthError(res)) return;
+      if (!res.ok) { content.innerHTML = '<div class="empty-tab">Could not load</div>'; return; }
+      const docs = res.documents || [];
+      const types = res.types || [];
+      content.innerHTML = `
+        <div class="m3-flex m3-justify-between m3-items-center" style="margin-bottom:16px">
+          <h1 class="m3-h3">My Documents</h1>
+          <button class="m3-btn m3-btn-filled" onclick="showUploadDoc()">
+            <span class="material-symbols-outlined">upload</span> Upload
+          </button>
+        </div>
+        <div id="uploadDocPanel" class="m3-card" style="display:none;padding:20px;margin-bottom:16px">
+          <form class="form-grid" onsubmit="uploadDoc(event)">
+            <div class="m3-field"><label class="m3-field-label">Document Type</label>
+              <select class="m3-select" name="docType">${types.map(t => `<option>${ATS.esc(t)}</option>`).join('')}</select>
+            </div>
+            <div class="m3-field"><label class="m3-field-label">File</label><input type="file" class="m3-input" name="file" required></div>
+            <div class="full" style="display:flex;justify-content:flex-end;gap:8px">
+              <button type="button" class="m3-btn m3-btn-text" onclick="document.getElementById('uploadDocPanel').style.display='none'">Cancel</button>
+              <button type="submit" class="m3-btn m3-btn-filled" id="uploadBtn">Upload</button>
+            </div>
+          </form>
+        </div>
+        ${docs.length ? `<div class="card-list">${docs.map(d => `
+          <div class="m3-card item">
+            <span class="material-symbols-outlined" style="color:#1A365D">description</span>
+            <div class="body">
+              <div class="title">${ATS.esc(d.docName)}</div>
+              <div class="meta">${ATS.esc(d.docType)} · ${ATS.esc(d.uploadedAt)} · ${Math.round((d.sizeBytes||0)/1024)} KB</div>
+            </div>
+            <a class="m3-btn m3-btn-text m3-btn-sm" href="${ATS.esc(d.driveUrl)}" target="_blank" rel="noopener">Open</a>
+            <button class="m3-btn m3-btn-text m3-btn-sm" onclick="delDoc('${d.docId}')" style="color:#DC2626">Delete</button>
+          </div>`).join('')}</div>`
+          : `<div class="empty-tab"><span class="material-symbols-outlined" style="font-size:56px;color:#94A3B8">folder_open</span>
+              <p class="m3-mt-3">No documents uploaded yet.</p></div>`}`;
+    }
+
+    window.showUploadDoc = () => document.getElementById('uploadDocPanel').style.display = 'block';
+
+    window.uploadDoc = async function (e) {
+      e.preventDefault();
+      const btn = document.getElementById('uploadBtn');
+      const fd = new FormData(e.target);
+      const file = fd.get('file');
+      if (!file || !file.size) return;
+      if (file.size > 9 * 1024 * 1024) { ATS.toast('File must be under 9 MB', 'error'); return; }
+      btn.disabled = true; btn.textContent = 'Uploading…';
+      const b64 = await ATS.fileToBase64(file);
+      const res = await call('portalUploadDocument', {
+        docType: fd.get('docType'), fileData: 'data:' + b64.type + ';base64,' + b64.base64, fileName: b64.name
+      });
+      btn.disabled = false; btn.textContent = 'Upload';
+      if (res.ok) { ATS.toast('Uploaded', 'success'); renderDocuments(); }
+      else ATS.toast(res.error || 'Upload failed', 'error');
+    };
+
+    window.delDoc = async function (docId) {
+      if (!confirm('Delete this document?')) return;
+      const res = await call('portalDeleteDocument', { docId });
+      if (res.ok) { ATS.toast('Deleted'); renderDocuments(); }
+      else ATS.toast(res.error || 'Delete failed', 'error');
+    };
+
+    /* ═══════ ALERTS ═══════ */
+    async function renderAlerts() {
+      const res = await call('portalGetAlertPrefs');
+      if (handleAuthError(res)) return;
+      if (!res.ok) { content.innerHTML = '<div class="empty-tab">Could not load</div>'; return; }
+      content.innerHTML = `
+        <div class="m3-card" style="padding:24px">
+          <h1 class="m3-h3" style="margin-bottom:8px">Job Alerts</h1>
+          <p class="m3-text-muted" style="margin-bottom:20px">Get a daily email when matching jobs are posted.</p>
+          <form id="alertForm" onsubmit="saveAlerts(event)">
+            <div class="m3-field" style="margin-bottom:16px">
+              <label class="m3-field-label" style="display:flex;align-items:center;gap:8px">
+                <input type="checkbox" id="alertEnabled" ${res.enabled ? 'checked' : ''}>
+                <span>Enable job alerts</span>
+              </label>
+            </div>
+            <div class="form-grid">
+              <div class="m3-field full"><label class="m3-field-label">Keywords (comma-separated)</label>
+                <input class="m3-input" name="keywords" value="${ATS.esc(res.keywords||'')}" placeholder="e.g. CNC, VMC, Quality"></div>
+              <div class="m3-field full"><label class="m3-field-label">Preferred Locations</label>
+                <input class="m3-input" name="locations" value="${ATS.esc(res.locations||'')}" placeholder="e.g. Bangalore, Chennai"></div>
+            </div>
+            <p class="m3-text-caption" style="margin-top:12px">Leave keywords and locations blank to receive alerts for <b>all new jobs</b>.</p>
+            <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px">
+              <button type="submit" class="m3-btn m3-btn-filled" id="saveAlertBtn">Save Preferences</button>
+            </div>
+          </form>
+          ${res.lastSent ? `<p class="m3-text-caption" style="margin-top:16px">Last digest sent: ${ATS.esc(res.lastSent)}</p>` : ''}
+        </div>`;
+    }
+
+    window.saveAlerts = async function (e) {
+      e.preventDefault();
+      const btn = document.getElementById('saveAlertBtn');
+      const fd = new FormData(e.target);
+      btn.disabled = true; btn.textContent = 'Saving…';
+      const res = await call('portalUpdateAlertPrefs', {
+        enabled: document.getElementById('alertEnabled').checked,
+        keywords: fd.get('keywords'), locations: fd.get('locations')
+      });
+      btn.disabled = false; btn.textContent = 'Save Preferences';
+      if (res.ok) ATS.toast('Preferences saved', 'success');
+      else ATS.toast(res.error || 'Save failed', 'error');
+    };
+
+    /* ═══════ TAB MAP ═══════ */
+    const TABS = {
+      dashboard: renderDashboard,
+      profile: renderProfile,
+      applications: renderApplications,
+      interviews: renderInterviews,
+      documents: renderDocuments,
+      alerts: renderAlerts
+    };
+
+    render();
+  })();
+  </script>
+</body>
+</html>
