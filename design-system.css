@@ -1494,3 +1494,8 @@ body.m3 {
     page-break-inside: avoid;
   }
 }
+/* Fix for <a> tags styled as buttons */
+.m3 a.m3-btn-filled { color: var(--m3-on-primary) !important; }
+.m3 a.m3-btn-outlined { color: var(--m3-primary) !important; }
+.m3 a.m3-btn-text { color: var(--m3-primary) !important; }
+.m3 a.m3-btn-tonal { color: var(--m3-on-secondary-container) !important; }
