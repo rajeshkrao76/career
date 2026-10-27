@@ -164,13 +164,16 @@ const ATS = {
 window.ATS = ATS;
 
 // ═══════════════════════════════════════════════════════════════════════════
-// INDEX PAGE — job listing
+// INDEX PAGE — job listing (full-featured)
 // ═══════════════════════════════════════════════════════════════════════════
 
 let _allJobs = [];
+let _filteredJobs = [];
+let _currentFilters = { search: '', location: '', category: '', exp: '', company: '', type: '' };
+let _currentSort = 'recent';
 
 window.initIndex = async function () {
-  const board = document.getElementById('jobBoard') || document.getElementById('jobsGrid');
+  const board = document.getElementById('jobsGrid');
   if (!board) return;
 
   board.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#94A3B8">Loading jobs…</div>';
@@ -179,23 +182,318 @@ window.initIndex = async function () {
     const res = await fetch(API_URL + '?action=jobs');
     const jobs = await res.json();
     _allJobs = Array.isArray(jobs) ? jobs : [];
-    renderIndexJobs();
-    setupIndexFilters();
+
+    // ── Hide skeleton grid (fixes the 4 blank blocks) ──
+    const skel = document.getElementById('skeletonGrid');
+    if (skel) skel.style.display = 'none';
+
+    // ── Populate everything ──
+    populateIndexStats(_allJobs);
+    populateIndexFilterDropdowns(_allJobs);
+    populateIndexPopularTags(_allJobs);
+    wireIndexControls();
+    hideIndexLoadMore();
+
+    // ── Initial render (all jobs) ──
+    applyIndexFiltersAndRender();
+
   } catch (e) {
     board.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#DC2626">Failed to load jobs: ' + escapeHtml(e.message) + '</div>';
   }
 };
 
-function renderIndexJobs() {
-  const board = document.getElementById('jobBoard') || document.getElementById('jobsGrid');
+/* ── Stats strip (Open Roles / Hiring Partners / Cities) ── */
+function populateIndexStats(jobs) {
+  const statJobs = document.getElementById('statJobs');
+  const statClients = document.getElementById('statClients');
+  const statCities = document.getElementById('statCities');
+
+  if (statJobs) statJobs.textContent = jobs.length;
+
+  if (statClients) {
+    const uniq = {};
+    jobs.forEach(function (j) { if (j.company) uniq[j.company.toLowerCase()] = true; });
+    statClients.textContent = Object.keys(uniq).length;
+  }
+
+  if (statCities) {
+    const uniq = {};
+    jobs.forEach(function (j) { if (j.location) uniq[j.location.toLowerCase()] = true; });
+    statCities.textContent = Object.keys(uniq).length;
+  }
+}
+
+/* ── Populate filter dropdowns (Location / Category / Company) ── */
+function populateIndexFilterDropdowns(jobs) {
+  // Location
+  const locSel = document.getElementById('filterLocation');
+  if (locSel && locSel.options.length <= 1) {
+    const seen = {};
+    jobs.forEach(function (j) { if (j.location) seen[j.location] = true; });
+    Object.keys(seen).sort().forEach(function (loc) {
+      const opt = document.createElement('option');
+      opt.value = loc;
+      opt.textContent = loc;
+      locSel.appendChild(opt);
+    });
+  }
+
+  // Category
+  const catSel = document.getElementById('filterCategory');
+  if (catSel && catSel.options.length <= 1) {
+    const seen = {};
+    jobs.forEach(function (j) { if (j.category) seen[j.category] = true; });
+    Object.keys(seen).sort().forEach(function (cat) {
+      const opt = document.createElement('option');
+      opt.value = cat;
+      opt.textContent = cat;
+      catSel.appendChild(opt);
+    });
+  }
+
+  // Company
+  const compSel = document.getElementById('filterCompany');
+  if (compSel && compSel.options.length <= 1) {
+    const seen = {};
+    jobs.forEach(function (j) { if (j.company) seen[j.company] = true; });
+    Object.keys(seen).sort().forEach(function (comp) {
+      const opt = document.createElement('option');
+      opt.value = comp;
+      opt.textContent = comp;
+      compSel.appendChild(opt);
+    });
+  }
+}
+
+/* ── Popular tags under the hero ── */
+function populateIndexPopularTags(jobs) {
+  const container = document.getElementById('popularTags');
+  if (!container) return;
+
+  // Count occurrences of each category, take top 5
+  const counts = {};
+  jobs.forEach(function (j) {
+    if (j.category) {
+      const key = j.category;
+      counts[key] = (counts[key] || 0) + 1;
+    }
+  });
+
+  const topCats = Object.keys(counts)
+    .sort(function (a, b) { return counts[b] - counts[a]; })
+    .slice(0, 5);
+
+  if (!topCats.length) { container.style.display = 'none'; return; }
+
+  container.innerHTML =
+    '<span class="popular-label">Popular:</span>' +
+    topCats.map(function (c) {
+      return '<button type="button" class="popular-tag" data-cat="' + escapeHtml(c) + '">' +
+             escapeHtml(c) + ' <span style="opacity:.6;font-size:11px">(' + counts[c] + ')</span>' +
+             '</button>';
+    }).join('');
+
+  container.querySelectorAll('.popular-tag').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      const cat = btn.getAttribute('data-cat');
+      _currentFilters.category = cat;
+      const catSel = document.getElementById('filterCategory');
+      if (catSel) catSel.value = cat;
+      applyIndexFiltersAndRender();
+      const jobsSection = document.getElementById('jobs');
+      if (jobsSection) jobsSection.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+}
+
+/* ── Wire all filter/sort/search controls ── */
+function wireIndexControls() {
+  // Sidebar search
+  const fSearch = document.getElementById('filterSearch');
+  if (fSearch) {
+    fSearch.addEventListener('input', function () {
+      _currentFilters.search = fSearch.value.trim();
+      applyIndexFiltersAndRender();
+    });
+  }
+
+  // Location
+  const fLoc = document.getElementById('filterLocation');
+  if (fLoc) {
+    fLoc.addEventListener('change', function () {
+      _currentFilters.location = fLoc.value;
+      applyIndexFiltersAndRender();
+    });
+  }
+
+  // Category
+  const fCat = document.getElementById('filterCategory');
+  if (fCat) {
+    fCat.addEventListener('change', function () {
+      _currentFilters.category = fCat.value;
+      applyIndexFiltersAndRender();
+    });
+  }
+
+  // Experience
+  const fExp = document.getElementById('filterExp');
+  if (fExp) {
+    fExp.addEventListener('change', function () {
+      _currentFilters.exp = fExp.value;
+      applyIndexFiltersAndRender();
+    });
+  }
+
+  // Company
+  const fComp = document.getElementById('filterCompany');
+  if (fComp) {
+    fComp.addEventListener('change', function () {
+      _currentFilters.company = fComp.value;
+      applyIndexFiltersAndRender();
+    });
+  }
+
+  // Type
+  const fType = document.getElementById('filterType');
+  if (fType) {
+    fType.addEventListener('change', function () {
+      _currentFilters.type = fType.value;
+      applyIndexFiltersAndRender();
+    });
+  }
+
+  // Sort
+  const sortSel = document.getElementById('sortSelect');
+  if (sortSel) {
+    sortSel.addEventListener('change', function () {
+      _currentSort = sortSel.value;
+      applyIndexFiltersAndRender();
+    });
+  }
+
+  // Hero search form
+  const heroForm = document.getElementById('searchForm');
+  const heroInput = document.getElementById('heroSearch');
+  if (heroForm && heroInput) {
+    heroForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      _currentFilters.search = heroInput.value.trim();
+      const fs = document.getElementById('filterSearch');
+      if (fs) fs.value = _currentFilters.search;
+      applyIndexFiltersAndRender();
+      const jobsSection = document.getElementById('jobs');
+      if (jobsSection) jobsSection.scrollIntoView({ behavior: 'smooth' });
+    });
+    // '/' keyboard shortcut
+    document.addEventListener('keydown', function (e) {
+      if (e.key === '/' && document.activeElement !== heroInput && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        heroInput.focus();
+      }
+    });
+  }
+
+  // Clear filters buttons
+  const clearBtn = document.getElementById('clearFilters');
+  if (clearBtn) clearBtn.addEventListener('click', clearAllIndexFilters);
+
+  const emptyClear = document.getElementById('emptyClear');
+  if (emptyClear) emptyClear.addEventListener('click', clearAllIndexFilters);
+
+  // Mobile filter toggle
+  const mobileFilterBtn = document.getElementById('mobileFilterBtn');
+  const filtersAside = document.querySelector('.filters');
+  if (mobileFilterBtn && filtersAside) {
+    mobileFilterBtn.addEventListener('click', function () {
+      filtersAside.classList.toggle('mobile-open');
+    });
+  }
+}
+
+/* ── Hide load-more (single-page listing) ── */
+function hideIndexLoadMore() {
+  const el = document.getElementById('loadMoreWrap');
+  if (el) el.hidden = true;
+}
+
+/* ── Clear everything ── */
+function clearAllIndexFilters() {
+  _currentFilters = { search: '', location: '', category: '', exp: '', company: '', type: '' };
+  ['filterSearch', 'filterLocation', 'filterCategory', 'filterExp', 'filterCompany', 'filterType'].forEach(function (id) {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  const heroSearch = document.getElementById('heroSearch');
+  if (heroSearch) heroSearch.value = '';
+  applyIndexFiltersAndRender();
+}
+
+/* ── Apply filters + sort + render ── */
+function applyIndexFiltersAndRender() {
+  const f = _currentFilters;
+  const q = f.search.toLowerCase();
+
+  _filteredJobs = _allJobs.filter(function (j) {
+    // Search across title/company/location/skills/jobId/category
+    if (q) {
+      const hay = [
+        j.title || '', j.company || '', j.location || '',
+        j.jobId || '', j.category || '', j.industry || '',
+        Array.isArray(j.skills) ? j.skills.join(' ') : ''
+      ].join(' ').toLowerCase();
+      if (hay.indexOf(q) === -1) return false;
+    }
+
+    if (f.location && j.location !== f.location) return false;
+    if (f.category && j.category !== f.category) return false;
+    if (f.company && j.company !== f.company) return false;
+    if (f.type && j.employmentType !== f.type) return false;
+
+    // Experience bucket
+    if (f.exp) {
+      const minE = parseFloat(j.minExp) || 0;
+      const maxE = parseFloat(j.maxExp) || 999;
+      if (f.exp === '0-2' && minE > 2) return false;
+      if (f.exp === '2-5' && !(minE <= 5 && maxE >= 2)) return false;
+      if (f.exp === '5-10' && !(minE <= 10 && maxE >= 5)) return false;
+      if (f.exp === '10+' && maxE < 10) return false;
+    }
+    return true;
+  });
+
+  // Sort
+  if (_currentSort === 'salary-high') {
+    _filteredJobs.sort(function (a, b) {
+      return (parseFloat(b.maxSalary) || 0) - (parseFloat(a.maxSalary) || 0);
+    });
+  } else if (_currentSort === 'exp-low') {
+    _filteredJobs.sort(function (a, b) {
+      return (parseFloat(a.minExp) || 0) - (parseFloat(b.minExp) || 0);
+    });
+  } else if (_currentSort === 'recent') {
+    _filteredJobs.sort(function (a, b) {
+      return String(b.postedDate || '').localeCompare(String(a.postedDate || ''));
+    });
+  }
+
+  renderIndexJobCards(_filteredJobs);
+  updateIndexCount(_filteredJobs.length, _allJobs.length);
+  updateIndexEmptyState(_filteredJobs.length);
+  updateIndexActiveFiltersBar();
+  updateIndexFilterInfo(_filteredJobs.length, _allJobs.length);
+}
+
+/* ── Render job cards ── */
+function renderIndexJobCards(jobs) {
+  const board = document.getElementById('jobsGrid');
   if (!board) return;
 
-  if (!_allJobs.length) {
-    board.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:#94A3B8">No open jobs right now. Check back soon.</div>';
+  if (!jobs.length) {
+    board.innerHTML = '';
     return;
   }
 
-  board.innerHTML = _allJobs.map(function (j) {
+  board.innerHTML = jobs.map(function (j) {
     const url = 'job.html?job=' + encodeURIComponent(j.jobId);
     return '<a href="' + url + '" class="job-card" style="text-decoration:none;color:inherit">' +
       '<div class="job-card-head">' +
@@ -212,21 +510,94 @@ function renderIndexJobs() {
   }).join('');
 }
 
-function setupIndexFilters() {
-  const search = document.getElementById('jobSearch');
-  if (search) {
-    search.addEventListener('input', function () {
-      const q = search.value.toLowerCase().trim();
-      const board = document.getElementById('jobBoard') || document.getElementById('jobsGrid');
-      const cards = board.querySelectorAll('.job-card');
-      cards.forEach(function (card) {
-        const text = card.textContent.toLowerCase();
-        card.style.display = (!q || text.indexOf(q) !== -1) ? '' : 'none';
-      });
-    });
+/* ── List count ── */
+function updateIndexCount(shown, total) {
+  const el = document.getElementById('listCount');
+  if (!el) return;
+  if (shown === total) {
+    el.textContent = shown + ' position' + (shown === 1 ? '' : 's');
+  } else {
+    el.textContent = shown + ' of ' + total + ' position' + (total === 1 ? '' : 's');
   }
 }
 
+/* ── Empty state visibility ── */
+function updateIndexEmptyState(shown) {
+  const empty = document.getElementById('emptyState');
+  const board = document.getElementById('jobsGrid');
+  if (!empty) return;
+  if (shown === 0) {
+    empty.hidden = false;
+    if (board) board.style.display = 'none';
+  } else {
+    empty.hidden = true;
+    if (board) board.style.display = '';
+  }
+}
+
+/* ── Filter sidebar info line ── */
+function updateIndexFilterInfo(shown, total) {
+  const el = document.getElementById('filterInfo');
+  if (!el) return;
+  if (shown === total) {
+    el.textContent = 'Showing all ' + total + ' job' + (total === 1 ? '' : 's');
+  } else {
+    el.textContent = 'Showing ' + shown + ' of ' + total + ' job' + (total === 1 ? '' : 's');
+  }
+}
+
+/* ── Active filters bar (chips above the list) ── */
+function updateIndexActiveFiltersBar() {
+  const bar = document.getElementById('activeFiltersBar');
+  if (!bar) return;
+
+  const f = _currentFilters;
+  const tags = [];
+  if (f.search) tags.push({ key: 'search', label: 'Search: ' + f.search });
+  if (f.location) tags.push({ key: 'location', label: '📍 ' + f.location });
+  if (f.category) tags.push({ key: 'category', label: '🏷 ' + f.category });
+  if (f.exp) tags.push({ key: 'exp', label: '🧭 ' + f.exp + ' yrs' });
+  if (f.company) tags.push({ key: 'company', label: '🏢 ' + f.company });
+  if (f.type) tags.push({ key: 'type', label: '💼 ' + f.type });
+
+  if (!tags.length) {
+    bar.innerHTML = '';
+    bar.style.display = 'none';
+    return;
+  }
+
+  bar.style.display = 'flex';
+  bar.innerHTML = tags.map(function (t) {
+    return '<button type="button" class="active-filter-tag" data-key="' + t.key + '">' +
+      escapeHtml(t.label) + ' <span style="opacity:.6">×</span></button>';
+  }).join('') +
+  '<button type="button" class="active-filter-clear">Clear all</button>';
+
+  bar.querySelectorAll('.active-filter-tag').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      const key = btn.getAttribute('data-key');
+      _currentFilters[key] = '';
+      const map = {
+        search: 'filterSearch', location: 'filterLocation',
+        category: 'filterCategory', exp: 'filterExp',
+        company: 'filterCompany', type: 'filterType'
+      };
+      const fieldId = map[key];
+      if (fieldId) {
+        const el = document.getElementById(fieldId);
+        if (el) el.value = '';
+      }
+      if (key === 'search') {
+        const hs = document.getElementById('heroSearch');
+        if (hs) hs.value = '';
+      }
+      applyIndexFiltersAndRender();
+    });
+  });
+
+  const clearBtn = bar.querySelector('.active-filter-clear');
+  if (clearBtn) clearBtn.addEventListener('click', clearAllIndexFilters);
+}
 // ═══════════════════════════════════════════════════════════════════════════
 // JOB DETAIL PAGE
 // ═══════════════════════════════════════════════════════════════════════════
