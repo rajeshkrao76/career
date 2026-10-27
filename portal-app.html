@@ -14,9 +14,7 @@
 </head>
 <body>
 
-<!-- ============================================================ -->
-<!-- Auth gate (shown only if not logged in) -->
-<!-- ============================================================ -->
+<!-- Auth gate -->
 <div id="authGate" class="hidden min-h-screen flex items-center justify-center p-4">
   <div class="bg-white rounded-2xl border border-slate-200 p-8 max-w-md w-full text-center">
     <div class="text-4xl mb-3">🔐</div>
@@ -26,11 +24,8 @@
   </div>
 </div>
 
-<!-- ============================================================ -->
-<!-- Main app -->
-<!-- ============================================================ -->
+<!-- Main -->
 <div id="app" class="hidden">
-  <!-- Header -->
   <header class="bg-[#1A365D] text-white sticky top-0 z-30">
     <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
       <div class="flex items-center gap-3">
@@ -42,7 +37,6 @@
       </div>
       <button onclick="logout()" class="text-xs font-bold text-blue-100 hover:text-white px-3 py-1.5 border border-white/20 rounded-lg">Logout</button>
     </div>
-    <!-- Tabs -->
     <div class="max-w-6xl mx-auto px-4 overflow-x-auto">
       <div class="flex gap-1 whitespace-nowrap">
         <button data-tab="dashboard" class="tab tab-active px-4 py-3 text-xs font-bold border-b-2 border-transparent text-blue-200 hover:text-white" onclick="switchTab('dashboard')">📊 Dashboard</button>
@@ -50,6 +44,7 @@
         <button data-tab="apps" class="tab px-4 py-3 text-xs font-bold border-b-2 border-transparent text-blue-200 hover:text-white" onclick="switchTab('apps')">📄 Applications</button>
         <button data-tab="interviews" class="tab px-4 py-3 text-xs font-bold border-b-2 border-transparent text-blue-200 hover:text-white" onclick="switchTab('interviews')">📅 Interviews</button>
         <button data-tab="docs" class="tab px-4 py-3 text-xs font-bold border-b-2 border-transparent text-blue-200 hover:text-white" onclick="switchTab('docs')">📎 Documents</button>
+        <button data-tab="assessments" class="tab px-4 py-3 text-xs font-bold border-b-2 border-transparent text-blue-200 hover:text-white" onclick="switchTab('assessments')">📋 Assessments</button>
         <button data-tab="profile" class="tab px-4 py-3 text-xs font-bold border-b-2 border-transparent text-blue-200 hover:text-white" onclick="switchTab('profile')">👤 Profile</button>
         <button data-tab="alerts" class="tab px-4 py-3 text-xs font-bold border-b-2 border-transparent text-blue-200 hover:text-white" onclick="switchTab('alerts')">🔔 Job Alerts</button>
         <button data-tab="account" class="tab px-4 py-3 text-xs font-bold border-b-2 border-transparent text-blue-200 hover:text-white" onclick="switchTab('account')">⚙️ Account</button>
@@ -57,7 +52,6 @@
     </div>
   </header>
 
-  <!-- Panels -->
   <main class="max-w-6xl mx-auto p-4">
 
     <!-- DASHBOARD -->
@@ -80,7 +74,6 @@
           <div class="text-[10px] font-bold uppercase text-slate-500 mt-1">Offers</div>
         </div>
       </div>
-
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="bg-white rounded-xl border border-slate-200 p-5">
           <h2 class="text-sm font-black text-slate-900 mb-3">Recent Applications</h2>
@@ -113,9 +106,7 @@
         <h1 class="text-lg font-black text-slate-900">Your Applications</h1>
         <p class="text-xs text-slate-500 mt-1" id="appsSummary">—</p>
       </div>
-      <div id="appsList" class="space-y-2">
-        <div class="text-center text-slate-400 text-xs py-8">Loading…</div>
-      </div>
+      <div id="appsList" class="space-y-2"><div class="text-center text-slate-400 text-xs py-8">Loading…</div></div>
     </section>
 
     <!-- INTERVIEWS -->
@@ -126,15 +117,11 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <h2 class="text-xs font-black uppercase text-emerald-700 mb-2">Upcoming</h2>
-          <div id="intUpcoming" class="space-y-2">
-            <div class="text-center text-slate-400 text-xs py-6">Loading…</div>
-          </div>
+          <div id="intUpcoming" class="space-y-2"><div class="text-center text-slate-400 text-xs py-6">Loading…</div></div>
         </div>
         <div>
           <h2 class="text-xs font-black uppercase text-slate-500 mb-2">Past</h2>
-          <div id="intPast" class="space-y-2">
-            <div class="text-center text-slate-400 text-xs py-6">Loading…</div>
-          </div>
+          <div id="intPast" class="space-y-2"><div class="text-center text-slate-400 text-xs py-6">Loading…</div></div>
         </div>
       </div>
     </section>
@@ -161,72 +148,71 @@
           <input type="file" id="docFile" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" class="hidden" onchange="uploadDoc(this)">
         </div>
       </div>
-      <div id="docsList" class="space-y-2">
-        <div class="text-center text-slate-400 text-xs py-6">Loading…</div>
+      <div id="docsList" class="space-y-2"><div class="text-center text-slate-400 text-xs py-6">Loading…</div></div>
+    </section>
+
+    <!-- ★ NEW: ASSESSMENTS -->
+    <section id="panel-assessments" class="panel hidden">
+      <div class="bg-white rounded-xl border border-slate-200 p-4 mb-3">
+        <h1 class="text-lg font-black text-slate-900">Your Assessments</h1>
+        <p class="text-xs text-slate-500 mt-1">Tests assigned by Raveone or the hiring company</p>
+      </div>
+      <div id="assessmentsList" class="space-y-2">
+        <div class="text-center text-slate-400 text-xs py-8">Loading…</div>
       </div>
     </section>
 
-    <!-- PROFILE -->
+    <!-- PROFILE (★ NEW: Photo + CV Download) -->
     <section id="panel-profile" class="panel hidden">
       <div class="bg-white rounded-xl border border-slate-200 p-4 mb-3">
         <h1 class="text-lg font-black text-slate-900">Your Profile</h1>
         <p class="text-xs text-slate-500 mt-1">This information is used when you apply for jobs</p>
       </div>
 
+      <!-- ★ NEW: Photo + CV card -->
+      <div class="bg-white rounded-xl border border-slate-200 p-5 mb-3">
+        <div class="flex items-center gap-4 flex-wrap">
+          <div class="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center overflow-hidden border-2 border-slate-200 flex-shrink-0">
+            <img id="profilePhoto" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover;">
+            <span id="profilePhotoIcon" class="text-3xl text-slate-400">👤</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-bold text-slate-900">Profile photo &amp; CV</div>
+            <div class="text-xs text-slate-500 mt-0.5">Photo shows on client-facing CV. Max 3 MB (JPG / PNG / WEBP).</div>
+          </div>
+          <div class="flex gap-2 flex-wrap">
+            <input type="file" id="photoFile" accept=".jpg,.jpeg,.png,.webp" class="hidden" onchange="uploadProfilePhoto(this)">
+            <button onclick="document.getElementById('photoFile').click()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">
+              📸 Upload Photo
+            </button>
+            <button onclick="downloadCV('pdf')" class="px-3 py-2 bg-[#1A365D] hover:bg-[#2A5487] text-white rounded-lg text-xs font-bold">
+              📄 CV (PDF)
+            </button>
+            <button onclick="downloadCV('docx')" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">
+              📝 CV (DOCX)
+            </button>
+          </div>
+        </div>
+      </div>
+
       <form id="profileForm" onsubmit="return saveProfile(event)" class="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
         <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Full Name</label>
-            <input type="text" id="pfName" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
-          </div>
-          <div>
-            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Phone</label>
-            <input type="tel" id="pfPhone" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
-          </div>
-          <div>
-            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Location</label>
-            <input type="text" id="pfLocation" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
-          </div>
-          <div>
-            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Education</label>
-            <input type="text" id="pfEducation" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
-          </div>
-          <div>
-            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Total Experience</label>
-            <input type="text" id="pfTotalExp" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" placeholder="e.g. 5 years">
-          </div>
-          <div>
-            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Relevant Experience</label>
-            <input type="text" id="pfRelExp" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
-          </div>
-          <div>
-            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Current Company</label>
-            <input type="text" id="pfCurrentCompany" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
-          </div>
-          <div>
-            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Current Designation</label>
-            <input type="text" id="pfCurrentDesignation" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
-          </div>
-          <div>
-            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Current CTC</label>
-            <input type="text" id="pfCurrentCtc" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
-          </div>
-          <div>
-            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Expected CTC</label>
-            <input type="text" id="pfExpectedCtc" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
-          </div>
-          <div>
-            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Notice Period</label>
-            <input type="text" id="pfNotice" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" placeholder="e.g. 30 days">
-          </div>
-          <div>
-            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Reason for Leaving</label>
-            <input type="text" id="pfReason" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
-          </div>
+          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Full Name</label><input type="text" id="pfName" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Phone</label><input type="tel" id="pfPhone" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Location</label><input type="text" id="pfLocation" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Education</label><input type="text" id="pfEducation" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Total Experience</label><input type="text" id="pfTotalExp" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" placeholder="e.g. 5 years"></div>
+          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Relevant Experience</label><input type="text" id="pfRelExp" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Current Company</label><input type="text" id="pfCurrentCompany" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Current Designation</label><input type="text" id="pfCurrentDesignation" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Current CTC</label><input type="text" id="pfCurrentCtc" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Expected CTC</label><input type="text" id="pfExpectedCtc" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Notice Period</label><input type="text" id="pfNotice" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Reason for Leaving</label><input type="text" id="pfReason" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
         </div>
         <div>
           <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Skills (comma separated)</label>
-          <input type="text" id="pfSkills" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" placeholder="e.g. CNC, VMC, GD&T, Quality Control">
+          <input type="text" id="pfSkills" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" placeholder="e.g. CNC, VMC, GD&T">
         </div>
         <div class="flex justify-end pt-2">
           <button type="submit" id="pfSubmit" class="px-5 py-2 bg-[#1A365D] text-white rounded-lg text-sm font-bold">Save Profile</button>
@@ -244,14 +230,8 @@
             <input type="checkbox" id="alertEnabled" class="w-4 h-4">
             <span class="text-sm font-bold text-slate-800">Enable weekly job alerts</span>
           </label>
-          <div>
-            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Keywords (comma separated)</label>
-            <input type="text" id="alertKeywords" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" placeholder="e.g. CNC, VMC, Quality">
-          </div>
-          <div>
-            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Preferred Locations</label>
-            <input type="text" id="alertLocations" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" placeholder="e.g. Bangalore, Chennai">
-          </div>
+          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Keywords</label><input type="text" id="alertKeywords" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" placeholder="e.g. CNC, VMC, Quality"></div>
+          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Preferred Locations</label><input type="text" id="alertLocations" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" placeholder="e.g. Bangalore, Chennai"></div>
           <div class="flex justify-between items-center pt-2">
             <span class="text-xs text-slate-500" id="alertLastSent"></span>
             <button type="submit" id="alertSubmit" class="px-5 py-2 bg-[#1A365D] text-white rounded-lg text-sm font-bold">Save Preferences</button>
@@ -270,22 +250,12 @@
           <div><span class="font-bold">Name:</span> <span id="acctName">—</span></div>
         </div>
       </div>
-
       <div class="bg-white rounded-xl border border-slate-200 p-5 max-w-2xl">
         <h2 class="text-sm font-black text-slate-900 mb-3">Change Password</h2>
         <form id="pwdForm" onsubmit="return changePassword(event)" class="space-y-3">
-          <div>
-            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Current Password</label>
-            <input type="password" id="pwdCurrent" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
-          </div>
-          <div>
-            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">New Password</label>
-            <input type="password" id="pwdNew" required minlength="8" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
-            <p class="text-[11px] text-slate-500 mt-1">Min 8 chars, must include 1 letter and 1 number</p>
-          </div>
-          <div class="flex justify-end">
-            <button type="submit" id="pwdSubmit" class="px-5 py-2 bg-[#1A365D] text-white rounded-lg text-sm font-bold">Change Password</button>
-          </div>
+          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Current Password</label><input type="password" id="pwdCurrent" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">New Password</label><input type="password" id="pwdNew" required minlength="8" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"><p class="text-[11px] text-slate-500 mt-1">Min 8 chars, 1 letter, 1 number</p></div>
+          <div class="flex justify-end"><button type="submit" id="pwdSubmit" class="px-5 py-2 bg-[#1A365D] text-white rounded-lg text-sm font-bold">Change Password</button></div>
         </form>
       </div>
     </section>
@@ -293,13 +263,10 @@
   </main>
 </div>
 
-<!-- ============================================================ -->
 <!-- PORTAL APPLY MODAL -->
-<!-- ============================================================ -->
 <div id="portalApplyModal" class="fixed inset-0 z-50 hidden" style="background:rgba(15,23,42,.6);backdrop-filter:blur(4px);">
   <div class="flex items-start justify-center min-h-screen p-4 pt-8 overflow-y-auto">
     <div class="bg-white rounded-2xl max-w-2xl w-full shadow-2xl my-4">
-
       <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
         <div>
           <h2 class="text-lg font-bold text-slate-900">Apply for this role</h2>
@@ -307,88 +274,42 @@
         </div>
         <button onclick="closePortalApply()" class="text-slate-400 hover:text-slate-700 text-2xl leading-none">&times;</button>
       </div>
-
       <form id="portalApplyForm" onsubmit="return submitPortalApplication(event)" class="px-6 py-5 space-y-4 max-h-[75vh] overflow-y-auto">
-
         <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 text-xs text-blue-900">
-          <b>Review your profile below.</b> Pre-filled from your existing profile. Update anything before submitting — this is what the recruiter will see.
+          <b>Review your profile below.</b> Pre-filled from your existing profile. Update anything before submitting.
         </div>
-
         <div>
           <h3 class="text-xs font-black uppercase tracking-wider text-slate-500 mb-2">Personal Details</h3>
           <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1">Full Name *</label>
-              <input type="text" id="paName" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1">Phone *</label>
-              <input type="tel" id="paPhone" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1">Location</label>
-              <input type="text" id="paLocation" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1">Education</label>
-              <input type="text" id="paEducation" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
-            </div>
+            <div><label class="block text-xs font-bold text-slate-600 mb-1">Full Name *</label><input type="text" id="paName" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+            <div><label class="block text-xs font-bold text-slate-600 mb-1">Phone *</label><input type="tel" id="paPhone" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+            <div><label class="block text-xs font-bold text-slate-600 mb-1">Location</label><input type="text" id="paLocation" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+            <div><label class="block text-xs font-bold text-slate-600 mb-1">Education</label><input type="text" id="paEducation" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
           </div>
         </div>
-
         <div>
           <h3 class="text-xs font-black uppercase tracking-wider text-slate-500 mb-2">Professional Details</h3>
           <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1">Total Experience</label>
-              <input type="text" id="paTotalExp" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1">Relevant Experience</label>
-              <input type="text" id="paRelExp" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1">Current Company</label>
-              <input type="text" id="paCurrentCompany" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1">Current Designation</label>
-              <input type="text" id="paCurrentDesignation" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1">Current CTC</label>
-              <input type="text" id="paCurrentCtc" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1">Expected CTC</label>
-              <input type="text" id="paExpectedCtc" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1">Notice Period</label>
-              <input type="text" id="paNotice" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1">Reason for Leaving</label>
-              <input type="text" id="paReason" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
-            </div>
+            <div><label class="block text-xs font-bold text-slate-600 mb-1">Total Experience</label><input type="text" id="paTotalExp" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+            <div><label class="block text-xs font-bold text-slate-600 mb-1">Relevant Experience</label><input type="text" id="paRelExp" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+            <div><label class="block text-xs font-bold text-slate-600 mb-1">Current Company</label><input type="text" id="paCurrentCompany" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+            <div><label class="block text-xs font-bold text-slate-600 mb-1">Current Designation</label><input type="text" id="paCurrentDesignation" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+            <div><label class="block text-xs font-bold text-slate-600 mb-1">Current CTC</label><input type="text" id="paCurrentCtc" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+            <div><label class="block text-xs font-bold text-slate-600 mb-1">Expected CTC</label><input type="text" id="paExpectedCtc" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+            <div><label class="block text-xs font-bold text-slate-600 mb-1">Notice Period</label><input type="text" id="paNotice" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+            <div><label class="block text-xs font-bold text-slate-600 mb-1">Reason for Leaving</label><input type="text" id="paReason" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
           </div>
-          <div class="mt-3">
-            <label class="block text-xs font-bold text-slate-600 mb-1">Skills (comma separated)</label>
-            <input type="text" id="paSkills" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm">
-          </div>
+          <div class="mt-3"><label class="block text-xs font-bold text-slate-600 mb-1">Skills</label><input type="text" id="paSkills" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
         </div>
-
         <div>
           <h3 class="text-xs font-black uppercase tracking-wider text-slate-500 mb-2">Resume</h3>
           <div id="paResumeExisting" class="hidden text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2 mb-2">
             ✓ Resume on file. <a href="#" id="paResumeExistingLink" target="_blank" class="font-bold underline">View</a>
           </div>
           <input type="file" id="paResumeFile" accept=".pdf,.doc,.docx" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:font-semibold file:bg-[#1A365D] file:text-white file:cursor-pointer">
-          <p id="paResumeInfo" class="text-[11px] text-slate-500 mt-1">Optional — upload a new version to replace the existing. Max 5 MB.</p>
+          <p id="paResumeInfo" class="text-[11px] text-slate-500 mt-1">Optional — upload to replace. Max 5 MB.</p>
         </div>
-
         <div id="paError" class="hidden bg-red-50 border border-red-200 text-red-700 text-xs rounded-lg px-3 py-2"></div>
-
         <div class="flex gap-2 pt-2">
           <button type="button" onclick="closePortalApply()" class="flex-1 py-2.5 border border-slate-300 rounded-lg text-sm font-bold text-slate-700 hover:bg-slate-50">Cancel</button>
           <button type="submit" id="paSubmitBtn" class="flex-1 py-2.5 bg-[#1A365D] text-white rounded-lg text-sm font-bold hover:bg-[#2A5487]">Submit Application</button>
@@ -398,27 +319,19 @@
   </div>
 </div>
 
-<!-- ============================================================ -->
-<!-- SCRIPTS -->
-<!-- ============================================================ -->
 <script src="app.js"></script>
 <script>
-/* ============================================================
-   BOOT GUARD
-   ============================================================ */
 document.addEventListener('DOMContentLoaded', function() {
   if (typeof ATS === 'undefined' || !ATS || !ATS.API_URL) {
     document.body.innerHTML =
       '<div style="padding:40px 20px;text-align:center;font-family:sans-serif;max-width:500px;margin:auto">' +
       '<h2 style="color:#DC2626;margin-top:60px">Configuration Error</h2>' +
-      '<p style="color:#64748B">The portal could not load its API configuration (app.js).</p>' +
-      '<p style="color:#64748B">Please refresh the page. If this persists, contact Raveone.</p>' +
+      '<p style="color:#64748B">The portal could not load its API configuration (app.js). Please refresh.</p>' +
       '<button onclick="location.reload()" style="margin-top:20px;padding:10px 24px;background:#1A365D;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer">Reload</button>' +
       '</div>';
     return;
   }
 
-  // ── FIX: Read the JSON session saved by portal-login.html ──
   const sessionRaw = localStorage.getItem(TOKEN_KEY);
   let session = null;
   try { session = sessionRaw ? JSON.parse(sessionRaw) : null; } catch (e) {}
@@ -432,10 +345,6 @@ document.addEventListener('DOMContentLoaded', function() {
   bootApp();
 });
 
-/* ============================================================
-   GLOBALS
-   FIX: TOKEN_KEY changed from 'ats_portal' to 'ats_candidate'
-   ============================================================ */
 const TOKEN_KEY = 'ats_candidate';
 let TOKEN = null;
 let PROFILE = null;
@@ -443,27 +352,18 @@ let ALL_JOBS = [];
 let ALL_APPS = [];
 let APPLYING_JOB = null;
 let _dashLoadedAt = 0;
-let _appsLoadedAt = 0;
 
-/* ============================================================
-   BOOT
-   ============================================================ */
 async function bootApp() {
   try {
     const res = await ATS.post('portalGetDashboard', { token: TOKEN });
     if (!res || !res.ok) throw new Error((res && res.error) || 'Session expired');
-
     renderDashboard(res);
-
-    // FIX: backend returns `profile`, not `user`
     const p = res.profile || {};
     document.getElementById('hdrEmail').textContent = p.email || '';
     document.getElementById('acctEmail').textContent = p.email || '';
     document.getElementById('acctName').textContent = p.name || '';
-
     _dashLoadedAt = Date.now();
     PROFILE = p;
-
   } catch (e) {
     console.error(e);
     if (/session|not authenticated|invalid|expired/i.test(e.message)) {
@@ -475,21 +375,15 @@ async function bootApp() {
   }
 }
 
-/* ============================================================
-   TABS
-   ============================================================ */
 function switchTab(name) {
-  document.querySelectorAll('.panel').forEach(function(p) {
-    p.classList.toggle('hidden', p.id !== 'panel-' + name);
-  });
-  document.querySelectorAll('.tab').forEach(function(t) {
-    t.classList.toggle('tab-active', t.dataset.tab === name);
-  });
+  document.querySelectorAll('.panel').forEach(function(p) { p.classList.toggle('hidden', p.id !== 'panel-' + name); });
+  document.querySelectorAll('.tab').forEach(function(t) { t.classList.toggle('tab-active', t.dataset.tab === name); });
   if (name === 'dashboard') loadDashboard();
   if (name === 'jobs') loadJobsTab();
   if (name === 'apps') loadAppsTab();
   if (name === 'interviews') loadInterviewsTab();
   if (name === 'docs') loadDocsTab();
+  if (name === 'assessments') loadAssessmentsTab();
   if (name === 'profile') loadProfileTab();
   if (name === 'alerts') loadAlertsTab();
 }
@@ -497,23 +391,16 @@ function switchTab(name) {
 function logout() {
   if (!confirm('Sign out?')) return;
   ATS.post('portalLogout', { token: TOKEN }).finally(function() {
-    // FIX: remove the correct key
     localStorage.removeItem('ats_candidate');
     location.href = 'portal-login.html';
   });
 }
 
-/* ============================================================
-   DASHBOARD (with 30-second cache)
-   ============================================================ */
 async function loadDashboard(force) {
   if (!force && Date.now() - _dashLoadedAt < 30000) return;
   try {
     const res = await ATS.post('portalGetDashboard', { token: TOKEN });
-    if (res && res.ok) {
-      renderDashboard(res);
-      _dashLoadedAt = Date.now();
-    }
+    if (res && res.ok) { renderDashboard(res); _dashLoadedAt = Date.now(); }
   } catch (e) {}
 }
 
@@ -528,45 +415,33 @@ function renderDashboard(data) {
   document.getElementById('recentApps').innerHTML = apps.length
     ? apps.map(function(a) {
         return '<div class="flex justify-between items-center py-2 border-b border-slate-100 text-xs">' +
-          '<div>' +
-            '<div class="font-bold text-slate-900">' + esc(a.jobTitle || '—') + '</div>' +
-            '<div class="text-slate-500">' + esc(a.appId) + ' · ' + esc(a.appliedAt || '') + '</div>' +
-          '</div>' +
-          '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800">' + esc(a.status || '—') + '</span>' +
-        '</div>';
+          '<div><div class="font-bold text-slate-900">' + esc(a.jobTitle || '—') + '</div>' +
+          '<div class="text-slate-500">' + esc(a.appId) + ' · ' + esc(a.appliedAt || '') + '</div></div>' +
+          '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800">' + esc(a.status || '—') + '</span></div>';
       }).join('')
     : '<div class="text-center text-slate-400 text-xs py-6">No applications yet</div>';
 
   const ints = data.upcomingInterviews || [];
   document.getElementById('upcomingInterviews').innerHTML = ints.length
     ? ints.map(function(i) {
-        return '<div class="py-2 border-b border-slate-100 text-xs">' +
-          '<div class="font-bold text-slate-900">' + esc(i.position || i.jobTitle || '—') + '</div>' +
-          '<div class="text-slate-500">' + esc(i.date) + ' ' + esc(i.time) + ' · ' + esc(i.mode) + '</div>' +
-        '</div>';
+        return '<div class="py-2 border-b border-slate-100 text-xs"><div class="font-bold text-slate-900">' + esc(i.position || i.jobTitle || '—') + '</div>' +
+          '<div class="text-slate-500">' + esc(i.date) + ' ' + esc(i.time) + ' · ' + esc(i.mode) + '</div></div>';
       }).join('')
     : '<div class="text-center text-slate-400 text-xs py-6">No interviews scheduled</div>';
 }
 
-/* ============================================================
-   FIND JOBS
-   ============================================================ */
 async function loadJobsTab() {
-  document.getElementById('jobsList').innerHTML =
-    '<div class="text-center text-slate-400 text-xs py-8 col-span-2">Loading jobs…</div>';
+  document.getElementById('jobsList').innerHTML = '<div class="text-center text-slate-400 text-xs py-8 col-span-2">Loading jobs…</div>';
   try {
     const res = await ATS.post('portalGetActiveJobs', { token: TOKEN });
     if (!res || !res.ok) {
-      document.getElementById('jobsList').innerHTML =
-        '<div class="text-center text-red-500 text-xs py-8 col-span-2">' +
-        esc((res && res.error) || 'Failed to load jobs') + '</div>';
+      document.getElementById('jobsList').innerHTML = '<div class="text-center text-red-500 text-xs py-8 col-span-2">' + esc((res && res.error) || 'Failed to load jobs') + '</div>';
       return;
     }
     ALL_JOBS = res.jobs || [];
     renderJobsList();
   } catch (e) {
-    document.getElementById('jobsList').innerHTML =
-      '<div class="text-center text-red-500 text-xs py-8 col-span-2">' + esc(e.message) + '</div>';
+    document.getElementById('jobsList').innerHTML = '<div class="text-center text-red-500 text-xs py-8 col-span-2">' + esc(e.message) + '</div>';
   }
 }
 
@@ -574,16 +449,12 @@ function renderJobsList() {
   const q = (document.getElementById('jobSearch').value || '').toLowerCase().trim();
   const filtered = ALL_JOBS.filter(function(j) {
     if (!q) return true;
-    return ((j.title || '') + ' ' + (j.company || '') + ' ' + (j.location || '') + ' ' + (j.category || ''))
-      .toLowerCase().indexOf(q) !== -1;
+    return ((j.title || '') + ' ' + (j.company || '') + ' ' + (j.location || '') + ' ' + (j.category || '')).toLowerCase().indexOf(q) !== -1;
   });
-
   if (!filtered.length) {
-    document.getElementById('jobsList').innerHTML =
-      '<div class="text-center text-slate-400 text-xs py-8 col-span-2">No jobs found</div>';
+    document.getElementById('jobsList').innerHTML = '<div class="text-center text-slate-400 text-xs py-8 col-span-2">No jobs found</div>';
     return;
   }
-
   document.getElementById('jobsList').innerHTML = filtered.map(function(j) {
     return '<div class="bg-white rounded-xl border border-slate-200 p-4 hover:border-blue-300 transition">' +
       '<div class="text-[10px] font-black uppercase text-blue-700 mb-1">' + esc(j.jobId) + '</div>' +
@@ -596,27 +467,19 @@ function renderJobsList() {
       '<div class="flex gap-2">' +
         '<a href="job.html?job=' + encodeURIComponent(j.jobId) + '" class="flex-1 py-2 border border-slate-300 rounded-lg text-xs font-bold text-slate-700 text-center hover:bg-slate-50" style="text-decoration:none">Details</a>' +
         '<button onclick="openPortalApply(\'' + esc(j.jobId) + '\')" class="flex-1 py-2 bg-[#1A365D] text-white rounded-lg text-xs font-bold hover:bg-[#2A5487]">Apply</button>' +
-      '</div>' +
-    '</div>';
+      '</div></div>';
   }).join('');
 }
 
-/* ============================================================
-   PORTAL APPLY
-   ============================================================ */
 async function openPortalApply(jobId) {
   const job = ALL_JOBS.find(function(j) { return j.jobId === jobId; });
   if (!job) { alert('Job not found'); return; }
   APPLYING_JOB = job;
-
   try {
     const pRes = await ATS.post('portalGetProfile', { token: TOKEN });
     if (!pRes || !pRes.ok) throw new Error((pRes && pRes.error) || 'Could not load profile');
     PROFILE = pRes.profile || {};
-  } catch (e) {
-    alert('Could not load your profile: ' + e.message);
-    return;
-  }
+  } catch (e) { alert('Could not load your profile: ' + e.message); return; }
 
   const p = PROFILE;
   document.getElementById('paJobTitle').textContent = job.title + (job.company ? ' · ' + job.company : '');
@@ -642,12 +505,9 @@ async function openPortalApply(jobId) {
     existingBox.classList.add('hidden');
   }
   document.getElementById('paResumeFile').value = '';
-  document.getElementById('paResumeInfo').textContent = p.resumeLink
-    ? 'Optional — upload new version to replace. Max 5 MB.'
-    : 'Please attach a resume. Max 5 MB.';
+  document.getElementById('paResumeInfo').textContent = p.resumeLink ? 'Optional — upload new version to replace. Max 5 MB.' : 'Please attach a resume. Max 5 MB.';
   document.getElementById('paResumeInfo').className = 'text-[11px] text-slate-500 mt-1';
   document.getElementById('paError').classList.add('hidden');
-
   document.getElementById('portalApplyModal').classList.remove('hidden');
 }
 
@@ -656,8 +516,7 @@ function closePortalApply() {
   APPLYING_JOB = null;
 }
 
-// 5 MB cap
-document.getElementById('paResumeFile')?.addEventListener('change', function(e) {
+document.getElementById('paResumeFile').addEventListener('change', function(e) {
   const f = e.target.files[0];
   const info = document.getElementById('paResumeInfo');
   if (!f) return;
@@ -673,21 +532,10 @@ document.getElementById('paResumeFile')?.addEventListener('change', function(e) 
 
 async function submitPortalApplication(ev) {
   ev.preventDefault();
-
-  if (!APPLYING_JOB) {
-    alert('Session error. Please close this dialog and try again.');
-    return;
-  }
-
+  if (!APPLYING_JOB) { alert('Session error. Please close and try again.'); return; }
   const btn = document.getElementById('paSubmitBtn');
   const errEl = document.getElementById('paError');
-
-  function showError(msg) {
-    errEl.textContent = msg;
-    errEl.classList.remove('hidden');
-    btn.disabled = false;
-    btn.textContent = 'Submit Application';
-  }
+  function showError(msg) { errEl.textContent = msg; errEl.classList.remove('hidden'); btn.disabled = false; btn.textContent = 'Submit Application'; }
   errEl.classList.add('hidden');
 
   const name = document.getElementById('paName').value.trim();
@@ -697,9 +545,7 @@ async function submitPortalApplication(ev) {
   if (!/^[6-9]\d{9}$/.test(digits)) return showError('Please enter a valid 10-digit Indian mobile number.');
 
   const resumeFile = document.getElementById('paResumeFile').files[0];
-  if (!resumeFile && !(PROFILE && PROFILE.resumeLink)) {
-    return showError('Please attach a resume.');
-  }
+  if (!resumeFile && !(PROFILE && PROFILE.resumeLink)) return showError('Please attach a resume.');
 
   btn.disabled = true;
   btn.textContent = 'Submitting…';
@@ -708,8 +554,7 @@ async function submitPortalApplication(ev) {
     token: TOKEN,
     jobId: APPLYING_JOB.jobId,
     profile: {
-      name: name,
-      phone: phone,
+      name: name, phone: phone,
       location: document.getElementById('paLocation').value.trim(),
       education: document.getElementById('paEducation').value.trim(),
       totalExp: document.getElementById('paTotalExp').value.trim(),
@@ -725,62 +570,43 @@ async function submitPortalApplication(ev) {
   };
 
   if (resumeFile) {
-    try {
-      payload.resumeData = await readFileAsDataUrl(resumeFile);
-      payload.resumeName = resumeFile.name;
-    } catch (e) {
-      return showError('Could not read resume file: ' + e.message);
-    }
+    try { payload.resumeData = await readFileAsDataUrl(resumeFile); payload.resumeName = resumeFile.name; }
+    catch (e) { return showError('Could not read file: ' + e.message); }
   }
 
   try {
     const res = await ATS.post('portalApplyForJob', payload);
     if (!res || res.ok !== true) {
-      const errMsg = (res && res.error) || 'Submission failed. Please try again.';
+      const errMsg = (res && res.error) || 'Submission failed.';
       const m = errMsg.match(/(APP-\d+)/);
       if (m) {
         const refId = m[1];
         const cleanMsg = errMsg.replace(/\.?\s*(?:Reference|Ref)[:\s]*APP-\d+\.?/i, '').trim() + '.';
-        const trackUrl = 'portal-login.html?ref=' + encodeURIComponent(refId);
-        errEl.innerHTML =
-          esc(cleanMsg) + '<br>Your reference: <b>' + esc(refId) + '</b>.<br>' +
-          '<a href="' + trackUrl + '" class="font-bold underline" style="color:#1A365D">Track your application →</a>';
+        errEl.innerHTML = esc(cleanMsg) + '<br>Reference: <b>' + esc(refId) + '</b>.<br>' +
+          '<a href="portal-login.html?ref=' + encodeURIComponent(refId) + '" class="font-bold underline" style="color:#1A365D">Track →</a>';
         errEl.classList.remove('hidden');
-        btn.disabled = false;
-        btn.textContent = 'Submit Application';
+        btn.disabled = false; btn.textContent = 'Submit Application';
         return;
       }
       return showError(errMsg);
     }
-
     closePortalApply();
-    alert('✅ Application submitted!\n\nReference: ' + res.applicationId +
-          '\nRole: ' + res.jobTitle +
-          '\n\nYou can track this in your Applications tab.');
+    alert('✅ Application submitted!\n\nReference: ' + res.applicationId + '\nRole: ' + res.jobTitle);
     loadAppsTab();
-
-  } catch (e) {
-    showError('Network error: ' + (e.message || 'could not reach server'));
-  }
+  } catch (e) { showError('Network error: ' + e.message); }
 }
 
-/* ============================================================
-   APPLICATIONS
-   ============================================================ */
 async function loadAppsTab() {
   document.getElementById('appsList').innerHTML = '<div class="text-center text-slate-400 text-xs py-8">Loading…</div>';
   try {
     const res = await ATS.post('portalGetApplications', { token: TOKEN });
     if (!res || !res.ok) {
-      document.getElementById('appsList').innerHTML =
-        '<div class="text-center text-red-500 text-xs py-8">' + esc((res && res.error) || 'Failed') + '</div>';
+      document.getElementById('appsList').innerHTML = '<div class="text-center text-red-500 text-xs py-8">' + esc((res && res.error) || 'Failed') + '</div>';
       return;
     }
     ALL_APPS = res.applications || [];
     const stats = res.stats || {};
-    document.getElementById('appsSummary').textContent =
-      (stats.total || 0) + ' total · ' + (stats.active || 0) + ' active · ' + (stats.closed || 0) + ' closed';
-
+    document.getElementById('appsSummary').textContent = (stats.total || 0) + ' total · ' + (stats.active || 0) + ' active · ' + (stats.closed || 0) + ' closed';
     document.getElementById('appsList').innerHTML = ALL_APPS.length
       ? ALL_APPS.map(function(a) {
           return '<div class="bg-white rounded-xl border border-slate-200 p-4">' +
@@ -792,30 +618,24 @@ async function loadAppsTab() {
               '</div>' +
               '<span class="px-2 py-1 rounded text-[10px] font-bold bg-blue-100 text-blue-800">' + esc(a.status) + '</span>' +
             '</div>' +
-            (a.canWithdraw
-              ? '<div class="mt-2 text-right"><button onclick="withdrawApp(\'' + esc(a.appId) + '\')" class="text-[11px] font-bold text-red-600 hover:underline">Withdraw</button></div>'
-              : '') +
+            (a.canWithdraw ? '<div class="mt-2 text-right"><button onclick="withdrawApp(\'' + esc(a.appId) + '\')" class="text-[11px] font-bold text-red-600 hover:underline">Withdraw</button></div>' : '') +
           '</div>';
         }).join('')
       : '<div class="text-center text-slate-400 text-xs py-8">No applications yet</div>';
   } catch (e) {
-    document.getElementById('appsList').innerHTML =
-      '<div class="text-center text-red-500 text-xs py-8">' + esc(e.message) + '</div>';
+    document.getElementById('appsList').innerHTML = '<div class="text-center text-red-500 text-xs py-8">' + esc(e.message) + '</div>';
   }
 }
 
 async function withdrawApp(appId) {
-  if (!confirm('Withdraw this application? This cannot be undone.')) return;
+  if (!confirm('Withdraw this application?')) return;
   try {
     const res = await ATS.post('portalWithdrawApplication', { token: TOKEN, appId: appId });
-    if (res && res.ok) { loadAppsTab(); }
-    else alert((res && res.error) || 'Failed to withdraw');
+    if (res && res.ok) loadAppsTab();
+    else alert((res && res.error) || 'Failed');
   } catch (e) { alert(e.message); }
 }
 
-/* ============================================================
-   INTERVIEWS
-   ============================================================ */
 async function loadInterviewsTab() {
   document.getElementById('intUpcoming').innerHTML = '<div class="text-center text-slate-400 text-xs py-6">Loading…</div>';
   document.getElementById('intPast').innerHTML = '<div class="text-center text-slate-400 text-xs py-6">Loading…</div>';
@@ -823,7 +643,6 @@ async function loadInterviewsTab() {
     const res = await ATS.post('portalGetInterviews', { token: TOKEN });
     const up = (res && res.upcoming) || [];
     const past = (res && res.past) || [];
-
     document.getElementById('intUpcoming').innerHTML = up.length
       ? up.map(function(i) {
           return '<div class="bg-white rounded-xl border border-emerald-200 p-3 text-xs">' +
@@ -832,39 +651,30 @@ async function loadInterviewsTab() {
             '<div class="mt-2 flex gap-2">' +
               '<button onclick="respondInterview(\'' + esc(i.interviewId) + '\',\'Confirmed\')" class="px-2 py-1 bg-emerald-600 text-white rounded text-[10px] font-bold">Confirm</button>' +
               '<button onclick="respondInterview(\'' + esc(i.interviewId) + '\',\'Cancelled\')" class="px-2 py-1 bg-red-600 text-white rounded text-[10px] font-bold">Cancel</button>' +
-            '</div>' +
-          '</div>';
+            '</div></div>';
         }).join('')
       : '<div class="text-center text-slate-400 text-xs py-6">No upcoming interviews</div>';
-
     document.getElementById('intPast').innerHTML = past.length
       ? past.map(function(i) {
           return '<div class="bg-white rounded-xl border border-slate-200 p-3 text-xs">' +
             '<div class="font-bold text-slate-900">' + esc(i.jobTitle) + '</div>' +
-            '<div class="text-slate-500">' + esc(i.date) + ' · ' + esc(i.company) + '</div>' +
-          '</div>';
+            '<div class="text-slate-500">' + esc(i.date) + ' · ' + esc(i.company) + '</div></div>';
         }).join('')
       : '<div class="text-center text-slate-400 text-xs py-6">No past interviews</div>';
   } catch (e) {
-    document.getElementById('intUpcoming').innerHTML =
-      '<div class="text-center text-red-500 text-xs py-6">' + esc(e.message) + '</div>';
+    document.getElementById('intUpcoming').innerHTML = '<div class="text-center text-red-500 text-xs py-6">' + esc(e.message) + '</div>';
   }
 }
 
 async function respondInterview(interviewId, response) {
-  if (!confirm('Respond "' + response + '" to this interview?')) return;
+  if (!confirm('Respond "' + response + '"?')) return;
   try {
-    const res = await ATS.post('portalRespondInterview', {
-      token: TOKEN, interviewId: interviewId, response: response
-    });
-    if (res && res.ok) { loadInterviewsTab(); }
+    const res = await ATS.post('portalRespondInterview', { token: TOKEN, interviewId: interviewId, response: response });
+    if (res && res.ok) loadInterviewsTab();
     else alert((res && res.error) || 'Failed');
   } catch (e) { alert(e.message); }
 }
 
-/* ============================================================
-   DOCUMENTS
-   ============================================================ */
 async function loadDocsTab() {
   document.getElementById('docsList').innerHTML = '<div class="text-center text-slate-400 text-xs py-6">Loading…</div>';
   try {
@@ -873,37 +683,27 @@ async function loadDocsTab() {
     document.getElementById('docsList').innerHTML = docs.length
       ? docs.map(function(d) {
           return '<div class="bg-white rounded-xl border border-slate-200 p-3 flex justify-between items-center text-xs">' +
-            '<div>' +
-              '<div class="font-bold text-slate-900">' + esc(d.docName) + '</div>' +
-              '<div class="text-slate-500">' + esc(d.docType) + ' · ' + esc(d.uploadedAt) + '</div>' +
-            '</div>' +
+            '<div><div class="font-bold text-slate-900">' + esc(d.docName) + '</div>' +
+            '<div class="text-slate-500">' + esc(d.docType) + ' · ' + esc(d.uploadedAt) + '</div></div>' +
             '<div class="flex gap-2">' +
               '<a href="' + esc(d.driveUrl) + '" target="_blank" class="font-bold text-blue-600">View</a>' +
               '<button onclick="deleteDoc(\'' + esc(d.docId) + '\')" class="font-bold text-red-600">Delete</button>' +
-            '</div>' +
-          '</div>';
+            '</div></div>';
         }).join('')
       : '<div class="text-center text-slate-400 text-xs py-6">No documents uploaded yet</div>';
   } catch (e) {
-    document.getElementById('docsList').innerHTML =
-      '<div class="text-center text-red-500 text-xs py-6">' + esc(e.message) + '</div>';
+    document.getElementById('docsList').innerHTML = '<div class="text-center text-red-500 text-xs py-6">' + esc(e.message) + '</div>';
   }
 }
 
 async function uploadDoc(input) {
   const file = input.files[0];
   if (!file) return;
-  if (file.size > 10 * 1024 * 1024) {
-    alert('File too large (max 10 MB)');
-    input.value = '';
-    return;
-  }
+  if (file.size > 10 * 1024 * 1024) { alert('Max 10 MB'); input.value = ''; return; }
   const docType = document.getElementById('docType').value;
   try {
     const b64 = await readFileAsDataUrl(file);
-    const res = await ATS.post('portalUploadDocument', {
-      token: TOKEN, docType: docType, fileData: b64, fileName: file.name
-    });
+    const res = await ATS.post('portalUploadDocument', { token: TOKEN, docType: docType, fileData: b64, fileName: file.name });
     if (res && res.ok) { alert('Uploaded!'); loadDocsTab(); }
     else alert((res && res.error) || 'Upload failed');
   } catch (e) { alert(e.message); }
@@ -919,15 +719,121 @@ async function deleteDoc(docId) {
   } catch (e) { alert(e.message); }
 }
 
-/* ============================================================
-   PROFILE
-   ============================================================ */
+/* ★ NEW: ASSESSMENTS */
+async function loadAssessmentsTab() {
+  document.getElementById('assessmentsList').innerHTML = '<div class="text-center text-slate-400 text-xs py-8">Loading…</div>';
+  try {
+    const res = await ATS.post('portalGetAssessments', { token: TOKEN });
+    if (!res || !res.ok) {
+      document.getElementById('assessmentsList').innerHTML = '<div class="text-center text-red-500 text-xs py-8">' + esc((res && res.error) || 'Failed') + '</div>';
+      return;
+    }
+    const list = res.assessments || [];
+    if (!list.length) {
+      document.getElementById('assessmentsList').innerHTML = '<div class="text-center text-slate-400 text-xs py-8">No assessments assigned yet</div>';
+      return;
+    }
+    document.getElementById('assessmentsList').innerHTML = list.map(function(a) {
+      const statusColor = a.status === 'Completed' ? 'bg-emerald-100 text-emerald-800'
+        : a.status === 'In Progress' ? 'bg-amber-100 text-amber-800'
+        : a.status === 'Expired' ? 'bg-red-100 text-red-800'
+        : 'bg-blue-100 text-blue-800';
+      const resultColor = a.result === 'Pass' ? 'text-emerald-700' : a.result === 'Fail' ? 'text-red-700' : 'text-slate-500';
+      const scoreText = (a.score !== '' && a.score !== null && a.score !== undefined) ? a.score + ' / ' + (a.maxScore || '—') : '—';
+      const actionBtn = (a.status !== 'Completed' && a.status !== 'Expired' && a.link)
+        ? '<a href="' + esc(a.link) + '" target="_blank" class="px-3 py-1.5 bg-[#1A365D] text-white rounded-lg text-xs font-bold" style="text-decoration:none">Open Assessment →</a>'
+        : '';
+      return '<div class="bg-white rounded-xl border border-slate-200 p-4">' +
+        '<div class="flex justify-between items-start gap-3 flex-wrap">' +
+          '<div class="flex-1 min-w-0">' +
+            '<div class="text-[10px] font-black text-blue-700">' + esc(a.assessmentId) + '</div>' +
+            '<h3 class="font-bold text-slate-900 text-sm">' + esc(a.name) + '</h3>' +
+            '<div class="text-xs text-slate-500 mt-0.5">' + esc(a.type || '') + ' · ' + esc(a.mode || '') + (a.dueDate ? ' · Due ' + esc(a.dueDate) : '') + '</div>' +
+          '</div>' +
+          '<span class="px-2 py-1 rounded text-[10px] font-bold ' + statusColor + '">' + esc(a.status) + '</span>' +
+        '</div>' +
+        '<div class="mt-3 flex items-center justify-between gap-3 flex-wrap">' +
+          '<div class="text-xs">' +
+            '<span class="text-slate-500">Score: </span>' +
+            '<span class="font-bold text-slate-900">' + scoreText + '</span>' +
+            '<span class="ml-3 text-slate-500">Result: </span>' +
+            '<span class="font-bold ' + resultColor + '">' + esc(a.result || 'Pending') + '</span>' +
+          '</div>' + actionBtn +
+        '</div>' +
+      '</div>';
+    }).join('');
+  } catch (e) {
+    document.getElementById('assessmentsList').innerHTML = '<div class="text-center text-red-500 text-xs py-8">' + esc(e.message) + '</div>';
+  }
+}
+
+/* ★ NEW: PHOTO UPLOAD */
+async function uploadProfilePhoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 3 * 1024 * 1024) {
+    alert('Photo must be under 3 MB');
+    input.value = '';
+    return;
+  }
+  try {
+    const b64 = await readFileAsDataUrl(file);
+    const res = await ATS.post('portalUploadPhoto', {
+      token: TOKEN, fileData: b64, fileName: file.name
+    });
+    if (res && res.ok) {
+      alert('Photo uploaded!');
+      loadProfileTab();
+    } else {
+      alert((res && res.error) || 'Upload failed');
+    }
+  } catch (e) { alert(e.message); }
+  input.value = '';
+}
+
+/* ★ NEW: CV DOWNLOAD */
+async function downloadCV(format) {
+  const buttonLabel = format === 'pdf' ? 'PDF' : 'DOCX';
+  if (!confirm('Generate and download your CV as ' + buttonLabel + '? This may take 5-15 seconds.')) return;
+  try {
+    const res = await ATS.post('portalDownloadProfile', { token: TOKEN, format: format });
+    if (!res || !res.ok) { alert((res && res.error) || 'CV generation failed'); return; }
+
+    // Convert base64 → blob → download
+    const byteCharacters = atob(res.base64);
+    const byteArray = new Uint8Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) byteArray[i] = byteCharacters.charCodeAt(i);
+    const blob = new Blob([byteArray], { type: res.mimeType });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = res.filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch (e) { alert('Error: ' + e.message); }
+}
+
 async function loadProfileTab() {
   try {
     const res = await ATS.post('portalGetProfile', { token: TOKEN });
-    if (!res || !res.ok) { alert((res && res.error) || 'Failed to load profile'); return; }
+    if (!res || !res.ok) { alert((res && res.error) || 'Failed'); return; }
     const p = res.profile || {};
     PROFILE = p;
+
+    // ★ Photo
+    const img = document.getElementById('profilePhoto');
+    const icon = document.getElementById('profilePhotoIcon');
+    if (p.photoUrl) {
+      img.src = p.photoUrl;
+      img.style.display = 'block';
+      icon.style.display = 'none';
+    } else {
+      img.style.display = 'none';
+      icon.style.display = 'inline';
+    }
+
     document.getElementById('pfName').value = p.name || '';
     document.getElementById('pfPhone').value = p.phone || '';
     document.getElementById('pfLocation').value = p.location || '';
@@ -947,8 +853,7 @@ async function loadProfileTab() {
 async function saveProfile(ev) {
   ev.preventDefault();
   const btn = document.getElementById('pfSubmit');
-  btn.disabled = true;
-  btn.textContent = 'Saving…';
+  btn.disabled = true; btn.textContent = 'Saving…';
   try {
     const res = await ATS.post('portalUpdateProfile', {
       token: TOKEN,
@@ -971,13 +876,9 @@ async function saveProfile(ev) {
     if (res && res.ok) alert('Profile saved!');
     else alert((res && res.error) || 'Save failed');
   } catch (e) { alert(e.message); }
-  btn.disabled = false;
-  btn.textContent = 'Save Profile';
+  btn.disabled = false; btn.textContent = 'Save Profile';
 }
 
-/* ============================================================
-   JOB ALERTS
-   ============================================================ */
 async function loadAlertsTab() {
   try {
     const res = await ATS.post('portalGetAlertPrefs', { token: TOKEN });
@@ -992,8 +893,7 @@ async function loadAlertsTab() {
 async function saveAlerts(ev) {
   ev.preventDefault();
   const btn = document.getElementById('alertSubmit');
-  btn.disabled = true;
-  btn.textContent = 'Saving…';
+  btn.disabled = true; btn.textContent = 'Saving…';
   try {
     const res = await ATS.post('portalUpdateAlertPrefs', {
       token: TOKEN,
@@ -1004,46 +904,26 @@ async function saveAlerts(ev) {
     if (res && res.ok) alert('Alert preferences saved!');
     else alert((res && res.error) || 'Save failed');
   } catch (e) { alert(e.message); }
-  btn.disabled = false;
-  btn.textContent = 'Save Preferences';
+  btn.disabled = false; btn.textContent = 'Save Preferences';
 }
 
-/* ============================================================
-   ACCOUNT
-   ============================================================ */
 async function changePassword(ev) {
   ev.preventDefault();
   const btn = document.getElementById('pwdSubmit');
   const cur = document.getElementById('pwdCurrent').value;
   const nw = document.getElementById('pwdNew').value;
   if (!cur || !nw) return;
-  btn.disabled = true;
-  btn.textContent = 'Changing…';
+  btn.disabled = true; btn.textContent = 'Changing…';
   try {
-    const res = await ATS.post('portalChangePassword', {
-      token: TOKEN, currentPassword: cur, newPassword: nw
-    });
-    if (res && res.ok) {
-      alert('Password changed successfully.');
-      document.getElementById('pwdForm').reset();
-    } else {
-      alert((res && res.error) || 'Change failed');
-    }
+    const res = await ATS.post('portalChangePassword', { token: TOKEN, currentPassword: cur, newPassword: nw });
+    if (res && res.ok) { alert('Password changed!'); document.getElementById('pwdForm').reset(); }
+    else alert((res && res.error) || 'Change failed');
   } catch (e) { alert(e.message); }
-  btn.disabled = false;
-  btn.textContent = 'Change Password';
+  btn.disabled = false; btn.textContent = 'Change Password';
 }
 
-/* ============================================================
-   UTILITIES
-   ============================================================ */
 function esc(s) {
-  return String(s == null ? '' : s)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
+  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
 }
 
 function readFileAsDataUrl(file) {
