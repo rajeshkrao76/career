@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1A365D">
+  <title id="pageTitle">Raveone Careers</title>
+  <meta id="metaDesc" name="description" content="Learn more about Raveone Consultants — MSME hiring partners across India.">
+  <link rel="canonical" id="canonicalUrl" href="https://career.raveone.in/pages.html">
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231A365D'%3E%3Cpath d='M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6' stroke='white' stroke-width='2'/%3E%3C/svg%3E">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
+
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    body { margin: 0; font-family: 'Inter', system-ui, sans-serif; background: #F8FAFC; color: #1E293B; -webkit-font-smoothing: antialiased; }
+    .page-hero { background: linear-gradient(135deg, #1A365D 0%, #2A5487 100%); color: #fff; padding: 60px 20px; text-align: center; }
+    .page-hero h1 { font-size: 36px; font-weight: 900; margin: 0 0 12px; letter-spacing: -0.02em; }
+    .page-hero p { font-size: 16px; opacity: 0.9; margin: 0 auto; max-width: 640px; line-height: 1.6; }
+    .page-content { max-width: 960px; margin: 0 auto; padding: 40px 20px 60px; }
+    .content-card { background: #fff; border-radius: 16px; border: 1px solid #E2E8F0; padding: 32px; margin-bottom: 20px; }
+    .content-card h2 { font-size: 22px; font-weight: 800; color: #0F172A; margin: 0 0 16px; letter-spacing: -0.01em; }
+    .content-card h3 { font-size: 16px; font-weight: 700; color: #0F172A; margin: 24px 0 8px; }
+    .content-card p { font-size: 15px; line-height: 1.7; color: #334155; margin: 0 0 14px; }
+    .content-card ul { padding-left: 20px; margin: 0 0 14px; }
+    .content-card li { font-size: 15px; line-height: 1.7; color: #334155; margin-bottom: 8px; }
+    .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 20px; }
+    .contact-tile { background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; }
+    .contact-tile-label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #64748B; margin-bottom: 6px; }
+    .contact-tile-value { font-size: 15px; font-weight: 700; color: #1A365D; }
+    .contact-tile-value a { color: #1A365D; text-decoration: none; }
+    .contact-tile-value a:hover { text-decoration: underline; }
+    .form-field { margin-bottom: 14px; }
+    .form-label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: #475569; margin-bottom: 6px; }
+    .form-input { width: 100%; padding: 10px 14px; font-size: 14px; border: 1.5px solid #E2E8F0; border-radius: 8px; outline: none; font-family: inherit; box-sizing: border-box; }
+    .form-input:focus { border-color: #1A365D; box-shadow: 0 0 0 3px rgba(26,54,93,0.12); }
+    .form-input.error { border-color: #DC2626; }
+    .form-textarea { resize: vertical; min-height: 100px; }
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 640px) { .form-row-2 { grid-template-columns: 1fr; } }
+    .form-hint { font-size: 11px; color: #94A3B8; margin-top: 4px; }
+    .btn-submit { width: 100%; padding: 14px; background: #1A365D; color: #fff; border: none; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; font-family: inherit; transition: background 0.15s; margin-top: 8px; }
+    .btn-submit:hover:not(:disabled) { background: #2A5487; }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+    .form-note { font-size: 12px; color: #64748B; margin-top: 12px; }
+    .form-success { background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 12px; padding: 24px; text-align: center; margin-top: 12px; }
+    .form-success-icon { font-size: 42px; margin-bottom: 8px; }
+    .form-success h3 { color: #166534; font-size: 18px; margin: 0 0 6px; }
+    .form-success p { color: #166534; font-size: 14px; margin: 0; }
+    .form-error { background: #FEF2F2; border: 1px solid #FECACA; border-radius: 8px; padding: 12px; color: #991B1B; font-size: 13px; margin-top: 12px; }
+    .hidden { display: none !important; }
+    .process-step { display: flex; gap: 16px; margin-bottom: 20px; align-items: flex-start; }
+    .process-num { width: 40px; height: 40px; border-radius: 50%; background: #1A365D; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; flex-shrink: 0; }
+    .process-body h4 { font-size: 15px; font-weight: 700; color: #0F172A; margin: 0 0 4px; }
+    .process-body p { font-size: 14px; color: #475569; margin: 0; line-height: 1.6; }
+    .not-found { text-align: center; padding: 80px 20px; }
+    .not-found-icon { font-size: 64px; margin-bottom: 16px; }
+    .not-found h2 { font-size: 24px; font-weight: 800; color: #0F172A; margin: 0 0 8px; }
+    .not-found p { font-size: 14px; color: #64748B; margin: 0 0 20px; }
+  </style>
+</head>
+
+<body>
+
+<!-- ==========================================================================
+     HEADER
+     ========================================================================== -->
+<header class="site-header" id="siteHeader">
+  <div class="container header-inner">
+    <a href="index.html" class="brand" aria-label="Raveone Careers — Home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/>
+        </svg>
+      </span>
+      <span class="brand-text">
+        <span class="brand-title">Raveone Careers</span>
+        <span class="brand-sub">Executive Search &amp; Selection</span>
+      </span>
+    </a>
+    <nav class="main-nav" id="mainNav" aria-label="Main navigation">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="index.html#jobs" class="nav-link">Job Vacancies</a>
+      <a href="pages.html?page=employers" class="nav-link">Employers (MSME)</a>
+      <a href="pages.html?page=submit-cv" class="nav-link">Submit CV</a>
+      <a href="pages.html?page=about" class="nav-link">About Us</a>
+      <a href="pages.html?page=process" class="nav-link">Our Process</a>
+      <a href="pages.html?page=contact" class="nav-link">Contact Us</a>
+    </nav>
+    <div class="header-actions">
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ==========================================================================
+     BREADCRUMB
+     ========================================================================== -->
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <div class="container breadcrumb-inner">
+    <a href="index.html">Home</a>
+    <span aria-hidden="true">/</span>
+    <span id="crumbCurrent" class="breadcrumb-current">Page</span>
+  </div>
+</nav>
+
+<!-- ==========================================================================
+     MAIN
+     ========================================================================== -->
+<main id="mainContent">
+
+  <!-- ==================== ABOUT ==================== -->
+  <div class="page-view" id="view-about" hidden>
+    <div class="page-hero">
+      <h1>About Raveone</h1>
+      <p>MSME hiring partners connecting exceptional talent with leading manufacturers, engineering firms and enterprises across India.</p>
+    </div>
+    <div class="page-content">
+      <div class="content-card">
+        <h2>Who we are</h2>
+        <p>Raveone Consultants is an executive search and selection firm headquartered in Bangalore, serving manufacturers, engineering companies and enterprises across India. We specialise in plant-level technical roles, quality functions, and mid-to-senior management hiring.</p>
+        <p>As an MSME registered vendor, we partner with more than 100 organisations — from small family-owned engineering workshops to large multi-plant manufacturers — helping them find engineers, technicians, managers and specialists who understand their industry.</p>
+      </div>
+      <div class="content-card">
+        <h2>What we do</h2>
+        <ul>
+          <li><strong>Permanent placement</strong> — plant engineers, quality engineers, maintenance, production, design</li>
+          <li><strong>Executive search</strong> — mid-to-senior management roles in manufacturing and engineering</li>
+          <li><strong>Bulk hiring</strong> — walk-in drives, campus hiring, contract-to-hire</li>
+          <li><strong>Talent pipeline</strong> — sourcing, screening, assessment and onboarding support</li>
+        </ul>
+      </div>
+      <div class="content-card">
+        <h2>Why candidates choose us</h2>
+        <ul>
+          <li>Verified, real job openings from registered employers — no fake postings</li>
+          <li>Direct with the hiring company — no middlemen, no fee</li>
+          <li>Transparent process — candidates can track their applications on the Raveone portal</li>
+          <li>Weekly job alerts matched to your skills and preferred locations</li>
+        </ul>
+      </div>
+      <div class="content-card">
+        <h2>Why employers choose us</h2>
+        <ul>
+          <li>Deep manufacturing and engineering domain expertise</li>
+          <li>Pre-screened, verified candidate pool — no time wasted on unqualified CVs</li>
+          <li>Short turnaround — from requirement to shortlist in under 5 working days</li>
+          <li>MSME-friendly pricing, no retainers required for standard roles</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== PROCESS ==================== -->
+  <div class="page-view" id="view-process" hidden>
+    <div class="page-hero">
+      <h1>Our Process</h1>
+      <p>A transparent, tech-enabled hiring process — from requirement to onboarding.</p>
+    </div>
+    <div class="page-content">
+      <div class="content-card">
+        <h2>For candidates</h2>
+
+        <div class="process-step">
+          <div class="process-num">1</div>
+          <div class="process-body">
+            <h4>Apply to a job or submit your CV</h4>
+            <p>Browse open roles and apply in 60 seconds — or submit your CV to our talent pool if you don't see the perfect fit yet.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="process-num">2</div>
+          <div class="process-body">
+            <h4>Initial screening</h4>
+            <p>Our recruiter reviews your profile and (for shortlisted candidates) calls you to understand your experience, expectations and availability.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="process-num">3</div>
+          <div class="process-body">
+            <h4>Client submission</h4>
+            <p>If you're a fit, we submit your profile to the hiring company with a cover note. You'll get a notification and can track the status on our portal.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="process-num">4</div>
+          <div class="process-body">
+            <h4>Interview scheduling</h4>
+            <p>The client reviews your profile and (if shortlisted) we schedule an interview — in person, phone or video. You'll receive calendar invites and reminders.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="process-num">5</div>
+          <div class="process-body">
+            <h4>Offer and onboarding</h4>
+            <p>If selected, we coordinate the offer, notice period and joining. We stay in touch through onboarding and beyond.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="content-card">
+        <h2>For employers</h2>
+
+        <div class="process-step">
+          <div class="process-num">1</div>
+          <div class="process-body">
+            <h4>Share your requirement</h4>
+            <p>Submit the role via our employer form — title, location, CTC range, experience, key skills and any specific requirements.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="process-num">2</div>
+          <div class="process-body">
+            <h4>We align on the brief</h4>
+            <p>A senior recruiter calls you to understand the role, team and culture — and agree on a target profile and timeline.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="process-num">3</div>
+          <div class="process-body">
+            <h4>We source and screen</h4>
+            <p>We shortlist 5–10 qualified profiles within 5 working days, all pre-screened for experience, CTC alignment and availability.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="process-num">4</div>
+          <div class="process-body">
+            <h4>Interviews and feedback</h4>
+            <p>We schedule interviews, share CVs, and collect structured feedback from both sides through the client portal.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="process-num">5</div>
+          <div class="process-body">
+            <h4>Offer and closing</h4>
+            <p>We assist with the offer, negotiate if needed, and follow up through notice and joining. Replacement guarantee included.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== CONTACT ==================== -->
+  <div class="page-view" id="view-contact" hidden>
+    <div class="page-hero">
+      <h1>Contact Us</h1>
+      <p>We usually respond within one working day.</p>
+    </div>
+    <div class="page-content">
+      <div class="content-card">
+        <h2>Get in touch</h2>
+        <div class="contact-grid">
+          <div class="contact-tile">
+            <div class="contact-tile-label">📞 Phone</div>
+            <div class="contact-tile-value"><a href="tel:+919148330565">9148330565</a></div>
+          </div>
+          <div class="contact-tile">
+            <div class="contact-tile-label">✉️ Email</div>
+            <div class="contact-tile-value"><a href="mailto:rajesh@raveone.in">rajesh@raveone.in</a></div>
+          </div>
+          <div class="contact-tile">
+            <div class="contact-tile-label">🌐 Website</div>
+            <div class="contact-tile-value"><a href="https://www.raveone.in" target="_blank" rel="noopener">www.raveone.in</a></div>
+          </div>
+          <div class="contact-tile">
+            <div class="contact-tile-label">📍 Location</div>
+            <div class="contact-tile-value">Bangalore, India</div>
+          </div>
+        </div>
+      </div>
+      <div class="content-card">
+        <h2>For candidates</h2>
+        <p>Best way to reach us about an active application: reply to the confirmation email you received, or log into the <a href="portal-login.html" style="color:#1A365D;font-weight:600">candidate portal</a> to see updates.</p>
+        <p>For general enquiries about job openings, browse our <a href="index.html#jobs" style="color:#1A365D;font-weight:600">current jobs</a>.</p>
+      </div>
+      <div class="content-card">
+        <h2>For employers</h2>
+        <p>To discuss a hiring requirement, email <a href="mailto:rajesh@raveone.in" style="color:#1A365D;font-weight:600">rajesh@raveone.in</a> with the role title, location and CTC range — we'll respond within one working day. Or use our <a href="pages.html?page=employers" style="color:#1A365D;font-weight:600">employer form</a>.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== EMPLOYERS ==================== -->
+  <div class="page-view" id="view-employers" hidden>
+    <div class="page-hero">
+      <h1>Hire with Raveone</h1>
+      <p>Pre-screened candidates, verified profiles and 5-day turnaround — designed for MSME manufacturers and engineering firms.</p>
+    </div>
+    <div class="page-content">
+      <div class="content-card">
+        <h2>Why partner with Raveone</h2>
+        <ul>
+          <li><strong>Domain specialists</strong> — recruiters who understand CNC, VMC, quality, maintenance and manufacturing workflows</li>
+          <li><strong>Verified candidates</strong> — every profile is screened for experience, CTC alignment, notice period and availability</li>
+          <li><strong>Fast turnaround</strong> — shortlist of 5–10 qualified profiles within 5 working days</li>
+          <li><strong>No retainers</strong> — success-based pricing; you pay only on hire</li>
+          <li><strong>Replacement guarantee</strong> — if a hire doesn't work out within the agreed period, we re-source at no additional cost</li>
+        </ul>
+      </div>
+
+      <div class="content-card">
+        <h2>Submit a hiring requirement</h2>
+        <p>Share the role below. A senior recruiter will call you within one working day to discuss the brief.</p>
+
+        <form id="employerForm" novalidate style="margin-top:20px">
+
+          <div class="form-row-2">
+            <div class="form-field">
+              <label class="form-label" for="empCompany">Company Name <span style="color:#DC2626">*</span></label>
+              <input id="empCompany" type="text" class="form-input" required>
+            </div>
+            <div class="form-field">
+              <label class="form-label" for="empContact">Your Name <span style="color:#DC2626">*</span></label>
+              <input id="empContact" type="text" class="form-input" required>
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-field">
+              <label class="form-label" for="empEmail">Your Email <span style="color:#DC2626">*</span></label>
+              <input id="empEmail" type="email" class="form-input" required>
+            </div>
+            <div class="form-field">
+              <label class="form-label" for="empPhone">Phone</label>
+              <input id="empPhone" type="tel" class="form-input" maxlength="15">
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-field">
+              <label class="form-label" for="empRole">Role Title <span style="color:#DC2626">*</span></label>
+              <input id="empRole" type="text" class="form-input" required placeholder="e.g. Senior CNC Programmer">
+            </div>
+            <div class="form-field">
+              <label class="form-label" for="empLocation">Location <span style="color:#DC2626">*</span></label>
+              <input id="empLocation" type="text" class="form-input" required placeholder="e.g. Bangalore">
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-field">
+              <label class="form-label" for="empSalaryMin">Salary Min (₹)</label>
+              <input id="empSalaryMin" type="text" class="form-input" placeholder="e.g. 500000">
+            </div>
+            <div class="form-field">
+              <label class="form-label" for="empSalaryMax">Salary Max (₹)</label>
+              <input id="empSalaryMax" type="text" class="form-input" placeholder="e.g. 800000">
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="empJd">Job Description / Requirements <span style="color:#DC2626">*</span></label>
+            <textarea id="empJd" class="form-input form-textarea" rows="5" required placeholder="Responsibilities, required skills, experience, education, etc."></textarea>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="empFile">Attach JD (optional)</label>
+            <input id="empFile" type="file" accept=".pdf,.doc,.docx" class="form-input" style="padding:8px">
+            <p class="form-hint">PDF, DOC or DOCX · max 5 MB</p>
+          </div>
+
+          <button type="submit" class="btn-submit" id="empSubmitBtn">Submit Requirement</button>
+          <div id="empError" class="form-error hidden"></div>
+
+          <div class="form-success hidden" id="empSuccess">
+            <div class="form-success-icon">✅</div>
+            <h3>Requirement received</h3>
+            <p>A senior recruiter will call you within one working day.</p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SUBMIT CV ==================== -->
+  <div class="page-view" id="view-submit-cv" hidden>
+    <div class="page-hero">
+      <h1>Submit your CV</h1>
+      <p>Don't see a role that fits? Add your CV to our talent pool — we'll reach out when something matches.</p>
+    </div>
+    <div class="page-content">
+      <div class="content-card">
+        <h2>Your details</h2>
+        <form id="talentForm" novalidate>
+
+          <div class="form-row-2">
+            <div class="form-field">
+              <label class="form-label" for="tName">Full Name <span style="color:#DC2626">*</span></label>
+              <input id="tName" type="text" class="form-input" required autocomplete="name">
+            </div>
+            <div class="form-field">
+              <label class="form-label" for="tPhone">Phone <span style="color:#DC2626">*</span></label>
+              <input id="tPhone" type="tel" class="form-input" required maxlength="15" placeholder="10 digits">
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="tEmail">Email <span style="color:#DC2626">*</span></label>
+            <input id="tEmail" type="email" class="form-input" required autocomplete="email">
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-field">
+              <label class="form-label" for="tLocation">Current Location</label>
+              <input id="tLocation" type="text" class="form-input" placeholder="City">
+            </div>
+            <div class="form-field">
+              <label class="form-label" for="tEducation">Education</label>
+              <input id="tEducation" type="text" class="form-input" placeholder="e.g. B.E. Mechanical">
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-field">
+              <label class="form-label" for="tTotalExp">Total Experience <span style="color:#DC2626">*</span></label>
+              <input id="tTotalExp" type="text" class="form-input" required placeholder="e.g. 5 years">
+            </div>
+            <div class="form-field">
+              <label class="form-label" for="tNotice">Notice Period</label>
+              <input id="tNotice" type="text" class="form-input" placeholder="e.g. 30 days / Immediate">
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-field">
+              <label class="form-label" for="tCurrentCtc">Current CTC</label>
+              <input id="tCurrentCtc" type="text" class="form-input" placeholder="e.g. 6 LPA">
+            </div>
+            <div class="form-field">
+              <label class="form-label" for="tExpectedCtc">Expected CTC</label>
+              <input id="tExpectedCtc" type="text" class="form-input" placeholder="e.g. 8 LPA">
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="tSkills">Key Skills</label>
+            <input id="tSkills" type="text" class="form-input" placeholder="e.g. CNC, VMC, GD&T, ISO 13485">
+            <p class="form-hint">Comma separated</p>
+          </div>
+
+          <div class="form-field">
+            <label class="form-label" for="tResume">Resume <span style="color:#DC2626">*</span></label>
+            <input id="tResume" type="file" accept=".pdf,.doc,.docx" class="form-input" required style="padding:8px">
+            <p class="form-hint">PDF, DOC or DOCX · max 5 MB</p>
+          </div>
+
+          <button type="submit" class="btn-submit" id="talentSubmitBtn">Submit CV</button>
+          <div id="talentError" class="form-error hidden"></div>
+
+          <div class="form-success hidden" id="talentSuccess">
+            <div class="form-success-icon">✅</div>
+            <h3>CV received</h3>
+            <p>Your profile is now in our talent pool. We'll reach out when a role matches.</p>
+            <p style="margin-top:8px;font-size:13px"><a href="index.html#jobs" style="color:#166534;font-weight:700">Browse open jobs →</a></p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== TERMS ==================== -->
+  <div class="page-view" id="view-terms" hidden>
+    <div class="page-hero">
+      <h1>Terms &amp; Conditions</h1>
+      <p>Last updated: January 2026</p>
+    </div>
+    <div class="page-content">
+      <div class="content-card">
+        <h2>1. Acceptance of terms</h2>
+        <p>By accessing or using career.raveone.in (the "Site") or any service provided by Raveone Consultants ("we", "us", "our"), you agree to be bound by these Terms &amp; Conditions. If you do not agree, please do not use the Site.</p>
+      </div>
+      <div class="content-card">
+        <h2>2. Use of the Site</h2>
+        <p>The Site is provided for the purpose of job discovery, application submission, and recruitment coordination. You agree to use the Site only for lawful purposes and in a manner that does not infringe the rights of any other user.</p>
+        <ul>
+          <li>You must not submit false, misleading, or impersonating information</li>
+          <li>You must not upload malicious files or attempt to compromise the Site</li>
+          <li>You must not scrape, crawl, or automate access without our written consent</li>
+        </ul>
+      </div>
+      <div class="content-card">
+        <h2>3. Candidate accounts</h2>
+        <p>Creating an account on the candidate portal is optional. You are responsible for maintaining the confidentiality of your login credentials. Any activity under your account is your responsibility. Please notify us immediately of unauthorised use at rajesh@raveone.in.</p>
+      </div>
+      <div class="content-card">
+        <h2>4. Job postings</h2>
+        <p>All job postings on the Site are verified to the best of our ability. However, we do not guarantee that a posting is currently open, that compensation figures are accurate, or that applying will result in an interview or offer. We reserve the right to modify or remove any posting without notice.</p>
+      </div>
+      <div class="content-card">
+        <h2>5. No fees to candidates</h2>
+        <p>Raveone Consultants does not charge candidates any fees for job applications, interviews, or placement. If you are asked to pay any amount by anyone claiming to represent us, please report it to rajesh@raveone.in immediately.</p>
+      </div>
+      <div class="content-card">
+        <h2>6. Limitation of liability</h2>
+        <p>To the maximum extent permitted by law, Raveone Consultants is not liable for any indirect, incidental, or consequential damages arising from your use of the Site or any services we provide, including without limitation any loss of data, profits, or opportunity.</p>
+      </div>
+      <div class="content-card">
+        <h2>7. Changes to terms</h2>
+        <p>We may update these Terms from time to time. The "Last updated" date at the top indicates the most recent revision. Continued use of the Site after changes are posted constitutes acceptance of the revised Terms.</p>
+      </div>
+      <div class="content-card">
+        <h2>8. Governing law</h2>
+        <p>These Terms are governed by the laws of India. Any dispute arising out of or related to the Site shall be subject to the exclusive jurisdiction of the courts in Bangalore, Karnataka.</p>
+      </div>
+      <div class="content-card">
+        <h2>Contact</h2>
+        <p>Questions about these Terms? Email <a href="mailto:rajesh@raveone.in" style="color:#1A365D;font-weight:600">rajesh@raveone.in</a>.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== PRIVACY ==================== -->
+  <div class="page-view" id="view-privacy" hidden>
+    <div class="page-hero">
+      <h1>Privacy Policy</h1>
+      <p>Last updated: January 2026</p>
+    </div>
+    <div class="page-content">
+      <div class="content-card">
+        <h2>1. What we collect</h2>
+        <p>When you apply to a job or submit your CV, we collect:</p>
+        <ul>
+          <li><strong>Identity &amp; contact</strong> — name, email, phone, location</li>
+          <li><strong>Professional</strong> — resume, experience, skills, education, CTC expectations, notice period</li>
+          <li><strong>Usage</strong> — IP address, browser type, pages visited (via server logs)</li>
+          <li><strong>Portal</strong> — if you register, your login email and password hash</li>
+        </ul>
+      </div>
+      <div class="content-card">
+        <h2>2. How we use it</h2>
+        <ul>
+          <li>To process your job application and communicate with you about it</li>
+          <li>To share your profile with the hiring company for the role you applied to</li>
+          <li>To match you with relevant future roles (if you opt into job alerts)</li>
+          <li>To comply with legal obligations</li>
+        </ul>
+      </div>
+      <div class="content-card">
+        <h2>3. Who we share it with</h2>
+        <p>We share candidate profile data only with the specific hiring company for the job you applied to. We do not sell your data to third parties, and we do not share it with advertisers.</p>
+        <p>If you apply to a role with Company X, your profile is visible to the relevant HR / hiring team at Company X. It is not visible to other clients, to the public, or to any third party.</p>
+      </div>
+      <div class="content-card">
+        <h2>4. Data storage &amp; security</h2>
+        <p>Your data is stored in Google Workspace (Sheets, Drive) with access restricted to authorised Raveone recruiters. Uploaded resumes are stored in a private Google Drive folder accessible only through the ATS.</p>
+        <p>We use industry-standard security measures, but no system is 100% secure. If you suspect unauthorised access to your data, contact us immediately at rajesh@raveone.in.</p>
+      </div>
+      <div class="content-card">
+        <h2>5. Data retention</h2>
+        <p>Candidate profiles are retained for up to 12 months from the date of submission, unless you request deletion earlier. After this period, profiles are deleted unless you re-apply or opt into longer-term talent pool storage.</p>
+      </div>
+      <div class="content-card">
+        <h2>6. Your rights</h2>
+        <p>You have the right to:</p>
+        <ul>
+          <li>Access a copy of the data we hold about you</li>
+          <li>Request correction of inaccurate data</li>
+          <li>Request deletion of your data (except where retention is legally required)</li>
+          <li>Withdraw consent for job alerts at any time</li>
+        </ul>
+        <p>To exercise any of these rights, email <a href="mailto:rajesh@raveone.in" style="color:#1A365D;font-weight:600">rajesh@raveone.in</a> with the subject "Data Request".</p>
+      </div>
+      <div class="content-card">
+        <h2>7. Cookies</h2>
+        <p>The Site uses minimal cookies — strictly for session management (if you log in) and to remember your preferences. We do not use advertising or tracking cookies.</p>
+      </div>
+      <div class="content-card">
+        <h2>8. Contact</h2>
+        <p>For any privacy questions, email <a href="mailto:rajesh@raveone.in" style="color:#1A365D;font-weight:600">rajesh@raveone.in</a>.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== NOT FOUND ==================== -->
+  <div class="page-view not-found" id="view-notfound" hidden>
+    <div class="not-found-icon">🔍</div>
+    <h2>Page not found</h2>
+    <p>The page you're looking for doesn't exist or has moved.</p>
+    <a href="index.html" class="btn-primary" style="display:inline-block;padding:12px 24px;background:#1A365D;color:#fff;border-radius:8px;text-decoration:none;font-weight:700">Back to home</a>
+  </div>
+
+</main>
+
+<!-- ==========================================================================
+     FOOTER
+     ========================================================================== -->
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-col footer-brand">
+      <div class="brand brand-footer">
+        <span class="brand-mark" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/>
+          </svg>
+        </span>
+        <span class="brand-text">
+          <span class="brand-title">Raveone Careers</span>
+          <span class="brand-sub">Executive Search &amp; Selection</span>
+        </span>
+      </div>
+      <p class="footer-blurb">Connecting exceptional talent with MSME manufacturers, engineering firms and enterprises across India.</p>
+      <div class="footer-contact">
+        <a href="tel:+919148330565">📞 9148330565</a>
+        <a href="mailto:rajesh@raveone.in">✉️ rajesh@raveone.in</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4 class="footer-heading">For Candidates</h4>
+      <ul class="footer-list">
+        <li><a href="index.html#jobs">Browse Jobs</a></li>
+        <li><a href="pages.html?page=submit-cv">Submit CV</a></li>
+        <li><a href="pages.html?page=process">Our Process</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4 class="footer-heading">For Employers</h4>
+      <ul class="footer-list">
+        <li><a href="pages.html?page=employers">Post a Job</a></li>
+        <li><a href="pages.html?page=employers">Why Raveone</a></li>
+        <li><a href="pages.html?page=contact">Talk to Us</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4 class="footer-heading">Company</h4>
+      <ul class="footer-list">
+        <li><a href="pages.html?page=about">About Us</a></li>
+        <li><a href="pages.html?page=contact">Contact</a></li>
+        <li><a href="https://www.raveone.in" target="_blank" rel="noopener">www.raveone.in ↗</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container footer-bottom-inner">
+      <p class="footer-copy">© <span id="footerYear"></span> Raveone Consultants. All rights reserved.</p>
+      <div class="footer-legal">
+        <a href="pages.html?page=terms">Terms &amp; Conditions</a>
+        <span aria-hidden="true">·</span>
+        <a href="pages.html?page=privacy">Privacy Policy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ==========================================================================
+     SCRIPTS
+     ========================================================================== -->
+<script src="app.js" defer></script>
+<script>
+(function () {
+  'use strict';
+
+  const VALID_PAGES = ['about', 'process', 'contact', 'employers', 'submit-cv', 'terms', 'privacy'];
+
+  const PAGE_META = {
+    'about':      { title: 'About Us',            crumb: 'About Us' },
+    'process':    { title: 'Our Process',         crumb: 'Our Process' },
+    'contact':    { title: 'Contact Us',          crumb: 'Contact Us' },
+    'employers':  { title: 'For Employers',       crumb: 'Employers (MSME)' },
+    'submit-cv':  { title: 'Submit CV',           crumb: 'Submit CV' },
+    'terms':      { title: 'Terms & Conditions',  crumb: 'Terms' },
+    'privacy':    { title: 'Privacy Policy',      crumb: 'Privacy' }
+  };
+
+  function getParam(name) {
+    return new URLSearchParams(window.location.search).get(name);
+  }
+
+  function showPage(page) {
+    const isKnown = VALID_PAGES.indexOf(page) !== -1;
+    const target = isKnown ? 'view-' + page : 'view-notfound';
+
+    document.querySelectorAll('.page-view').forEach(function (el) {
+      el.hidden = (el.id !== target);
+    });
+
+    const meta = isKnown ? PAGE_META[page] : { title: 'Not Found', crumb: '404' };
+    document.title = meta.title + ' — Raveone Careers';
+    const crumbEl = document.getElementById('crumbCurrent');
+    if (crumbEl) crumbEl.textContent = meta.crumb;
+
+    const canonical = document.getElementById('canonicalUrl');
+    if (canonical && isKnown) {
+      canonical.href = 'https://career.raveone.in/pages.html?page=' + encodeURIComponent(page);
+    }
+
+    // Highlight active nav link
+    document.querySelectorAll('.nav-link').forEach(function (a) {
+      a.classList.toggle('active', a.getAttribute('href') === 'pages.html?page=' + page);
+    });
+
+    window.scrollTo(0, 0);
+  }
+
+  // ── Boot ──
+  document.addEventListener('DOMContentLoaded', function () {
+    const y = document.getElementById('footerYear');
+    if (y) y.textContent = new Date().getFullYear();
+
+    const page = (getParam('page') || '').toLowerCase();
+    showPage(page);
+
+    // ── Submit CV form ──
+    const talentForm = document.getElementById('talentForm');
+    if (talentForm) {
+      talentForm.addEventListener('submit', handleTalentSubmit);
+    }
+
+    // ── Employer form ──
+    const employerForm = document.getElementById('employerForm');
+    if (employerForm) {
+      employerForm.addEventListener('submit', handleEmployerSubmit);
+    }
+  });
+
+  // ── Talent pool submission ──
+  async function handleTalentSubmit(e) {
+    e.preventDefault();
+    const btn = document.getElementById('talentSubmitBtn');
+    const errEl = document.getElementById('talentError');
+    const successEl = document.getElementById('talentSuccess');
+    if (errEl) errEl.classList.add('hidden');
+
+    const name = document.getElementById('tName').value.trim();
+    const phoneRaw = document.getElementById('tPhone').value.trim();
+    const email = document.getElementById('tEmail').value.trim().toLowerCase();
+    const resumeFile = document.getElementById('tResume').files[0];
+
+    if (!name) { showError(errEl, 'Please enter your name'); return; }
+    const phone = validateIndianMobile(phoneRaw);
+    if (!phone) { showError(errEl, 'Enter a valid 10-digit mobile (e.g. 9148330562)'); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showError(errEl, 'Enter a valid email'); return; }
+    if (!resumeFile) { showError(errEl, 'Please attach your resume'); return; }
+    if (resumeFile.size > 5 * 1024 * 1024) { showError(errEl, 'Resume too large — max 5 MB'); return; }
+
+    btn.disabled = true; btn.textContent = 'Reading file…';
+
+    let resumeData;
+    try { resumeData = await readFileAsDataURL(resumeFile); }
+    catch (err) { showError(errEl, 'Could not read file'); btn.disabled = false; btn.textContent = 'Submit CV'; return; }
+
+    btn.textContent = 'Submitting…';
+
+    const payload = {
+      action: 'submitTalentPool',
+      candidateName: name,
+      phone: phone,
+      email: email,
+      resumeData: resumeData,
+      resumeName: resumeFile.name,
+      location: document.getElementById('tLocation').value.trim(),
+      education: document.getElementById('tEducation').value.trim(),
+      totalExp: document.getElementById('tTotalExp').value.trim(),
+      noticePeriod: document.getElementById('tNotice').value.trim(),
+      currentCtc: document.getElementById('tCurrentCtc').value.trim(),
+      expectedCtc: document.getElementById('tExpectedCtc').value.trim(),
+      skills: document.getElementById('tSkills').value.trim()
+    };
+
+    try {
+      const res = await ATS.post('submitTalentPool', payload);
+      if (!res || !res.ok) {
+        showError(errEl, (res && res.error) || 'Submission failed');
+        btn.disabled = false; btn.textContent = 'Submit CV';
+        return;
+      }
+      talentForm.querySelectorAll('.form-field, .form-row-2, .btn-submit').forEach(function (el) {
+        el.style.display = 'none';
+      });
+      successEl.classList.remove('hidden');
+    } catch (err) {
+      showError(errEl, 'Network error: ' + err.message);
+      btn.disabled = false; btn.textContent = 'Submit CV';
+    }
+  }
+
+  // ── Employer requirement submission ──
+  async function handleEmployerSubmit(e) {
+    e.preventDefault();
+    const btn = document.getElementById('empSubmitBtn');
+    const errEl = document.getElementById('empError');
+    const successEl = document.getElementById('empSuccess');
+    if (errEl) errEl.classList.add('hidden');
+
+    const company = document.getElementById('empCompany').value.trim();
+    const contact = document.getElementById('empContact').value.trim();
+    const email = document.getElementById('empEmail').value.trim().toLowerCase();
+    const role = document.getElementById('empRole').value.trim();
+    const location = document.getElementById('empLocation').value.trim();
+    const jd = document.getElementById('empJd').value.trim();
+
+    if (!company) { showError(errEl, 'Company name is required'); return; }
+    if (!contact) { showError(errEl, 'Your name is required'); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showError(errEl, 'Enter a valid email'); return; }
+    if (!role) { showError(errEl, 'Role title is required'); return; }
+    if (!location) { showError(errEl, 'Location is required'); return; }
+    if (!jd) { showError(errEl, 'Job description is required'); return; }
+
+    btn.disabled = true; btn.textContent = 'Submitting…';
+
+    const payload = {
+      action: 'submitEmployerJob',
+      company: company,
+      contact: contact,
+      email: email,
+      phone: document.getElementById('empPhone').value.trim(),
+      role: role,
+      location: location,
+      salaryMin: document.getElementById('empSalaryMin').value.trim(),
+      salaryMax: document.getElementById('empSalaryMax').value.trim(),
+      jd: jd
+    };
+
+    // Optional JD file
+    const file = document.getElementById('empFile').files[0];
+    if (file && file.size <= 5 * 1024 * 1024) {
+      try {
+        payload.fileData = await readFileAsDataURL(file);
+        payload.fileName = file.name;
+      } catch (e) { /* skip attachment */ }
+    }
+
+    try {
+      const res = await ATS.post('submitEmployerJob', payload);
+      if (!res || !res.ok) {
+        showError(errEl, (res && res.error) || 'Submission failed');
+        btn.disabled = false; btn.textContent = 'Submit Requirement';
+        return;
+      }
+      document.getElementById('employerForm').querySelectorAll('.form-field, .form-row-2, .btn-submit').forEach(function (el) {
+        el.style.display = 'none';
+      });
+      successEl.classList.remove('hidden');
+    } catch (err) {
+      showError(errEl, 'Network error: ' + err.message);
+      btn.disabled = false; btn.textContent = 'Submit Requirement';
+    }
+  }
+
+  // ── Helpers ──
+  function showError(el, msg) {
+    if (!el) return;
+    el.textContent = msg;
+    el.classList.remove('hidden');
+  }
+
+  function validateIndianMobile(raw) {
+    const digits = String(raw || '').replace(/\D/g, '');
+    let n = digits;
+    if (digits.length === 12 && digits.startsWith('91')) n = digits.slice(2);
+    else if (digits.length === 11 && digits.startsWith('0')) n = digits.slice(1);
+    return /^[6-9]\d{9}$/.test(n) ? n : null;
+  }
+
+  function readFileAsDataURL(file) {
+    return new Promise(function (resolve, reject) {
+      const r = new FileReader();
+      r.onload = function () { resolve(r.result); };
+      r.onerror = function () { reject(new Error('Could not read file')); };
+      r.readAsDataURL(file);
+    });
+  }
+
+})();
+</script>
+
+</body>
+</html>
