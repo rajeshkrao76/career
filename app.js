@@ -632,7 +632,8 @@ const JobDetail = {
       this.el.applyForm.addEventListener("submit", e => { e.preventDefault(); self.submitApplication(); });
       // Auto-fill from portal profile if logged in
       try {
-        const tok = localStorage.getItem("raveone_portal_token");
+        const sessionRaw = localStorage.getItem("ats_candidate");
+        const tok = sessionRaw ? (JSON.parse(sessionRaw).token || "") : "";
         if (tok) {
           fetch(API_URL, {
             method: "POST",
