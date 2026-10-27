@@ -1,1141 +1,823 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Portal — Raveone Careers</title>
-  <meta name="robots" content="noindex">
-  <link rel="stylesheet" href="design-system.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;700;800;900&family=Roboto:wght@400;500;700&display=swap">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
-  <style>
-    .m3-content { padding: 24px; }
-    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
-    @media (max-width: 700px) { .stats { grid-template-columns: repeat(2, 1fr); } }
-    .card-list { display: flex; flex-direction: column; gap: 10px; }
-    .item { display: flex; gap: 12px; align-items: center; padding: 16px; }
-    .item .body { flex: 1; min-width: 0; }
-    .item .title { font-weight: 700; font-size: 14px; margin-bottom: 2px; }
-    .item .meta { font-size: 12px; color: #64748B; }
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .form-grid .full { grid-column: 1 / -1; }
-    @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
-    .hero-card { background: linear-gradient(135deg, #1A365D, #2A5487); color: #fff; padding: 24px; border-radius: 16px; margin-bottom: 20px; }
-    .hero-card h1 { color: #fff; }
-    .hero-card p { opacity: .9; font-size: 14px; margin-top: 4px; }
-    .empty-tab { text-align: center; padding: 48px 20px; color: #64748B; }
-    .strength { display: flex; gap: 3px; margin-top: 6px; }
-    .strength-bar { flex: 1; height: 4px; background: #E2E8F0; border-radius: 2px; transition: background .2s; }
-    .strength-bar.on-1 { background: #DC2626; }
-    .strength-bar.on-2 { background: #F59E0B; }
-    .strength-bar.on-3 { background: #16A34A; }
-
-    /* Photo uploader */
-    .photo-uploader { display: flex; align-items: center; gap: 18px; padding: 16px; background: #F8FAFC; border: 1px dashed #CBD5E1; border-radius: 12px; margin-bottom: 20px; }
-    .photo-preview { width: 88px; height: 88px; border-radius: 50%; background: #1A365D; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 800; overflow: hidden; flex-shrink: 0; }
-    .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
-    .photo-actions { flex: 1; }
-    .photo-actions h4 { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
-    .photo-actions p { font-size: 11.5px; color: #64748B; margin-bottom: 8px; }
-    .photo-btns { display: flex; gap: 8px; flex-wrap: wrap; }
-
-    /* Checklist */
-    .checklist { padding: 14px; border: 1px solid #E2E8F0; border-radius: 10px; margin-bottom: 16px; }
-    .check-row { display: flex; align-items: center; gap: 8px; padding: 5px 0; font-size: 12.5px; }
-    .check-icon { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
-    .check-icon.ok { background: #D1FAE5; color: #15803D; }
-    .check-icon.missing { background: #FEE2E2; color: #B91C1C; }
-
-    /* Modal */
-    .ats-modal-backdrop { position: fixed; inset: 0; background: rgba(15,23,42,.6); backdrop-filter: blur(4px); z-index: 100; display: none; align-items: flex-start; justify-content: center; padding: 24px 12px; overflow-y: auto; }
-    .ats-modal-backdrop.open { display: flex; }
-    .ats-modal { background: #fff; border-radius: 16px; padding: 24px; max-width: 620px; width: 100%; margin: auto; box-shadow: 0 30px 80px -20px rgba(0,0,0,.5); }
-    .ats-modal.wide { max-width: 900px; }
-    @media (max-width: 600px) { .ats-modal { padding: 18px; border-radius: 12px; } }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Portal | Raveone Careers</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * { font-family: 'Roboto', -apple-system, sans-serif; }
+  body { background: #F8FAFC; margin: 0; }
+  .tab-active { color: #1A365D; border-bottom-color: #1A365D !important; }
+</style>
 </head>
-<body class="m3">
-  <header class="m3-app-bar">
-    <div class="m3-app-bar-brand">
-      <div class="m3-brand-mark">R</div>
-      <div><div class="m3-brand-name">My Portal</div><div class="m3-brand-sub" id="userSub">—</div></div>
+<body>
+
+<!-- Auth gate (shown if not logged in) -->
+<div id="authGate" class="hidden min-h-screen flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl border border-slate-200 p-8 max-w-md w-full text-center">
+    <div class="text-4xl mb-3">🔐</div>
+    <h1 class="text-xl font-bold text-slate-900 mb-2">Please sign in</h1>
+    <p class="text-sm text-slate-500 mb-5">You need to log in to access your portal.</p>
+    <a href="portal-login.html" class="inline-block px-6 py-3 bg-[#1A365D] text-white rounded-lg font-bold text-sm" style="text-decoration:none;">Go to Login</a>
+  </div>
+</div>
+
+<!-- Main app -->
+<div id="app" class="hidden">
+  <!-- Header -->
+  <header class="bg-[#1A365D] text-white sticky top-0 z-30">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-white/15 flex items-center justify-center font-black">R</div>
+        <div>
+          <div class="font-black text-sm">Raveone Portal</div>
+          <div class="text-[11px] text-blue-200" id="hdrEmail">—</div>
+        </div>
+      </div>
+      <button onclick="logout()" class="text-xs font-bold text-blue-100 hover:text-white px-3 py-1.5 border border-white/20 rounded-lg">Logout</button>
     </div>
-    <div class="m3-app-bar-spacer"></div>
-    <div class="m3-app-bar-actions">
-      <a href="index.html" class="m3-btn m3-btn-text m3-btn-sm">Jobs</a>
-      <button class="m3-btn m3-btn-text m3-btn-sm" onclick="logout()">Sign out</button>
+    <!-- Tabs -->
+    <div class="max-w-6xl mx-auto px-4 overflow-x-auto">
+      <div class="flex gap-1 whitespace-nowrap">
+        <button data-tab="dashboard" class="tab tab-active px-4 py-3 text-xs font-bold border-b-2 border-transparent text-slate-300" onclick="switchTab('dashboard')">📊 Dashboard</button>
+        <button data-tab="jobs" class="tab px-4 py-3 text-xs font-bold border-b-2 border-transparent text-slate-300" onclick="switchTab('jobs')">🔍 Find Jobs</button>
+        <button data-tab="apps" class="tab px-4 py-3 text-xs font-bold border-b-2 border-transparent text-slate-300" onclick="switchTab('apps')">📄 Applications</button>
+        <button data-tab="interviews" class="tab px-4 py-3 text-xs font-bold border-b-2 border-transparent text-slate-300" onclick="switchTab('interviews')">📅 Interviews</button>
+        <button data-tab="docs" class="tab px-4 py-3 text-xs font-bold border-b-2 border-transparent text-slate-300" onclick="switchTab('docs')">📎 Documents</button>
+        <button data-tab="profile" class="tab px-4 py-3 text-xs font-bold border-b-2 border-transparent text-slate-300" onclick="switchTab('profile')">👤 Profile</button>
+        <button data-tab="alerts" class="tab px-4 py-3 text-xs font-bold border-b-2 border-transparent text-slate-300" onclick="switchTab('alerts')">🔔 Job Alerts</button>
+        <button data-tab="account" class="tab px-4 py-3 text-xs font-bold border-b-2 border-transparent text-slate-300" onclick="switchTab('account')">⚙️ Account</button>
+      </div>
     </div>
   </header>
 
-  <div class="m3-app-body">
-    <nav class="m3-rail">
-      <button class="m3-rail-item active" data-tab="dashboard" onclick="switchTo('dashboard')"><span class="m3-rail-icon material-symbols-outlined">dashboard</span><span class="m3-rail-label">Dashboard</span></button>
-      <button class="m3-rail-item" data-tab="findJobs" onclick="switchTo('findJobs')"><span class="m3-rail-icon material-symbols-outlined">search</span><span class="m3-rail-label">Find Jobs</span></button>
-      <button class="m3-rail-item" data-tab="cv" onclick="switchTo('cv')"><span class="m3-rail-icon material-symbols-outlined">description</span><span class="m3-rail-label">My CV</span></button>
-      <button class="m3-rail-item" data-tab="profile" onclick="switchTo('profile')"><span class="m3-rail-icon material-symbols-outlined">person</span><span class="m3-rail-label">Profile</span></button>
-      <button class="m3-rail-item" data-tab="applications" onclick="switchTo('applications')"><span class="m3-rail-icon material-symbols-outlined">work</span><span class="m3-rail-label">Applications</span></button>
-      <button class="m3-rail-item" data-tab="interviews" onclick="switchTo('interviews')"><span class="m3-rail-icon material-symbols-outlined">event</span><span class="m3-rail-label">Interviews</span></button>
-      <button class="m3-rail-item" data-tab="documents" onclick="switchTo('documents')"><span class="m3-rail-icon material-symbols-outlined">folder</span><span class="m3-rail-label">Documents</span></button>
-      <button class="m3-rail-item" data-tab="assessments" onclick="switchTo('assessments')"><span class="m3-rail-icon material-symbols-outlined">quiz</span><span class="m3-rail-label">Assessments</span></button>
-      <button class="m3-rail-item" data-tab="alerts" onclick="switchTo('alerts')"><span class="m3-rail-icon material-symbols-outlined">notifications</span><span class="m3-rail-label">Job Alerts</span></button>
-      <button class="m3-rail-item" data-tab="account" onclick="switchTo('account')"><span class="m3-rail-icon material-symbols-outlined">manage_accounts</span><span class="m3-rail-label">Account</span></button>
-    </nav>
-    <main class="m3-content" id="content">
-      <div class="empty-tab">Loading…</div>
-    </main>
+  <!-- Panels -->
+  <main class="max-w-6xl mx-auto p-4">
+    <!-- Dashboard -->
+    <section id="panel-dashboard" class="panel">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4" id="dashStats">
+        <div class="bg-white rounded-xl border border-slate-200 p-4 text-center"><div class="text-2xl font-black text-[#1A365D]" id="statTotal">—</div><div class="text-[10px] font-bold uppercase text-slate-500 mt-1">Applications</div></div>
+        <div class="bg-white rounded-xl border border-slate-200 p-4 text-center"><div class="text-2xl font-black text-emerald-700" id="statActive">—</div><div class="text-[10px] font-bold uppercase text-slate-500 mt-1">Active</div></div>
+        <div class="bg-white rounded-xl border border-slate-200 p-4 text-center"><div class="text-2xl font-black text-purple-700" id="statInterviews">—</div><div class="text-[10px] font-bold uppercase text-slate-500 mt-1">Interviews</div></div>
+        <div class="bg-white rounded-xl border border-slate-200 p-4 text-center"><div class="text-2xl font-black text-amber-700" id="statOffers">—</div><div class="text-[10px] font-bold uppercase text-slate-500 mt-1">Offers</div></div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-white rounded-xl border border-slate-200 p-5">
+          <h2 class="text-sm font-black text-slate-900 mb-3">Recent Applications</h2>
+          <div id="recentApps"><div class="text-center text-slate-400 text-xs py-6">Loading…</div></div>
+        </div>
+        <div class="bg-white rounded-xl border border-slate-200 p-5">
+          <h2 class="text-sm font-black text-slate-900 mb-3">Upcoming Interviews</h2>
+          <div id="upcomingInterviews"><div class="text-center text-slate-400 text-xs py-6">Loading…</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Find Jobs -->
+    <section id="panel-jobs" class="panel hidden">
+      <div class="bg-white rounded-xl border border-slate-200 p-4 mb-3 flex justify-between items-center flex-wrap gap-2">
+        <div>
+          <h1 class="text-lg font-black text-slate-900">Find Your Next Role</h1>
+          <p class="text-xs text-slate-500 mt-1">Apply to any open position with one click</p>
+        </div>
+        <input type="text" id="jobSearch" placeholder="Search jobs…" class="px-3 py-2 border border-slate-300 rounded-lg text-sm w-64" oninput="renderJobsList()">
+      </div>
+      <div id="jobsList" class="grid grid-cols-1 md:grid-cols-2 gap-3"><div class="text-center text-slate-400 text-xs py-8 col-span-2">Loading jobs…</div></div>
+    </section>
+
+    <!-- Applications -->
+    <section id="panel-apps" class="panel hidden">
+      <div class="bg-white rounded-xl border border-slate-200 p-4 mb-3">
+        <h1 class="text-lg font-black text-slate-900">Your Applications</h1>
+        <p class="text-xs text-slate-500 mt-1" id="appsSummary">—</p>
+      </div>
+      <div id="appsList" class="space-y-2"><div class="text-center text-slate-400 text-xs py-8">Loading…</div></div>
+    </section>
+
+    <!-- Interviews -->
+    <section id="panel-interviews" class="panel hidden">
+      <div class="bg-white rounded-xl border border-slate-200 p-4 mb-3">
+        <h1 class="text-lg font-black text-slate-900">Your Interviews</h1>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <h2 class="text-xs font-black uppercase text-emerald-700 mb-2">Upcoming</h2>
+          <div id="intUpcoming" class="space-y-2"><div class="text-center text-slate-400 text-xs py-6">Loading…</div></div>
+        </div>
+        <div>
+          <h2 class="text-xs font-black uppercase text-slate-500 mb-2">Past</h2>
+          <div id="intPast" class="space-y-2"><div class="text-center text-slate-400 text-xs py-6">Loading…</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Documents -->
+    <section id="panel-docs" class="panel hidden">
+      <div class="bg-white rounded-xl border border-slate-200 p-4 mb-3">
+        <div class="flex justify-between items-center flex-wrap gap-2">
+          <div>
+            <h1 class="text-lg font-black text-slate-900">Your Documents</h1>
+            <p class="text-xs text-slate-500 mt-1">Upload certificates and verification docs</p>
+          </div>
+          <button onclick="document.getElementById('docFile').click()" class="px-4 py-2 bg-[#1A365D] text-white rounded-lg text-xs font-bold">+ Upload</button>
+        </div>
+        <div class="mt-3 grid grid-cols-2 gap-2">
+          <select id="docType" class="px-3 py-2 border border-slate-300 rounded-lg text-sm">
+            <option>Resume</option><option>Education Certificate</option><option>ID Proof</option>
+            <option>Experience Letter</option><option>Offer Letter</option><option>Other</option>
+          </select>
+          <input type="file" id="docFile" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" class="hidden" onchange="uploadDoc(this)">
+        </div>
+      </div>
+      <div id="docsList" class="space-y-2"><div class="text-center text-slate-400 text-xs py-6">Loading…</div></div>
+    </section>
+
+    <!-- Profile -->
+    <section id="panel-profile" class="panel hidden">
+      <div class="bg-white rounded-xl border border-slate-200 p-4 mb-3">
+        <h1 class="text-lg font-black text-slate-900">Your Profile</h1>
+        <p class="text-xs text-slate-500 mt-1">This information is used when you apply for jobs</p>
+      </div>
+
+      <form id="profileForm" onsubmit="return saveProfile(event)" class="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
+        <div class="grid grid-cols-2 gap-3">
+          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Full Name</label><input type="text" id="pfName" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Phone</label><input type="tel" id="pfPhone" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Location</label><input type="text" id="pfLocation" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Education</label><input type="text" id="pfEducation" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Total Experience</label><input type="text" id="pfTotalExp" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Relevant Experience</label><input type="text" id="pfRelExp" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Current Company</label><input type="text" id="pfCurrentCompany" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Current Designation</label><input type="text" id="pfCurrentDesignation" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Current CTC</label><input type="text" id="pfCurrentCtc" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Expected CTC</label><input type="text" id="pfExpectedCtc" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Notice Period</label><input type="text" id="pfNotice" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Reason for Leaving</label><input type="text" id="pfReason" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+        </div>
+        <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Skills (comma separated)</label><input type="text" id="pfSkills" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="submit" id="pfSubmit" class="px-5 py-2 bg-[#1A365D] text-white rounded-lg text-sm font-bold">Save Profile</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Alerts -->
+    <section id="panel-alerts" class="panel hidden">
+      <div class="bg-white rounded-xl border border-slate-200 p-5 max-w-2xl">
+        <h1 class="text-lg font-black text-slate-900 mb-1">Job Alerts</h1>
+        <p class="text-xs text-slate-500 mb-4">Get weekly emails with new roles matching your criteria</p>
+        <form id="alertsForm" onsubmit="return saveAlerts(event)" class="space-y-3">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="alertEnabled" class="w-4 h-4">
+            <span class="text-sm font-bold text-slate-800">Enable weekly job alerts</span>
+          </label>
+          <div>
+            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Keywords (comma separated)</label>
+            <input type="text" id="alertKeywords" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" placeholder="e.g. CNC, VMC, Quality">
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Preferred Locations</label>
+            <input type="text" id="alertLocations" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" placeholder="e.g. Bangalore, Chennai">
+          </div>
+          <div class="flex justify-between items-center pt-2">
+            <span class="text-xs text-slate-500" id="alertLastSent"></span>
+            <button type="submit" id="alertSubmit" class="px-5 py-2 bg-[#1A365D] text-white rounded-lg text-sm font-bold">Save Preferences</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Account -->
+    <section id="panel-account" class="panel hidden">
+      <div class="bg-white rounded-xl border border-slate-200 p-5 max-w-2xl mb-4">
+        <h1 class="text-lg font-black text-slate-900 mb-1">Account</h1>
+        <p class="text-xs text-slate-500 mb-4">Manage your login details</p>
+        <div class="text-sm text-slate-700 space-y-1">
+          <div><span class="font-bold">Email:</span> <span id="acctEmail">—</span></div>
+          <div><span class="font-bold">Name:</span> <span id="acctName">—</span></div>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl border border-slate-200 p-5 max-w-2xl">
+        <h2 class="text-sm font-black text-slate-900 mb-3">Change Password</h2>
+        <form id="pwdForm" onsubmit="return changePassword(event)" class="space-y-3">
+          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Current Password</label><input type="password" id="pwdCurrent" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">New Password</label><input type="password" id="pwdNew" required minlength="8" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"><p class="text-[11px] text-slate-500 mt-1">Min 8 chars, 1 letter, 1 number</p></div>
+          <div class="flex justify-end"><button type="submit" id="pwdSubmit" class="px-5 py-2 bg-[#1A365D] text-white rounded-lg text-sm font-bold">Change Password</button></div>
+        </form>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- ============================================================ -->
+<!-- PORTAL APPLY MODAL -->
+<!-- ============================================================ -->
+<div id="portalApplyModal" class="fixed inset-0 z-50 hidden" style="background:rgba(15,23,42,.6);backdrop-filter:blur(4px);">
+  <div class="flex items-start justify-center min-h-screen p-4 pt-8 overflow-y-auto">
+    <div class="bg-white rounded-2xl max-w-2xl w-full shadow-2xl my-4">
+
+      <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+        <div>
+          <h2 class="text-lg font-bold text-slate-900">Apply for this role</h2>
+          <p class="text-xs text-slate-500 mt-0.5" id="paJobTitle">—</p>
+        </div>
+        <button onclick="closePortalApply()" class="text-slate-400 hover:text-slate-700 text-2xl leading-none">&times;</button>
+      </div>
+
+      <form id="portalApplyForm" onsubmit="return submitPortalApplication(event)" class="px-6 py-5 space-y-4 max-h-[75vh] overflow-y-auto">
+
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 text-xs text-blue-900">
+          <b>Review your profile below.</b> Pre-filled from your existing profile. Update anything before submitting — this is what the recruiter will see.
+        </div>
+
+        <div>
+          <h3 class="text-xs font-black uppercase tracking-wider text-slate-500 mb-2">Personal Details</h3>
+          <div class="grid grid-cols-2 gap-3">
+            <div><label class="block text-xs font-bold text-slate-600 mb-1">Full Name *</label><input type="text" id="paName" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+            <div><label class="block text-xs font-bold text-slate-600 mb-1">Phone *</label><input type="tel" id="paPhone" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+            <div><label class="block text-xs font-bold text-slate-600 mb-1">Location</label><input type="text" id="paLocation" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+            <div><label class="block text-xs font-bold text-slate-600 mb-1">Education</label><input type="text" id="paEducation" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-xs font-black uppercase tracking-wider text-slate-500 mb-2">Professional Details</h3>
+          <div class="grid grid-cols-2 gap-3">
+            <div><label class="block text-xs font-bold text-slate-600 mb-1">Total Experience</label><input type="text" id="paTotalExp" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+            <div><label class="block text-xs font-bold text-slate-600 mb-1">Relevant Experience</label><input type="text" id="paRelExp" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+            <div><label class="block text-xs font-bold text-slate-600 mb-1">Current Company</label><input type="text" id="paCurrentCompany" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+            <div><label class="block text-xs font-bold text-slate-600 mb-1">Current Designation</label><input type="text" id="paCurrentDesignation" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+            <div><label class="block text-xs font-bold text-slate-600 mb-1">Current CTC</label><input type="text" id="paCurrentCtc" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+            <div><label class="block text-xs font-bold text-slate-600 mb-1">Expected CTC</label><input type="text" id="paExpectedCtc" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+            <div><label class="block text-xs font-bold text-slate-600 mb-1">Notice Period</label><input type="text" id="paNotice" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+            <div><label class="block text-xs font-bold text-slate-600 mb-1">Reason for Leaving</label><input type="text" id="paReason" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+          </div>
+          <div class="mt-3"><label class="block text-xs font-bold text-slate-600 mb-1">Skills (comma separated)</label><input type="text" id="paSkills" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+        </div>
+
+        <div>
+          <h3 class="text-xs font-black uppercase tracking-wider text-slate-500 mb-2">Resume</h3>
+          <div id="paResumeExisting" class="hidden text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2 mb-2">
+            ✓ Resume on file. <a href="#" id="paResumeExistingLink" target="_blank" class="font-bold underline">View</a>
+          </div>
+          <input type="file" id="paResumeFile" accept=".pdf,.doc,.docx" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:font-semibold file:bg-[#1A365D] file:text-white file:cursor-pointer">
+          <p id="paResumeInfo" class="text-[11px] text-slate-500 mt-1">Optional — upload a new version to replace the existing.</p>
+        </div>
+
+        <div id="paError" class="hidden bg-red-50 border border-red-200 text-red-700 text-xs rounded-lg px-3 py-2"></div>
+
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closePortalApply()" class="flex-1 py-2.5 border border-slate-300 rounded-lg text-sm font-bold text-slate-700 hover:bg-slate-50">Cancel</button>
+          <button type="submit" id="paSubmitBtn" class="flex-1 py-2.5 bg-[#1A365D] text-white rounded-lg text-sm font-bold hover:bg-[#2A5487]">Submit Application</button>
+        </div>
+      </form>
+    </div>
   </div>
+</div>
 
-  <div class="ats-modal-backdrop" id="atsModal">
-    <div class="ats-modal" id="atsModalBody"></div>
-  </div>
+<script src="app.js"></script>
+<script>
+/* ============================================================
+   BOOT
+   ============================================================ */
+const TOKEN_KEY = 'ats_portal';
+let TOKEN = null;
+let PROFILE = null;
+let ALL_JOBS = [];
+let ALL_APPS = [];
+let APPLYING_JOB = null;
 
-  <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp" style="display:none">
+document.addEventListener('DOMContentLoaded', function() {
+  TOKEN = localStorage.getItem(TOKEN_KEY);
+  if (!TOKEN) {
+    document.getElementById('authGate').classList.remove('hidden');
+    return;
+  }
+  document.getElementById('app').classList.remove('hidden');
+  bootApp();
+});
 
-  <script src="app.js"></script>
-  <script>
-  (function () {
-    if (!ATS.requireAuth('candidate', 'portal-login.html')) return;
-    const session = ATS.getSession('candidate');
-    document.getElementById('userSub').textContent = session.name || session.email;
-    const content = document.getElementById('content');
-    let CURRENT_TAB = 'dashboard';
-
-    async function call(action, extra) {
-      return ATS.post(action, Object.assign({ token: session.token }, extra || {}));
+async function bootApp() {
+  try {
+    const res = await ATS.post('portalGetDashboard', { token: TOKEN });
+    if (!res || !res.ok) throw new Error((res && res.error) || 'Session expired');
+    renderDashboard(res);
+    if (res.user) {
+      document.getElementById('hdrEmail').textContent = res.user.email || '';
+      document.getElementById('acctEmail').textContent = res.user.email || '';
+      document.getElementById('acctName').textContent = res.user.name || '';
     }
-    function handleAuthError(res) {
-      return ATS.handleAuthError(res, 'candidate', 'portal-login.html');
+  } catch (e) {
+    console.error(e);
+    if (/session|not authenticated|invalid/i.test(e.message)) {
+      localStorage.removeItem(TOKEN_KEY);
+      location.href = 'portal-login.html';
+      return;
     }
-    window.logout = async function () {
-      await call('portalLogout');
-      ATS.clearSession('candidate');
-      window.location.replace('index.html');
-    };
+    alert('Could not load dashboard: ' + e.message);
+  }
+}
 
-    window.switchTo = function (tab) {
-      CURRENT_TAB = tab;
-      document.querySelectorAll('.m3-rail-item').forEach(b =>
-        b.classList.toggle('active', b.dataset.tab === tab));
-      render();
-    };
+function switchTab(name) {
+  document.querySelectorAll('.panel').forEach(function(p) {
+    p.classList.toggle('hidden', p.id !== 'panel-' + name);
+  });
+  document.querySelectorAll('.tab').forEach(function(t) {
+    t.classList.toggle('tab-active', t.dataset.tab === name);
+  });
+  if (name === 'dashboard') loadDashboard();
+  if (name === 'jobs') loadJobsTab();
+  if (name === 'apps') loadAppsTab();
+  if (name === 'interviews') loadInterviewsTab();
+  if (name === 'docs') loadDocsTab();
+  if (name === 'profile') loadProfileTab();
+  if (name === 'alerts') loadAlertsTab();
+}
 
-       function render() {
-      content.innerHTML = '<div class="empty-tab">Loading…</div>';
-      const fn = TABS[CURRENT_TAB];
-      if (fn) {
-        try {
-          fn();
-        } catch (e) {
-          console.error(e);
-          content.innerHTML = '<div class="empty-tab" style="color:#DC2626">Error loading page: ' + e.message + '</div>';
-        }
+function logout() {
+  if (!confirm('Sign out?')) return;
+  ATS.post('portalLogout', { token: TOKEN }).finally(function() {
+    localStorage.removeItem(TOKEN_KEY);
+    location.href = 'portal-login.html';
+  });
+}
+
+/* ============================================================
+   DASHBOARD
+   ============================================================ */
+async function loadDashboard() {
+  try {
+    const res = await ATS.post('portalGetDashboard', { token: TOKEN });
+    if (res && res.ok) renderDashboard(res);
+  } catch (e) {}
+}
+
+function renderDashboard(data) {
+  const s = data.stats || {};
+  document.getElementById('statTotal').textContent = s.totalApplications || 0;
+  document.getElementById('statActive').textContent = s.activeApplications || 0;
+  document.getElementById('statInterviews').textContent = s.upcomingInterviews || 0;
+  document.getElementById('statOffers').textContent = s.offers || 0;
+
+  // Recent apps
+  const apps = data.applications || [];
+  document.getElementById('recentApps').innerHTML = apps.length
+    ? apps.map(function(a) {
+        return '<div class="flex justify-between items-center py-2 border-b border-slate-100 text-xs">' +
+          '<div><div class="font-bold text-slate-900">' + esc(a.jobTitle || '—') + '</div>' +
+          '<div class="text-slate-500">' + esc(a.appId) + ' · ' + esc(a.appliedAt || '') + '</div></div>' +
+          '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800">' + esc(a.status || '—') + '</span></div>';
+      }).join('')
+    : '<div class="text-center text-slate-400 text-xs py-6">No applications yet</div>';
+
+  // Upcoming interviews
+  const ints = data.upcomingInterviews || [];
+  document.getElementById('upcomingInterviews').innerHTML = ints.length
+    ? ints.map(function(i) {
+        return '<div class="py-2 border-b border-slate-100 text-xs">' +
+          '<div class="font-bold text-slate-900">' + esc(i.position || i.jobTitle || '—') + '</div>' +
+          '<div class="text-slate-500">' + esc(i.date) + ' ' + esc(i.time) + ' · ' + esc(i.mode) + '</div></div>';
+      }).join('')
+    : '<div class="text-center text-slate-400 text-xs py-6">No interviews scheduled</div>';
+}
+
+/* ============================================================
+   JOBS TAB
+   ============================================================ */
+async function loadJobsTab() {
+  document.getElementById('jobsList').innerHTML = '<div class="text-center text-slate-400 text-xs py-8 col-span-2">Loading jobs…</div>';
+  try {
+    const res = await ATS.post('portalGetActiveJobs', { token: TOKEN });
+    ALL_JOBS = (res && res.jobs) || [];
+    renderJobsList();
+  } catch (e) {
+    document.getElementById('jobsList').innerHTML = '<div class="text-center text-red-500 text-xs py-8 col-span-2">' + esc(e.message) + '</div>';
+  }
+}
+
+function renderJobsList() {
+  const q = (document.getElementById('jobSearch').value || '').toLowerCase().trim();
+  const filtered = ALL_JOBS.filter(function(j) {
+    if (!q) return true;
+    return ((j.title || '') + ' ' + (j.company || '') + ' ' + (j.location || '') + ' ' + (j.category || '')).toLowerCase().indexOf(q) !== -1;
+  });
+
+  if (!filtered.length) {
+    document.getElementById('jobsList').innerHTML = '<div class="text-center text-slate-400 text-xs py-8 col-span-2">No jobs found</div>';
+    return;
+  }
+
+  document.getElementById('jobsList').innerHTML = filtered.map(function(j) {
+    return '<div class="bg-white rounded-xl border border-slate-200 p-4 hover:border-blue-300 transition">' +
+      '<div class="text-[10px] font-black uppercase text-blue-700 mb-1">' + esc(j.jobId) + '</div>' +
+      '<h3 class="font-bold text-slate-900 text-sm mb-1">' + esc(j.title) + '</h3>' +
+      '<div class="text-xs text-slate-600 mb-2">' + esc(j.company) + ' · ' + esc(j.location) + '</div>' +
+      '<div class="flex gap-1.5 flex-wrap mb-3 text-[10px]">' +
+        '<span class="px-2 py-0.5 bg-emerald-50 text-emerald-800 rounded font-bold">' + esc(j.salaryDisplay || 'Not disclosed') + '</span>' +
+        '<span class="px-2 py-0.5 bg-slate-100 text-slate-700 rounded font-bold">' + esc(j.employmentType || 'Full Time') + '</span>' +
+      '</div>' +
+      '<div class="flex gap-2">' +
+        '<a href="job.html?job=' + encodeURIComponent(j.jobId) + '" class="flex-1 py-2 border border-slate-300 rounded-lg text-xs font-bold text-slate-700 text-center hover:bg-slate-50" style="text-decoration:none">Details</a>' +
+        '<button onclick="openPortalApply(\'' + esc(j.jobId) + '\')" class="flex-1 py-2 bg-[#1A365D] text-white rounded-lg text-xs font-bold hover:bg-[#2A5487]">Apply</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+/* ============================================================
+   PORTAL APPLY
+   ============================================================ */
+async function openPortalApply(jobId) {
+  const job = ALL_JOBS.find(function(j) { return j.jobId === jobId; });
+  if (!job) { alert('Job not found'); return; }
+  APPLYING_JOB = job;
+
+  // Load profile
+  try {
+    const pRes = await ATS.post('portalGetProfile', { token: TOKEN });
+    PROFILE = (pRes && pRes.profile) || {};
+  } catch (e) {
+    alert('Could not load your profile: ' + e.message);
+    return;
+  }
+
+  const p = PROFILE;
+  document.getElementById('paJobTitle').textContent = job.title + (job.company ? ' · ' + job.company : '');
+  document.getElementById('paName').value = p.name || '';
+  document.getElementById('paPhone').value = p.phone || '';
+  document.getElementById('paLocation').value = p.location || '';
+  document.getElementById('paEducation').value = p.education || '';
+  document.getElementById('paTotalExp').value = p.totalExp || '';
+  document.getElementById('paRelExp').value = p.relExp || '';
+  document.getElementById('paCurrentCompany').value = p.currentCompany || '';
+  document.getElementById('paCurrentDesignation').value = p.currentDesignation || '';
+  document.getElementById('paCurrentCtc').value = p.currentCtc || '';
+  document.getElementById('paExpectedCtc').value = p.expectedCtc || '';
+  document.getElementById('paNotice').value = p.noticePeriod || '';
+  document.getElementById('paReason').value = p.reasonLeaving || '';
+  document.getElementById('paSkills').value = p.skills || '';
+
+  const existingBox = document.getElementById('paResumeExisting');
+  if (p.resumeLink) {
+    existingBox.classList.remove('hidden');
+    document.getElementById('paResumeExistingLink').href = p.resumeLink;
+  } else {
+    existingBox.classList.add('hidden');
+  }
+  document.getElementById('paResumeFile').value = '';
+  document.getElementById('paResumeInfo').textContent = p.resumeLink ? 'Optional — upload new version to replace.' : 'Please attach a resume.';
+  document.getElementById('paError').classList.add('hidden');
+
+  document.getElementById('portalApplyModal').classList.remove('hidden');
+}
+
+function closePortalApply() {
+  document.getElementById('portalApplyModal').classList.add('hidden');
+  APPLYING_JOB = null;
+}
+
+document.getElementById('paResumeFile')?.addEventListener('change', function(e) {
+  const f = e.target.files[0];
+  const info = document.getElementById('paResumeInfo');
+  if (!f) return;
+  if (f.size > 10 * 1024 * 1024) {
+    info.textContent = '❌ File too large (max 10 MB).';
+    info.className = 'text-[11px] text-red-600 mt-1 font-semibold';
+    e.target.value = '';
+    return;
+  }
+  info.textContent = '✓ ' + f.name + ' (' + (f.size / 1024).toFixed(0) + ' KB)';
+  info.className = 'text-[11px] text-emerald-700 mt-1 font-semibold';
+});
+
+async function submitPortalApplication(ev) {
+  ev.preventDefault();
+  const btn = document.getElementById('paSubmitBtn');
+  const errEl = document.getElementById('paError');
+  function showError(msg) {
+    errEl.textContent = msg;
+    errEl.classList.remove('hidden');
+    btn.disabled = false;
+    btn.textContent = 'Submit Application';
+  }
+  errEl.classList.add('hidden');
+
+  const name = document.getElementById('paName').value.trim();
+  const phone = document.getElementById('paPhone').value.trim();
+  if (!name) return showError('Name is required.');
+  const digits = phone.replace(/\D/g, '').replace(/^91/, '').replace(/^0/, '');
+  if (!/^[6-9]\d{9}$/.test(digits)) return showError('Please enter a valid 10-digit mobile number.');
+
+  const resumeFile = document.getElementById('paResumeFile').files[0];
+  if (!resumeFile && !(PROFILE && PROFILE.resumeLink)) {
+    return showError('Please attach a resume.');
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+
+  const payload = {
+    token: TOKEN,
+    jobId: APPLYING_JOB.jobId,
+    profile: {
+      name: name,
+      phone: phone,
+      location: document.getElementById('paLocation').value.trim(),
+      education: document.getElementById('paEducation').value.trim(),
+      totalExp: document.getElementById('paTotalExp').value.trim(),
+      relExp: document.getElementById('paRelExp').value.trim(),
+      currentCompany: document.getElementById('paCurrentCompany').value.trim(),
+      currentDesignation: document.getElementById('paCurrentDesignation').value.trim(),
+      currentCtc: document.getElementById('paCurrentCtc').value.trim(),
+      expectedCtc: document.getElementById('paExpectedCtc').value.trim(),
+      noticePeriod: document.getElementById('paNotice').value.trim(),
+      reasonLeaving: document.getElementById('paReason').value.trim(),
+      skills: document.getElementById('paSkills').value.trim()
+    }
+  };
+
+  if (resumeFile) {
+    try {
+      payload.resumeData = await readFileAsDataUrl(resumeFile);
+      payload.resumeName = resumeFile.name;
+    } catch (e) {
+      return showError('Could not read resume file: ' + e.message);
+    }
+  }
+
+  try {
+    const res = await ATS.post('portalApplyForJob', payload);
+    if (!res || res.ok !== true) {
+      return showError((res && res.error) || 'Submission failed.');
+    }
+    closePortalApply();
+    alert('✅ Application submitted!\n\nReference: ' + res.applicationId +
+          '\nRole: ' + res.jobTitle +
+          '\n\nYou can track this in your Applications tab.');
+    loadAppsTab();
+  } catch (e) {
+    showError('Network error: ' + (e.message || 'could not reach server'));
+  }
+}
+
+/* ============================================================
+   APPLICATIONS TAB
+   ============================================================ */
+async function loadAppsTab() {
+  document.getElementById('appsList').innerHTML = '<div class="text-center text-slate-400 text-xs py-8">Loading…</div>';
+  try {
+    const res = await ATS.post('portalGetApplications', { token: TOKEN });
+    ALL_APPS = (res && res.applications) || [];
+    const stats = (res && res.stats) || {};
+    document.getElementById('appsSummary').textContent =
+      (stats.total || 0) + ' total · ' + (stats.active || 0) + ' active · ' + (stats.closed || 0) + ' closed';
+
+    document.getElementById('appsList').innerHTML = ALL_APPS.length
+      ? ALL_APPS.map(function(a) {
+          return '<div class="bg-white rounded-xl border border-slate-200 p-4">' +
+            '<div class="flex justify-between items-start gap-2">' +
+            '<div class="flex-1 min-w-0">' +
+            '<div class="text-[10px] font-black text-blue-700">' + esc(a.appId) + '</div>' +
+            '<div class="font-bold text-slate-900 text-sm">' + esc(a.jobTitle) + '</div>' +
+            '<div class="text-xs text-slate-500">' + esc(a.jobLocation || '') + ' · Applied ' + esc(a.submittedDate) + '</div>' +
+            '</div>' +
+            '<span class="px-2 py-1 rounded text-[10px] font-bold bg-blue-100 text-blue-800">' + esc(a.status) + '</span>' +
+            '</div>' +
+            (a.canWithdraw ? '<div class="mt-2 text-right"><button onclick="withdrawApp(\'' + esc(a.appId) + '\')" class="text-[11px] font-bold text-red-600 hover:underline">Withdraw</button></div>' : '') +
+            '</div>';
+        }).join('')
+      : '<div class="text-center text-slate-400 text-xs py-8">No applications yet</div>';
+  } catch (e) {
+    document.getElementById('appsList').innerHTML = '<div class="text-center text-red-500 text-xs py-8">' + esc(e.message) + '</div>';
+  }
+}
+
+async function withdrawApp(appId) {
+  if (!confirm('Withdraw this application? This cannot be undone.')) return;
+  try {
+    const res = await ATS.post('portalWithdrawApplication', { token: TOKEN, appId: appId });
+    if (res && res.ok) { loadAppsTab(); }
+    else alert((res && res.error) || 'Failed to withdraw');
+  } catch (e) { alert(e.message); }
+}
+
+/* ============================================================
+   INTERVIEWS TAB
+   ============================================================ */
+async function loadInterviewsTab() {
+  document.getElementById('intUpcoming').innerHTML = '<div class="text-center text-slate-400 text-xs py-6">Loading…</div>';
+  document.getElementById('intPast').innerHTML = '<div class="text-center text-slate-400 text-xs py-6">Loading…</div>';
+  try {
+    const res = await ATS.post('portalGetInterviews', { token: TOKEN });
+    const up = (res && res.upcoming) || [];
+    const past = (res && res.past) || [];
+
+    document.getElementById('intUpcoming').innerHTML = up.length
+      ? up.map(function(i) {
+          return '<div class="bg-white rounded-xl border border-emerald-200 p-3 text-xs">' +
+            '<div class="font-bold text-slate-900">' + esc(i.jobTitle) + '</div>' +
+            '<div class="text-slate-600 mt-1">' + esc(i.date) + ' ' + esc(i.time) + ' · ' + esc(i.mode) + '</div>' +
+            '<div class="mt-2 flex gap-2">' +
+            '<button onclick="respondInterview(\'' + esc(i.interviewId) + '\',\'Confirmed\')" class="px-2 py-1 bg-emerald-600 text-white rounded text-[10px] font-bold">Confirm</button>' +
+            '<button onclick="respondInterview(\'' + esc(i.interviewId) + '\',\'Cancelled\')" class="px-2 py-1 bg-red-600 text-white rounded text-[10px] font-bold">Cancel</button>' +
+            '</div></div>';
+        }).join('')
+      : '<div class="text-center text-slate-400 text-xs py-6">No upcoming interviews</div>';
+
+    document.getElementById('intPast').innerHTML = past.length
+      ? past.map(function(i) {
+          return '<div class="bg-white rounded-xl border border-slate-200 p-3 text-xs">' +
+            '<div class="font-bold text-slate-900">' + esc(i.jobTitle) + '</div>' +
+            '<div class="text-slate-500">' + esc(i.date) + ' · ' + esc(i.company) + '</div></div>';
+        }).join('')
+      : '<div class="text-center text-slate-400 text-xs py-6">No past interviews</div>';
+  } catch (e) {
+    document.getElementById('intUpcoming').innerHTML = '<div class="text-center text-red-500 text-xs py-6">' + esc(e.message) + '</div>';
+  }
+}
+
+async function respondInterview(interviewId, response) {
+  if (!confirm('Respond "' + response + '" to this interview?')) return;
+  try {
+    const res = await ATS.post('portalRespondInterview', { token: TOKEN, interviewId: interviewId, response: response });
+    if (res && res.ok) { loadInterviewsTab(); }
+    else alert((res && res.error) || 'Failed');
+  } catch (e) { alert(e.message); }
+}
+
+/* ============================================================
+   DOCUMENTS TAB
+   ============================================================ */
+async function loadDocsTab() {
+  document.getElementById('docsList').innerHTML = '<div class="text-center text-slate-400 text-xs py-6">Loading…</div>';
+  try {
+    const res = await ATS.post('portalGetDocuments', { token: TOKEN });
+    const docs = (res && res.documents) || [];
+    document.getElementById('docsList').innerHTML = docs.length
+      ? docs.map(function(d) {
+          return '<div class="bg-white rounded-xl border border-slate-200 p-3 flex justify-between items-center text-xs">' +
+            '<div><div class="font-bold text-slate-900">' + esc(d.docName) + '</div>' +
+            '<div class="text-slate-500">' + esc(d.docType) + ' · ' + esc(d.uploadedAt) + '</div></div>' +
+            '<div class="flex gap-2"><a href="' + esc(d.driveUrl) + '" target="_blank" class="font-bold text-blue-600">View</a>' +
+            '<button onclick="deleteDoc(\'' + esc(d.docId) + '\')" class="font-bold text-red-600">Delete</button></div></div>';
+        }).join('')
+      : '<div class="text-center text-slate-400 text-xs py-6">No documents uploaded yet</div>';
+  } catch (e) {
+    document.getElementById('docsList').innerHTML = '<div class="text-center text-red-500 text-xs py-6">' + esc(e.message) + '</div>';
+  }
+}
+
+async function uploadDoc(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 10 * 1024 * 1024) { alert('File too large (max 10 MB)'); input.value = ''; return; }
+  const docType = document.getElementById('docType').value;
+  try {
+    const b64 = await readFileAsDataUrl(file);
+    const res = await ATS.post('portalUploadDocument', { token: TOKEN, docType: docType, fileData: b64, fileName: file.name });
+    if (res && res.ok) { alert('Uploaded!'); loadDocsTab(); }
+    else alert((res && res.error) || 'Upload failed');
+  } catch (e) { alert(e.message); }
+  input.value = '';
+}
+
+async function deleteDoc(docId) {
+  if (!confirm('Delete this document?')) return;
+  try {
+    const res = await ATS.post('portalDeleteDocument', { token: TOKEN, docId: docId });
+    if (res && res.ok) loadDocsTab();
+    else alert((res && res.error) || 'Failed');
+  } catch (e) { alert(e.message); }
+}
+
+/* ============================================================
+   PROFILE TAB
+   ============================================================ */
+async function loadProfileTab() {
+  try {
+    const res = await ATS.post('portalGetProfile', { token: TOKEN });
+    const p = (res && res.profile) || {};
+    PROFILE = p;
+    document.getElementById('pfName').value = p.name || '';
+    document.getElementById('pfPhone').value = p.phone || '';
+    document.getElementById('pfLocation').value = p.location || '';
+    document.getElementById('pfEducation').value = p.education || '';
+    document.getElementById('pfTotalExp').value = p.totalExp || '';
+    document.getElementById('pfRelExp').value = p.relExp || '';
+    document.getElementById('pfCurrentCompany').value = p.currentCompany || '';
+    document.getElementById('pfCurrentDesignation').value = p.currentDesignation || '';
+    document.getElementById('pfCurrentCtc').value = p.currentCtc || '';
+    document.getElementById('pfExpectedCtc').value = p.expectedCtc || '';
+    document.getElementById('pfNotice').value = p.noticePeriod || '';
+    document.getElementById('pfReason').value = p.reasonLeaving || '';
+    document.getElementById('pfSkills').value = p.skills || '';
+  } catch (e) { alert(e.message); }
+}
+
+async function saveProfile(ev) {
+  ev.preventDefault();
+  const btn = document.getElementById('pfSubmit');
+  btn.disabled = true; btn.textContent = 'Saving…';
+  try {
+    const res = await ATS.post('portalUpdateProfile', {
+      token: TOKEN,
+      profile: {
+        name: document.getElementById('pfName').value.trim(),
+        phone: document.getElementById('pfPhone').value.trim(),
+        location: document.getElementById('pfLocation').value.trim(),
+        education: document.getElementById('pfEducation').value.trim(),
+        totalExp: document.getElementById('pfTotalExp').value.trim(),
+        relExp: document.getElementById('pfRelExp').value.trim(),
+        currentCompany: document.getElementById('pfCurrentCompany').value.trim(),
+        currentDesignation: document.getElementById('pfCurrentDesignation').value.trim(),
+        currentCtc: document.getElementById('pfCurrentCtc').value.trim(),
+        expectedCtc: document.getElementById('pfExpectedCtc').value.trim(),
+        noticePeriod: document.getElementById('pfNotice').value.trim(),
+        reasonLeaving: document.getElementById('pfReason').value.trim(),
+        skills: document.getElementById('pfSkills').value.trim()
       }
-    }
-
-    window.showModal = function (html, wide) {
-      const modal = document.getElementById('atsModalBody');
-      modal.innerHTML = html;
-      modal.className = 'ats-modal' + (wide ? ' wide' : '');
-      document.getElementById('atsModal').classList.add('open');
-      document.body.style.overflow = 'hidden';
-    };
-    window.closeModal = function () {
-      document.getElementById('atsModal').classList.remove('open');
-      document.body.style.overflow = '';
-    };
-    document.getElementById('atsModal').addEventListener('click', e => {
-      if (e.target.id === 'atsModal') closeModal();
     });
-
-    /* ═══ DASHBOARD ═══ */
-    async function renderDashboard() {
-      const res = await call('portalGetDashboard');
-      if (handleAuthError(res)) return;
-           if (!res.ok) {
-        content.innerHTML = '<div class="empty-tab" style="color:#DC2626">Could not load jobs.<br>' + (res.error || 'Session may have expired.') + '</div>';
-        return;
-      }
-      const d = res;
-      const justApplied = (d.applications || []).filter(a =>
-        ['sourced', 'jd shared'].indexOf(String(a.status || '').toLowerCase()) !== -1
-      ).slice(0, 20);
-      const allUpcoming = (d.upcomingInterviews || []).slice().sort((a, b) =>
-        String(a.when || '').localeCompare(String(b.when || ''))
-      );
-
-      content.innerHTML = `
-        <div class="hero-card">
-          <h1 class="m3-h3">Hi ${ATS.esc(d.profile.name || 'there')} 👋</h1>
-          <p>${ATS.esc(d.profile.email || '')}</p>
-        </div>
-        <div class="stats">
-          <div class="m3-stat-card"><div class="m3-stat-label">Total</div><div class="m3-stat-value">${d.stats.totalApplications}</div><div class="m3-stat-hint">applications</div></div>
-          <div class="m3-stat-card"><div class="m3-stat-label">Active</div><div class="m3-stat-value">${d.stats.activeApplications}</div><div class="m3-stat-hint">in progress</div></div>
-          <div class="m3-stat-card"><div class="m3-stat-label">Interviews</div><div class="m3-stat-value">${d.stats.upcomingInterviews}</div><div class="m3-stat-hint">upcoming</div></div>
-          <div class="m3-stat-card"><div class="m3-stat-label">Offers</div><div class="m3-stat-value" style="color:#15803D">${d.stats.offers}</div><div class="m3-stat-hint">received</div></div>
-        </div>
-        <div class="m3-grid-2" style="gap:16px">
-          <div class="m3-card" style="padding:20px">
-            <h3 class="m3-h4" style="margin-bottom:4px">📥 Just Applied (${justApplied.length})</h3>
-            <p class="m3-text-muted" style="font-size:12px;margin-bottom:12px">Recent applications awaiting recruiter review</p>
-            <div style="max-height:420px;overflow-y:auto">
-              ${justApplied.length ? justApplied.map(a => `
-                <div style="padding:12px;border:1px solid #E2E8F0;border-radius:8px;margin-bottom:8px">
-                  <div style="font-weight:700;font-size:13px">${ATS.esc(a.jobTitle || 'Role')}</div>
-                  <div class="m3-text-muted" style="font-size:11.5px;margin-top:2px">${ATS.esc(a.jobId || '')} · Applied ${ATS.esc(a.appliedAt || '')}</div>
-                  <div style="margin-top:6px"><span class="m3-chip ${ATS.statusClass(a.status)}">${ATS.esc(a.status)}</span></div>
-                </div>
-              `).join('') : '<div class="m3-text-muted" style="font-size:13px;padding:20px;text-align:center">No new applications yet. <a href="#" onclick="switchTo('findJobs');return false;">Browse jobs →</a></div>'}
-            </div>
-          </div>
-          <div class="m3-card" style="padding:20px">
-            <h3 class="m3-h4" style="margin-bottom:4px">📅 Upcoming Interviews (${allUpcoming.length})</h3>
-            <p class="m3-text-muted" style="font-size:12px;margin-bottom:12px">All scheduled interviews from today onward</p>
-            <div style="max-height:420px;overflow-y:auto">
-              ${allUpcoming.length ? allUpcoming.map(i => `
-                <div style="padding:12px;border:1px solid #E2E8F0;border-radius:8px;margin-bottom:8px">
-                  <div style="font-weight:700;font-size:13px">${ATS.esc(i.position || 'Interview')}</div>
-                  <div class="m3-text-muted" style="font-size:11.5px;margin-top:2px">${ATS.esc(i.date || '')} · ${ATS.esc(i.time || '')} · ${ATS.esc(i.mode || '')}</div>
-                  <div class="m3-text-faint" style="font-size:11px;margin-top:2px">${ATS.esc(i.company || '')}</div>
-                </div>
-              `).join('') : '<div class="m3-text-muted" style="font-size:13px;padding:20px;text-align:center">No interviews scheduled.</div>'}
-            </div>
-          </div>
-        </div>
-      `;
-    }
-
-    /* ═══ FIND JOBS ═══ */
-     async function renderFindJobs() {
-      const res = await call('portalGetActiveJobs');
-      if (handleAuthError(res)) return;
-      
-      if (!res.ok) {
-        content.innerHTML = '<div class="empty-tab" style="color:#DC2626">Could not load jobs.<br><br>' + (res.error || 'Please try again later.') + '</div>';
-        return;
-      }
-
-      const jobs = res.jobs || [];
-      
-      let html = `
-        <div class="hero-card" style="margin-bottom:20px">
-          <h1 class="m3-h3">Find Your Next Role 🚀</h1>
-          <p>Browse our latest openings and apply directly with your portal profile.</p>
-        </div>
-        
-        <div style="margin-bottom:24px">
-          <button class="m3-btn m3-btn-outlined" style="width:100%; border-color:#1A365D; color:#1A365D" onclick="applyTalentPool()">
-            <span class="material-symbols-outlined">work</span> Submit General Application (Talent Pool)
-          </button>
-        </div>
-        
-        <h3 class="m3-h4" style="margin-bottom:12px">Active Openings (${jobs.length})</h3>
-        <div class="card-list">
-      `;
-
-      if (jobs.length === 0) {
-        html += '<div class="empty-tab">No active jobs right now. Check back later!</div>';
-      } else {
-        jobs.forEach(j => {
-          html += `
-            <div class="m3-card item" style="padding:16px; cursor:pointer; display:flex; justify-content:space-between; align-items:center" onclick="applyForJob('${j.jobId}', '${ATS.esc(j.title).replace(/'/g, "\\'")}')">
-              <div class="body">
-                <div class="title" style="font-size:15px; font-weight:800; color:#1A365D">${ATS.esc(j.title)}</div>
-                <div class="meta" style="margin-top:4px">
-                  <span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle">apartment</span> ${ATS.esc(j.company)} 
-                  &nbsp;·&nbsp; 
-                  <span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle">location_on</span> ${ATS.esc(j.location)}
-                </div>
-                <div class="meta" style="margin-top:4px;color:#15803D;font-weight:700">${ATS.esc(j.salaryDisplay)}</div>
-              </div>
-              <button class="m3-btn m3-btn-filled m3-btn-sm" style="pointer-events:none">Apply</button>
-            </div>
-          `;
-        });
-      }
-      
-      html += `</div>`;
-      content.innerHTML = html;
-    }
-
-    window.applyForJob = async function(jobId, jobTitle) {
-      if (!confirm('Apply for ' + jobTitle + '?\\n\\nWe will use your portal profile for this application.')) return;
-      
-      ATS.toast('Submitting application...');
-      const res = await call('portalApplyForJob', { jobId: jobId });
-      
-      if (res.ok) {
-        alert('✅ Application submitted successfully!\\n\\nReference: ' + res.applicationId);
-        switchTo('applications');
-      } else {
-        ATS.toast(res.error || 'Failed to apply', 'error');
-      }
-    };
-
-    window.applyTalentPool = async function() {
-      if (!confirm('Submit a General Application to our Talent Pool?')) return;
-      
-      ATS.toast('Submitting application...');
-      const res = await call('portalApplyForJob', { jobId: 'TALENT-POOL' });
-      
-      if (res.ok) {
-        alert('✅ General Application submitted successfully!\\n\\nReference: ' + res.applicationId);
-        switchTo('applications');
-      } else {
-        ATS.toast(res.error || 'Failed to apply', 'error');
-      }
-    };
-
-    /* ═══ CV BUILDER ═══ */
-    async function renderCV() {
-      const res = await call('portalGetProfile');
-      if (handleAuthError(res)) return;
-      if (!res.ok) { content.innerHTML = '<div class="empty-tab">Could not load profile</div>'; return; }
-      const p = res.profile || {};
-      const experience = Array.isArray(p.experience) ? p.experience : [];
-      const education = Array.isArray(p.educationList) ? p.educationList : [];
-      window._CV_EXP = experience;
-      window._CV_EDU = education;
-
-      const checks = [
-        { label: 'Photo uploaded',       ok: !!p.photoUrl },
-        { label: 'Full name',            ok: !!p.name },
-        { label: 'Contact (phone)',      ok: !!p.phone },
-        { label: 'Education summary',    ok: !!p.education },
-        { label: 'Total experience',     ok: !!p.totalExp },
-        { label: 'Key skills',           ok: !!p.skills },
-        { label: 'At least 1 job',       ok: experience.length > 0 },
-        { label: 'At least 1 education', ok: education.length > 0 },
-        { label: 'Certifications',       ok: !!p.certifications },
-        { label: 'Languages',            ok: !!p.languages }
-      ];
-      const doneCount = checks.filter(c => c.ok).length;
-
-      content.innerHTML = `
-        <div class="m3-flex m3-justify-between m3-items-center" style="margin-bottom:16px;flex-wrap:wrap;gap:10px">
-          <div>
-            <h1 class="m3-h3">My CV</h1>
-            <p class="m3-text-muted" style="font-size:13px;margin-top:4px">Build your professional CV. Changes save automatically.</p>
-          </div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="m3-btn m3-btn-outlined" onclick="previewCV()">
-              <span class="material-symbols-outlined">visibility</span> Preview
-            </button>
-            <button class="m3-btn m3-btn-filled" onclick="downloadCV('pdf')">
-              <span class="material-symbols-outlined">download</span> PDF
-            </button>
-            <button class="m3-btn m3-btn-outlined" onclick="downloadCV('docx')">
-              <span class="material-symbols-outlined">description</span> DOCX
-            </button>
-          </div>
-        </div>
-
-        <div class="checklist">
-          <div class="m3-flex m3-justify-between m3-items-center" style="margin-bottom:8px">
-            <h3 class="m3-h4" style="margin:0">Completeness: ${doneCount}/${checks.length}</h3>
-            <span class="m3-chip ${doneCount === checks.length ? 'm3-chip-success' : doneCount >= 6 ? 'm3-chip-warning' : 'm3-chip-error'}">${Math.round(doneCount / checks.length * 100)}%</span>
-          </div>
-          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:4px 16px">
-            ${checks.map(c => `
-              <div class="check-row">
-                <span class="check-icon ${c.ok ? 'ok' : 'missing'}">${c.ok ? '✓' : '✗'}</span>
-                <span style="${c.ok ? 'color:#475569' : 'color:#B91C1C;font-weight:600'}">${c.label}</span>
-              </div>
-            `).join('')}
-          </div>
-          ${doneCount < checks.length ? `<button class="m3-btn m3-btn-text m3-btn-sm" style="margin-top:8px" onclick="switchTo('profile')">Complete in Profile →</button>` : ''}
-        </div>
-
-        <div class="m3-card" style="padding:20px;margin-bottom:16px">
-          <div class="m3-flex m3-justify-between m3-items-center" style="margin-bottom:12px">
-            <h3 class="m3-h4">Employment History</h3>
-            <button class="m3-btn m3-btn-filled m3-btn-sm" onclick="addExperience()">
-              <span class="material-symbols-outlined">add</span> Add Job
-            </button>
-          </div>
-          <div id="expList">
-            ${experience.length ? experience.map((e, i) => renderExpCard(e, i)).join('')
-              : '<div class="m3-text-muted" style="font-size:13px;padding:20px;text-align:center">No jobs yet. Click "Add Job" to start.</div>'}
-          </div>
-        </div>
-
-        <div class="m3-card" style="padding:20px">
-          <div class="m3-flex m3-justify-between m3-items-center" style="margin-bottom:12px">
-            <h3 class="m3-h4">Education</h3>
-            <button class="m3-btn m3-btn-filled m3-btn-sm" onclick="addEducation()">
-              <span class="material-symbols-outlined">add</span> Add Education
-            </button>
-          </div>
-          <div id="eduList">
-            ${education.length ? education.map((e, i) => renderEduCard(e, i)).join('')
-              : '<div class="m3-text-muted" style="font-size:13px;padding:20px;text-align:center">No education entries yet.</div>'}
-          </div>
-        </div>
-      `;
-    }
-
-    function renderExpCard(e, i) {
-      const from = e.startDate || '—';
-      const to = e.currentlyWorking ? 'Present' : (e.endDate || '—');
-      const duration = calcDuration(e.startDate, e.endDate, e.currentlyWorking);
-      const respCount = (e.description || []).length;
-      return `
-        <div class="m3-card" style="padding:14px;margin-bottom:10px;border:1px solid #E2E8F0">
-          <div class="m3-flex m3-justify-between" style="align-items:flex-start;gap:10px">
-            <div style="flex:1;min-width:0">
-              <div style="font-weight:700;font-size:14px">${ATS.esc(e.title || 'Untitled role')}</div>
-              <div class="m3-text-muted" style="font-size:12.5px;margin-top:2px">${ATS.esc(e.company || '')}${e.location ? ' · ' + ATS.esc(e.location) : ''}</div>
-              <div class="m3-text-faint" style="font-size:11px;margin-top:4px">${from} – ${to}${duration ? ' · ' + duration : ''}</div>
-              <div class="m3-text-muted" style="font-size:11px;margin-top:2px">${respCount} responsibilit${respCount === 1 ? 'y' : 'ies'}</div>
-            </div>
-            <div style="display:flex;gap:4px">
-              <button class="m3-btn m3-btn-icon" onclick="editExperience(${i})" title="Edit"><span class="material-symbols-outlined" style="font-size:18px">edit</span></button>
-              <button class="m3-btn m3-btn-icon" onclick="deleteExperience(${i})" title="Delete" style="color:#DC2626"><span class="material-symbols-outlined" style="font-size:18px">delete</span></button>
-            </div>
-          </div>
-        </div>`;
-    }
-
-    function renderEduCard(e, i) {
-      const range = (e.startDate || e.endDate) ? ((e.startDate || '?') + ' – ' + (e.endDate || 'Present')) : '';
-      return `
-        <div class="m3-card" style="padding:14px;margin-bottom:10px;border:1px solid #E2E8F0">
-          <div class="m3-flex m3-justify-between" style="align-items:flex-start;gap:10px">
-            <div style="flex:1;min-width:0">
-              <div style="font-weight:700;font-size:14px">${ATS.esc((e.degree || '') + (e.field ? ' ' + e.field : ''))}</div>
-              <div class="m3-text-muted" style="font-size:12.5px;margin-top:2px">${ATS.esc(e.institution || '')}</div>
-              <div class="m3-text-faint" style="font-size:11px;margin-top:4px">${ATS.esc(range)}${e.grade ? ' · ' + ATS.esc(e.grade) : ''}</div>
-            </div>
-            <div style="display:flex;gap:4px">
-              <button class="m3-btn m3-btn-icon" onclick="editEducation(${i})"><span class="material-symbols-outlined" style="font-size:18px">edit</span></button>
-              <button class="m3-btn m3-btn-icon" onclick="deleteEducation(${i})" style="color:#DC2626"><span class="material-symbols-outlined" style="font-size:18px">delete</span></button>
-            </div>
-          </div>
-        </div>`;
-    }
-
-    function calcDuration(from, to, current) {
-      if (!from) return '';
-      const fromParts = String(from).match(/(\d{4})(?:-(\d{2}))?/);
-      if (!fromParts) return '';
-      const fromY = parseInt(fromParts[1], 10);
-      const fromM = fromParts[2] ? parseInt(fromParts[2], 10) : 1;
-      let toY, toM;
-      if (current) { const now = new Date(); toY = now.getFullYear(); toM = now.getMonth() + 1; }
-      else {
-        const toParts = String(to || '').match(/(\d{4})(?:-(\d{2}))?/);
-        if (!toParts) return '';
-        toY = parseInt(toParts[1], 10);
-        toM = toParts[2] ? parseInt(toParts[2], 10) : 12;
-      }
-      let months = (toY - fromY) * 12 + (toM - fromM);
-      if (months < 0) return '';
-      if (months < 12) return months + ' mo';
-      const y = Math.floor(months / 12);
-      const m = months % 12;
-      return y + ' yr' + (m > 0 ? ' ' + m + ' mo' : '');
-    }
-
-    window.addExperience = () => openExpModal(-1);
-    window.editExperience = (i) => openExpModal(i);
-
-    function openExpModal(idx) {
-      const isEdit = idx >= 0;
-      const e = isEdit ? (window._CV_EXP || [])[idx] : {};
-      const respText = (e.description || []).join('\n');
-      showModal(`
-        <div class="m3-flex m3-justify-between m3-items-center" style="margin-bottom:16px">
-          <h3 class="m3-h3">${isEdit ? 'Edit' : 'Add'} Work Experience</h3>
-          <button class="m3-btn m3-btn-icon" onclick="closeModal()"><span class="material-symbols-outlined">close</span></button>
-        </div>
-        <div class="form-grid">
-          <div class="m3-field full"><label class="m3-field-label">Job Title *</label>
-            <input class="m3-input" id="exTitle" value="${ATS.esc(e.title||'')}" placeholder="e.g. Senior Engineer"></div>
-          <div class="m3-field full"><label class="m3-field-label">Company *</label>
-            <input class="m3-input" id="exCompany" value="${ATS.esc(e.company||'')}" placeholder="e.g. ABC Ltd"></div>
-          <div class="m3-field full"><label class="m3-field-label">Location</label>
-            <input class="m3-input" id="exLocation" value="${ATS.esc(e.location||'')}" placeholder="e.g. Bangalore"></div>
-          <div class="m3-field"><label class="m3-field-label">From *</label>
-            <input type="month" class="m3-input" id="exFrom" value="${ATS.esc(e.startDate||'')}"></div>
-          <div class="m3-field"><label class="m3-field-label">To</label>
-            <input type="month" class="m3-input" id="exTo" value="${ATS.esc(e.endDate||'')}" ${e.currentlyWorking ? 'disabled' : ''}></div>
-          <div class="full"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
-            <input type="checkbox" id="exCurrent" ${e.currentlyWorking ? 'checked' : ''} onchange="document.getElementById('exTo').disabled=this.checked">
-            <span>I currently work here</span></label></div>
-          <div class="m3-field full"><label class="m3-field-label">Responsibilities &amp; Achievements (one per line)</label>
-            <textarea class="m3-textarea" id="exResp" rows="5" placeholder="Led team of 5 engineers&#10;Reduced cycle time by 20%">${ATS.esc(respText)}</textarea></div>
-        </div>
-        <div class="m3-flex m3-justify-end m3-gap-2 m3-mt-4">
-          <button class="m3-btn m3-btn-text" onclick="closeModal()">Cancel</button>
-          <button class="m3-btn m3-btn-filled" onclick="saveExperience(${idx})">Save</button>
-        </div>
-      `);
-    }
-
-    window.saveExperience = async function (idx) {
-      const title = document.getElementById('exTitle').value.trim();
-      const company = document.getElementById('exCompany').value.trim();
-      const location = document.getElementById('exLocation').value.trim();
-      const from = document.getElementById('exFrom').value;
-      const to = document.getElementById('exTo').value;
-      const current = document.getElementById('exCurrent').checked;
-      const resp = document.getElementById('exResp').value.split('\n').map(s => s.trim()).filter(Boolean);
-      if (!title || !company) { ATS.toast('Job title and company are required', 'error'); return; }
-      if (!from) { ATS.toast('From date is required', 'error'); return; }
-      if (!current && !to) { ATS.toast('To date is required', 'error'); return; }
-      const entry = { title, company, location, startDate: from, endDate: current ? '' : to, currentlyWorking: current, description: resp };
-      const arr = (window._CV_EXP || []).slice();
-      if (idx >= 0) arr[idx] = entry; else arr.push(entry);
-      await persistCV({ experience: arr });
-    };
-
-    window.deleteExperience = async function (idx) {
-      if (!confirm('Remove this job entry?')) return;
-      const arr = (window._CV_EXP || []).slice();
-      arr.splice(idx, 1);
-      await persistCV({ experience: arr });
-    };
-
-    window.addEducation = () => openEduModal(-1);
-    window.editEducation = (i) => openEduModal(i);
-
-    function openEduModal(idx) {
-      const isEdit = idx >= 0;
-      const e = isEdit ? (window._CV_EDU || [])[idx] : {};
-      const opts = ['B.E.','B.Tech','B.Sc','B.Com','B.A','BBA','BCA','MBA','MCA','M.Tech','M.E.','M.Sc','M.Com','PhD','Diploma','ITI','12th','10th','Other'];
-      
-      const storedDegree = String(e.degree || "").trim();
-      const isCustom = storedDegree && opts.indexOf(storedDegree) === -1;
-      const selectedDegree = isCustom ? "Other" : storedDegree;
-      const customValue = isCustom ? storedDegree : "";
-
-      showModal(`
-        <div class="m3-flex m3-justify-between m3-items-center" style="margin-bottom:16px">
-          <h3 class="m3-h3">${isEdit ? 'Edit' : 'Add'} Education</h3>
-          <button class="m3-btn m3-btn-icon" onclick="closeModal()"><span class="material-symbols-outlined">close</span></button>
-        </div>
-        <div class="form-grid">
-          <div class="m3-field full"><label class="m3-field-label">Degree *</label>
-            <select class="m3-select" id="edDegree" onchange="toggleCustomDegree()">
-              ${opts.map(d => `<option ${selectedDegree === d ? 'selected' : ''}>${d}</option>`).join('')}
-            </select>
-          </div>
-          <div class="m3-field full" id="customDegreeWrap" style="${selectedDegree === 'Other' ? '' : 'display:none'}">
-            <label class="m3-field-label">Specify Degree *</label>
-            <input class="m3-input" id="edCustomDegree" value="${ATS.esc(customValue)}" placeholder="e.g. Post Graduate Diploma in Plastics Engineering">
-          </div>
-          <div class="m3-field full"><label class="m3-field-label">Field of Study *</label>
-            <input class="m3-input" id="edField" value="${ATS.esc(e.field||'')}" placeholder="e.g. Mechanical Engineering"></div>
-          <div class="m3-field full"><label class="m3-field-label">Institution *</label>
-            <input class="m3-input" id="edInst" value="${ATS.esc(e.institution||'')}" placeholder="e.g. XYZ University"></div>
-          <div class="m3-field"><label class="m3-field-label">From (year)</label>
-            <input type="number" class="m3-input" id="edFrom" value="${ATS.esc(e.startDate||'')}" placeholder="2015" min="1950" max="2030"></div>
-          <div class="m3-field"><label class="m3-field-label">To (year) *</label>
-            <input type="number" class="m3-input" id="edTo" value="${ATS.esc(e.endDate||'')}" placeholder="2019" min="1950" max="2030"></div>
-          <div class="m3-field full"><label class="m3-field-label">Grade / CGPA (optional)</label>
-            <input class="m3-input" id="edGrade" value="${ATS.esc(e.grade||'')}" placeholder="e.g. 8.5 CGPA"></div>
-        </div>
-        <div class="m3-flex m3-justify-end m3-gap-2 m3-mt-4">
-          <button class="m3-btn m3-btn-text" onclick="closeModal()">Cancel</button>
-          <button class="m3-btn m3-btn-filled" onclick="saveEducation(${idx})">Save</button>
-        </div>
-      `);
-    }
-
-    window.toggleCustomDegree = function () {
-      const sel = document.getElementById('edDegree').value;
-      const wrap = document.getElementById('customDegreeWrap');
-      if (wrap) wrap.style.display = (sel === 'Other' ? '' : 'none');
-    };
-
-    window.saveEducation = async function (idx) {
-      const selectedDegree = document.getElementById('edDegree').value;
-      const field = document.getElementById('edField').value.trim();
-      const inst = document.getElementById('edInst').value.trim();
-      const from = document.getElementById('edFrom').value;
-      const to = document.getElementById('edTo').value;
-      const grade = document.getElementById('edGrade').value.trim();
-      
-      let degree = selectedDegree;
-      if (selectedDegree === 'Other') {
-        degree = document.getElementById('edCustomDegree').value.trim();
-        if (!degree) { ATS.toast('Please specify your degree', 'error'); return; }
-      }
-
-      if (!field || !inst) { ATS.toast('Field and institution are required', 'error'); return; }
-      if (!to) { ATS.toast('End year is required', 'error'); return; }
-      
-      const entry = { degree, field, institution: inst, startDate: from, endDate: to, grade };
-      const arr = (window._CV_EDU || []).slice();
-      if (idx >= 0) arr[idx] = entry; else arr.push(entry);
-      await persistCV({ educationList: arr });
-    };
-
-    window.deleteEducation = async function (idx) {
-      if (!confirm('Remove this education entry?')) return;
-      const arr = (window._CV_EDU || []).slice();
-      arr.splice(idx, 1);
-      await persistCV({ educationList: arr });
-    };
-
-    async function persistCV(payload) {
-      const res = await call('portalUpdateProfile', { profile: payload });
-      if (res.ok) { ATS.toast('CV updated', 'success'); closeModal(); renderCV(); }
-      else ATS.toast(res.error || 'Save failed', 'error');
-    }
-
-    window.previewCV = async function () {
-      ATS.toast('Generating preview…');
-      const res = await call('portalDownloadProfile', { format: 'pdf' });
-      if (!res.ok) { ATS.toast(res.error || 'Preview failed', 'error'); return; }
-      const bytes = Uint8Array.from(atob(res.base64), c => c.charCodeAt(0));
-      const blob = new Blob([bytes], { type: res.mimeType });
-      const url = URL.createObjectURL(blob);
-      showModal(`
-        <div class="m3-flex m3-justify-between m3-items-center" style="margin-bottom:12px">
-          <h3 class="m3-h3">CV Preview</h3>
-          <button class="m3-btn m3-btn-icon" onclick="closeModal(); URL.revokeObjectURL('${url}')"><span class="material-symbols-outlined">close</span></button>
-        </div>
-        <iframe src="${url}" style="width:100%;height:65vh;border:none;border-radius:8px;background:#F1F5F9" title="CV Preview"></iframe>
-        <div class="m3-flex m3-justify-end m3-mt-3">
-          <button class="m3-btn m3-btn-filled" onclick="downloadFromUrl('${url}', '${res.filename}')">
-            <span class="material-symbols-outlined">download</span> Download
-          </button>
-        </div>
-      `, true);
-    };
-
-    window.downloadFromUrl = function (url, filename) {
-      const a = document.createElement('a');
-      a.href = url; a.download = filename; a.click();
-    };
-
-    window.downloadCV = async function (format) {
-      ATS.toast('Preparing ' + format.toUpperCase() + '…');
-      const res = await call('portalDownloadProfile', { format });
-      if (!res.ok) { ATS.toast(res.error || 'Download failed', 'error'); return; }
-      const bytes = Uint8Array.from(atob(res.base64), c => c.charCodeAt(0));
-      const blob = new Blob([bytes], { type: res.mimeType });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = res.filename; a.click();
-      setTimeout(() => URL.revokeObjectURL(url), 1500);
-      ATS.toast('Downloaded', 'success');
-    };
-
-    /* ═══ PROFILE ═══ */
-    async function renderProfile() {
-      const res = await call('portalGetProfile');
-      if (handleAuthError(res)) return;
-      if (!res.ok) { content.innerHTML = '<div class="empty-tab">Could not load profile</div>'; return; }
-      const p = res.profile || {};
-      const initials = (p.name || 'U').split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
-      const relocateOpts = ['', 'Yes', 'No', 'Yes (travel only)', 'Prefers specific'];
-      const travelOpts = ['', 'Yes', 'No', 'Limited'];
-      const genderOpts = ['', 'Male', 'Female', 'Other', 'Prefer not to say'];
-
-      content.innerHTML = `
-        <div class="m3-flex m3-justify-between m3-items-center" style="margin-bottom:16px;flex-wrap:wrap;gap:10px">
-          <div>
-            <h1 class="m3-h3">My Profile</h1>
-            <p class="m3-text-muted" style="font-size:13px;margin-top:4px">Keep your information up to date</p>
-          </div>
-          <span class="m3-chip m3-chip-primary">${p.profileCompleteness || 0}% complete</span>
-        </div>
-
-        <div class="m3-card" style="padding:24px">
-          <div class="photo-uploader">
-            <div class="photo-preview" id="photoPreview">
-              ${p.photoUrl ? `<img src="${ATS.esc(p.photoUrl)}" alt="Profile photo">` : initials}
-            </div>
-            <div class="photo-actions">
-              <h4>Profile Photo</h4>
-              <p>JPG, PNG, or WEBP. Max 3 MB. Shows on your CV.</p>
-              <div class="photo-btns">
-                <button class="m3-btn m3-btn-filled m3-btn-sm" onclick="document.getElementById('photoInput').click()">
-                  <span class="material-symbols-outlined" style="font-size:16px">upload</span>
-                  ${p.photoUrl ? 'Replace Photo' : 'Upload Photo'}
-                </button>
-                ${p.photoUrl ? `<button class="m3-btn m3-btn-text m3-btn-sm" onclick="removePhoto()" style="color:#DC2626">Remove</button>` : ''}
-              </div>
-            </div>
-          </div>
-
-          <form id="profileForm" onsubmit="saveProfile(event)">
-            <h3 class="m3-h4" style="margin-bottom:12px">Identity</h3>
-            <div class="form-grid">
-              <div class="m3-field"><label class="m3-field-label">Full Name *</label><input class="m3-input" name="name" value="${ATS.esc(p.name||'')}" maxlength="100"></div>
-              <div class="m3-field"><label class="m3-field-label">Phone *</label><input class="m3-input" name="phone" value="${ATS.esc(p.phone||'')}" maxlength="13"></div>
-              <div class="m3-field"><label class="m3-field-label">Date of Birth</label><input type="date" class="m3-input" name="dateOfBirth" value="${ATS.esc(p.dateOfBirth||'')}" onchange="computeAge(this.value)"></div>
-              <div class="m3-field"><label class="m3-field-label">Age (auto)</label><input class="m3-input" id="ageDisplay" value="${p.age||''}" readonly style="background:#F1F5F9;color:#64748B"></div>
-              <div class="m3-field"><label class="m3-field-label">Gender</label>
-                <select class="m3-select" name="gender">${genderOpts.map(o => `<option ${p.gender === o ? 'selected' : ''}>${o}</option>`).join('')}</select>
-              </div>
-              <div class="m3-field"><label class="m3-field-label">Nationality</label><input class="m3-input" name="nationality" value="${ATS.esc(p.nationality||'')}" maxlength="50"></div>
-              <div class="m3-field full"><label class="m3-field-label">Current Location</label><input class="m3-input" name="location" value="${ATS.esc(p.location||'')}" maxlength="100"></div>
-            </div>
-
-            <h3 class="m3-h4" style="margin-top:20px;margin-bottom:12px">Career</h3>
-            <div class="form-grid">
-              <div class="m3-field full"><label class="m3-field-label">Education Summary</label><input class="m3-input" name="education" value="${ATS.esc(p.education||'')}" maxlength="200" placeholder="e.g. B.E. Mechanical, MBA Operations"></div>
-              <div class="m3-field"><label class="m3-field-label">Total Experience</label><input class="m3-input" name="totalExp" value="${ATS.esc(p.totalExp||'')}" maxlength="30" placeholder="e.g. 25 years"></div>
-              <div class="m3-field"><label class="m3-field-label">Relevant Experience</label><input class="m3-input" name="relExp" value="${ATS.esc(p.relExp||'')}" maxlength="30" placeholder="e.g. 20 years"></div>
-              <div class="m3-field"><label class="m3-field-label">Current CTC</label><input class="m3-input" name="currentCtc" value="${ATS.esc(p.currentCtc||'')}" maxlength="30" placeholder="e.g. 15 LPA"></div>
-              <div class="m3-field"><label class="m3-field-label">Expected CTC</label><input class="m3-input" name="expectedCtc" value="${ATS.esc(p.expectedCtc||'')}" maxlength="30" placeholder="e.g. 25 LPA"></div>
-              <div class="m3-field"><label class="m3-field-label">Notice Period</label><input class="m3-input" name="noticePeriod" value="${ATS.esc(p.noticePeriod||'')}" maxlength="50" placeholder="e.g. 30 days"></div>
-              <div class="m3-field"><label class="m3-field-label">Current Company</label><input class="m3-input" name="currentCompany" value="${ATS.esc(p.currentCompany||'')}" maxlength="200"></div>
-              <div class="m3-field"><label class="m3-field-label">Current Designation</label><input class="m3-input" name="currentDesignation" value="${ATS.esc(p.currentDesignation||'')}" maxlength="200"></div>
-              <div class="m3-field full"><label class="m3-field-label">Reason for Leaving</label><textarea class="m3-textarea" name="reasonLeaving" rows="2" maxlength="500">${ATS.esc(p.reasonLeaving||'')}</textarea></div>
-            </div>
-
-            <h3 class="m3-h4" style="margin-top:20px;margin-bottom:12px">Skills &amp; Preferences</h3>
-            <div class="form-grid">
-              <div class="m3-field full"><label class="m3-field-label">Skills * (comma-separated)</label>
-                <input class="m3-input" name="skills" value="${ATS.esc(p.skills||'')}" maxlength="1000" placeholder="e.g. CNC, VMC, GD&T, ISO 13485">
-              </div>
-              <div class="m3-field"><label class="m3-field-label">Certifications (pipe-separated)</label><input class="m3-input" name="certifications" value="${ATS.esc(p.certifications||'')}" maxlength="500" placeholder="e.g. Six Sigma | PMP"></div>
-              <div class="m3-field"><label class="m3-field-label">Machines (comma-separated)</label><input class="m3-input" name="machines" value="${ATS.esc(p.machines||'')}" maxlength="500"></div>
-              <div class="m3-field"><label class="m3-field-label">Languages Known</label><input class="m3-input" name="languages" value="${ATS.esc(p.languages||'')}" maxlength="200" placeholder="e.g. English, Hindi"></div>
-              <div class="m3-field"><label class="m3-field-label">Preferred Locations</label><input class="m3-input" name="preferredLocations" value="${ATS.esc(p.preferredLocations||'')}" maxlength="200"></div>
-              <div class="m3-field"><label class="m3-field-label">Willing to Relocate</label>
-                <select class="m3-select" name="relocate">${relocateOpts.map(o => `<option ${p.relocate === o ? 'selected' : ''}>${o}</option>`).join('')}</select>
-              </div>
-              <div class="m3-field"><label class="m3-field-label">Willing to Travel</label>
-                <select class="m3-select" name="willingToTravel">${travelOpts.map(o => `<option ${p.willingToTravel === o ? 'selected' : ''}>${o}</option>`).join('')}</select>
-              </div>
-            </div>
-
-            <h3 class="m3-h4" style="margin-top:20px;margin-bottom:12px">Links</h3>
-            <div class="form-grid">
-              <div class="m3-field"><label class="m3-field-label">LinkedIn URL</label><input class="m3-input" name="linkedin" value="${ATS.esc(p.linkedin||'')}" placeholder="https://linkedin.com/in/…"></div>
-              <div class="m3-field"><label class="m3-field-label">Portfolio URL</label><input class="m3-input" name="portfolioUrl" value="${ATS.esc(p.portfolioUrl||'')}" placeholder="https://…"></div>
-            </div>
-
-            <h3 class="m3-h4" style="margin-top:20px;margin-bottom:12px">Consent</h3>
-            <label style="display:flex;align-items:flex-start;gap:8px;cursor:pointer;font-size:13px;line-height:1.5">
-              <input type="checkbox" name="consent" ${p.consent ? 'checked' : ''} style="margin-top:3px">
-              <span>I consent to Raveone Consultants storing and processing my personal data for recruitment purposes in accordance with DPDPA.</span>
-            </label>
-
-            <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:24px">
-              <button type="button" class="m3-btn m3-btn-outlined" onclick="downloadCV('pdf')">
-                <span class="material-symbols-outlined">download</span> Download PDF
-              </button>
-              <button type="submit" class="m3-btn m3-btn-filled" id="saveProfileBtn">Save Profile</button>
-            </div>
-          </form>
-        </div>
-      `;
-
-      const photoInput = document.getElementById('photoInput');
-      photoInput.onchange = handlePhotoUpload;
-    }
-
-    window.computeAge = function (dob) {
-      const el = document.getElementById('ageDisplay');
-      if (!dob) { el.value = ''; return; }
-      const d = new Date(dob);
-      if (isNaN(d.getTime())) { el.value = ''; return; }
-      const now = new Date();
-      let age = now.getFullYear() - d.getFullYear();
-      const m = now.getMonth() - d.getMonth();
-      if (m < 0 || (m === 0 && now.getDate() < d.getDate())) age--;
-      el.value = age >= 0 && age <= 120 ? age : '';
-    };
-
-    async function handlePhotoUpload(e) {
-      const file = e.target.files && e.target.files[0];
-      if (!file) return;
-      if (file.size > 3 * 1024 * 1024) { ATS.toast('Photo must be under 3 MB', 'error'); return; }
-      if (!/^image\/(jpeg|png|webp)$/.test(file.type)) { ATS.toast('Only JPG, PNG, WEBP allowed', 'error'); return; }
-      const b64 = await ATS.fileToBase64(file);
-      ATS.toast('Uploading photo…');
-      const res = await call('portalUploadPhoto', { fileData: b64.base64, fileName: file.name });
-      if (res.ok) {
-        ATS.toast('Photo uploaded', 'success');
-        renderProfile();
-      } else {
-        ATS.toast(res.error || 'Upload failed', 'error');
-      }
-      e.target.value = '';
-    }
-
-    window.removePhoto = async function () {
-      if (!confirm('Remove profile photo?')) return;
-      const res = await call('portalUpdateProfile', { profile: { photoUrl: '' } });
-      if (res.ok) { ATS.toast('Photo removed'); renderProfile(); }
-      else ATS.toast(res.error || 'Failed', 'error');
-    };
-
-    window.saveProfile = async function (e) {
-      e.preventDefault();
-      const btn = document.getElementById('saveProfileBtn');
-      const fd = new FormData(e.target);
-      const profile = {};
-      ['name','phone','dateOfBirth','gender','nationality','location','education',
-       'totalExp','relExp','currentCtc','expectedCtc','noticePeriod','currentCompany',
-       'currentDesignation','reasonLeaving','skills','certifications','machines',
-       'languages','preferredLocations','relocate','willingToTravel','linkedin','portfolioUrl']
-        .forEach(k => { const v = fd.get(k); if (v !== null) profile[k] = v; });
-      
-      const consentEl = e.target.querySelector('input[name="consent"]');
-      profile.consent = !!(consentEl && consentEl.checked);
-
-      btn.disabled = true; btn.textContent = 'Saving…';
-      const res = await call('portalUpdateProfile', { profile });
-      btn.disabled = false; btn.textContent = 'Save Profile';
-      if (res.ok) { ATS.toast('Profile saved', 'success'); renderProfile(); }
-      else ATS.toast(res.error || 'Save failed', 'error');
-    };
-
-    /* ═══ APPLICATIONS ═══ */
-    async function renderApplications() {
-      const res = await call('portalGetApplications');
-      if (handleAuthError(res)) return;
-      if (!res.ok) { content.innerHTML = '<div class="empty-tab">Could not load</div>'; return; }
-      content.innerHTML = `
-        <h1 class="m3-h3" style="margin-bottom:16px">My Applications (${res.stats.total})</h1>
-        ${res.applications.length ? `<div class="card-list">${res.applications.map(a => `
-          <div class="m3-card item">
-            <div class="body">
-              <div class="title">${ATS.esc(a.jobTitle || 'Role')}</div>
-              <div class="meta">${ATS.esc(a.jobId)} · ${ATS.esc(a.submittedDate || '')} · ${ATS.esc(a.jobLocation || '')}</div>
-            </div>
-            <span class="m3-chip ${ATS.statusClass(a.status)}">${ATS.esc(a.status)}</span>
-            ${a.canWithdraw ? `<button class="m3-btn m3-btn-text m3-btn-sm" onclick="withdrawApp('${a.appId}')">Withdraw</button>` : ''}
-          </div>`).join('')}</div>` : `<div class="empty-tab">
-            <span class="material-symbols-outlined" style="font-size:56px;color:#94A3B8">description</span>
-            <p class="m3-mt-3">No applications yet.</p>
-            <button class="m3-btn m3-btn-filled m3-mt-3" onclick="switchTo('findJobs')">Browse jobs</button>
-          </div>`}`;
-    }
-
-    window.withdrawApp = async function (appId) {
-      if (!confirm('Withdraw this application?')) return;
-      const res = await call('portalWithdrawApplication', { appId });
-      if (res.ok) { ATS.toast('Application withdrawn', 'success'); renderApplications(); }
-      else ATS.toast(res.error || 'Could not withdraw', 'error');
-    };
-
-    /* ═══ INTERVIEWS ═══ */
-    async function renderInterviews() {
-      const res = await call('portalGetInterviews');
-      if (handleAuthError(res)) return;
-      if (!res.ok) { content.innerHTML = '<div class="empty-tab">Could not load</div>'; return; }
-      const upcoming = res.upcoming || [];
-      const past = res.past || [];
-      window._INTERVIEWS_CACHE = { upcoming, past };
-      content.innerHTML = `
-        <h1 class="m3-h3" style="margin-bottom:16px">Interviews</h1>
-        ${upcoming.length ? `<h3 class="m3-h4" style="margin-bottom:10px">Upcoming (${upcoming.length})</h3>
-        <div class="card-list" style="margin-bottom:24px">${upcoming.map((i, idx) => `
-          <div class="m3-card item">
-            <div class="body">
-              <div class="title">${ATS.esc(i.jobTitle || 'Interview')}</div>
-              <div class="meta">${ATS.esc(i.date || '')} · ${ATS.esc(i.time || '')} · ${ATS.esc(i.mode || '')} · ${ATS.esc(i.company || '')}</div>
-            </div>
-            <span class="m3-chip ${ATS.statusClass('interview-scheduled')}">${ATS.esc(i.candidateResponse || 'Pending')}</span>
-            <div style="display:flex;gap:6px;flex-wrap:wrap">
-              ${i.candidateResponse !== 'Confirmed' ? `<button class="m3-btn m3-btn-text m3-btn-sm" onclick="respondInterview(${idx}, 'upcoming', 'Confirmed')">Confirm</button>` : ''}
-              <button class="m3-btn m3-btn-text m3-btn-sm" onclick="openRescheduleModal(${idx})">Reschedule</button>
-            </div>
-          </div>`).join('')}</div>` : ''}
-        ${past.length ? `<h3 class="m3-h4" style="margin:20px 0 10px">Past (${past.length})</h3>
-        <div class="card-list">${past.slice(0, 20).map(i => `
-          <div class="m3-card item" style="opacity:.75">
-            <div class="body">
-              <div class="title">${ATS.esc(i.jobTitle || 'Interview')}</div>
-              <div class="meta">${ATS.esc(i.date || '')} · ${ATS.esc(i.mode || '')}</div>
-            </div>
-            <span class="m3-chip ${ATS.statusClass('interview-scheduled')}">${ATS.esc(i.candidateResponse || 'Completed')}</span>
-          </div>`).join('')}</div>` : ''}
-        ${(!upcoming.length && !past.length) ? `<div class="empty-tab">
-          <span class="material-symbols-outlined" style="font-size:56px;color:#94A3B8">event_busy</span>
-          <p class="m3-mt-3">No interviews scheduled.</p>
-        </div>` : ''}`;
-    }
-
-    window.respondInterview = async function (idx, bucket, response) {
-      const list = (window._INTERVIEWS_CACHE || {})[bucket] || [];
-      const iv = list[idx];
-      if (!iv) return;
-      if (!confirm('Set response to "' + response + '"?')) return;
-      const res = await call('portalRespondInterview', { interviewId: iv.interviewId, response: response });
-      if (res.ok) { ATS.toast('Response recorded', 'success'); renderInterviews(); }
-      else ATS.toast(res.error || 'Failed', 'error');
-    };
-
-    window.openRescheduleModal = function (idx) {
-      const iv = ((window._INTERVIEWS_CACHE || {}).upcoming || [])[idx];
-      if (!iv) return;
-      showModal(`
-        <div class="m3-flex m3-justify-between m3-items-center" style="margin-bottom:16px">
-          <div>
-            <h3 class="m3-h3">Request Reschedule</h3>
-            <p class="m3-text-muted" style="font-size:12px;margin-top:2px">${ATS.esc(iv.jobTitle)} · ${ATS.esc(iv.date)} ${ATS.esc(iv.time)}</p>
-          </div>
-          <button class="m3-btn m3-btn-icon" onclick="closeModal()"><span class="material-symbols-outlined">close</span></button>
-        </div>
-        <div class="m3-field" style="margin-bottom:12px"><label class="m3-field-label">Proposed Slot 1 *</label><input type="datetime-local" class="m3-input" id="rsSlot1"></div>
-        <div class="m3-field" style="margin-bottom:12px"><label class="m3-field-label">Proposed Slot 2 (optional)</label><input type="datetime-local" class="m3-input" id="rsSlot2"></div>
-        <div class="m3-field" style="margin-bottom:12px"><label class="m3-field-label">Proposed Slot 3 (optional)</label><input type="datetime-local" class="m3-input" id="rsSlot3"></div>
-        <div class="m3-field" style="margin-bottom:16px"><label class="m3-field-label">Reason (optional)</label><textarea class="m3-textarea" id="rsNote" rows="2"></textarea></div>
-        <div id="rsErr" style="color:#DC2626;font-size:12px;margin-bottom:8px"></div>
-        <div class="m3-flex m3-justify-end m3-gap-2">
-          <button class="m3-btn m3-btn-text" onclick="closeModal()">Cancel</button>
-          <button class="m3-btn m3-btn-filled" id="rsBtn" onclick="submitReschedule('${iv.interviewId}')">Submit Request</button>
-        </div>
-      `);
-    };
-
-    window.submitReschedule = async function (interviewId) {
-      const s1 = document.getElementById('rsSlot1').value;
-      const s2 = document.getElementById('rsSlot2').value;
-      const s3 = document.getElementById('rsSlot3').value;
-      const note = document.getElementById('rsNote').value.trim();
-      const errEl = document.getElementById('rsErr');
-      errEl.textContent = '';
-      const slots = [s1, s2, s3].filter(Boolean);
-      if (!slots.length) { errEl.textContent = 'Please propose at least one slot'; return; }
-      const btn = document.getElementById('rsBtn');
-      btn.disabled = true; btn.textContent = 'Submitting…';
-      const res = await call('portalRespondInterview', {
-        interviewId, response: 'Reschedule Requested', proposedSlots: slots, note
-      });
-      btn.disabled = false; btn.textContent = 'Submit Request';
-      if (!res.ok) { errEl.textContent = res.error || 'Failed'; return; }
-      ATS.toast('Reschedule request submitted', 'success');
-      closeModal();
-      renderInterviews();
-    };
-
-    /* ═══ DOCUMENTS ═══ */
-    async function renderDocuments() {
-      const res = await call('portalGetDocuments');
-      if (handleAuthError(res)) return;
-      if (!res.ok) { content.innerHTML = '<div class="empty-tab">Could not load</div>'; return; }
-      const docs = res.documents || [];
-      const types = res.types || [];
-      content.innerHTML = `
-        <div class="m3-flex m3-justify-between m3-items-center" style="margin-bottom:16px">
-          <h1 class="m3-h3">My Documents</h1>
-          <button class="m3-btn m3-btn-filled" onclick="showUploadDoc()">
-            <span class="material-symbols-outlined">upload</span> Upload
-          </button>
-        </div>
-        <div id="uploadDocPanel" class="m3-card" style="display:none;padding:20px;margin-bottom:16px">
-          <form class="form-grid" onsubmit="uploadDoc(event)">
-            <div class="m3-field"><label class="m3-field-label">Document Type</label>
-              <select class="m3-select" name="docType">${types.map(t => `<option>${ATS.esc(t)}</option>`).join('')}</select>
-            </div>
-            <div class="m3-field"><label class="m3-field-label">File (max 10 MB)</label>
-              <input type="file" class="m3-input" name="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" required>
-            </div>
-            <div class="full" style="display:flex;justify-content:flex-end;gap:8px">
-              <button type="button" class="m3-btn m3-btn-text" onclick="document.getElementById('uploadDocPanel').style.display='none'">Cancel</button>
-              <button type="submit" class="m3-btn m3-btn-filled" id="uploadBtn">Upload</button>
-            </div>
-          </form>
-        </div>
-        ${docs.length ? `<div class="card-list">${docs.map(d => `
-          <div class="m3-card item">
-            <span class="material-symbols-outlined" style="color:#1A365D;font-size:28px">description</span>
-            <div class="body">
-              <div class="title">${ATS.esc(d.docName)}</div>
-              <div class="meta">${ATS.esc(d.docType)} · ${ATS.esc(d.uploadedAt)} · ${Math.round((d.sizeBytes||0)/1024)} KB</div>
-            </div>
-            <a class="m3-btn m3-btn-text m3-btn-sm" href="${ATS.esc(d.driveUrl)}" target="_blank" rel="noopener">Open</a>
-            <button class="m3-btn m3-btn-text m3-btn-sm" onclick="delDoc('${d.docId}')" style="color:#DC2626">Delete</button>
-          </div>`).join('')}</div>`
-          : `<div class="empty-tab"><span class="material-symbols-outlined" style="font-size:56px;color:#94A3B8">folder_open</span>
-              <p class="m3-mt-3">No documents uploaded yet.</p></div>`}`;
-    }
-
-    window.showUploadDoc = () => document.getElementById('uploadDocPanel').style.display = 'block';
-
-    window.uploadDoc = async function (e) {
-      e.preventDefault();
-      const btn = document.getElementById('uploadBtn');
-      const fd = new FormData(e.target);
-      const file = fd.get('file');
-      if (!file || !file.size) return;
-      if (file.size > 9 * 1024 * 1024) { ATS.toast('File must be under 9 MB', 'error'); return; }
-      btn.disabled = true; btn.textContent = 'Uploading…';
-      const b64 = await ATS.fileToBase64(file);
-      const res = await call('portalUploadDocument', {
-        docType: fd.get('docType'),
-        fileData: 'data:' + b64.type + ';base64,' + b64.base64,
-        fileName: b64.name
-      });
-      btn.disabled = false; btn.textContent = 'Upload';
-      if (res.ok) { ATS.toast('Uploaded', 'success'); renderDocuments(); }
-      else ATS.toast(res.error || 'Upload failed', 'error');
-    };
-
-    window.delDoc = async function (docId) {
-      if (!confirm('Delete this document?')) return;
-      const res = await call('portalDeleteDocument', { docId });
-      if (res.ok) { ATS.toast('Deleted'); renderDocuments(); }
-      else ATS.toast(res.error || 'Delete failed', 'error');
-    };
-
-    /* ═══ ASSESSMENTS ═══ */
-    async function renderAssessments() {
-      const res = await call('portalGetAssessments');
-      if (handleAuthError(res)) return;
-      if (!res.ok) {
-        content.innerHTML = '<div class="empty-tab"><span class="material-symbols-outlined" style="font-size:56px;color:#94A3B8">quiz</span><p class="m3-mt-3">Assessments are not available right now.</p></div>';
-        return;
-      }
-      const list = res.assessments || [];
-      content.innerHTML = `
-        <h1 class="m3-h3" style="margin-bottom:16px">My Assessments (${list.length})</h1>
-        ${list.length ? `<div class="card-list">${list.map(a => `
-          <div class="m3-card" style="padding:16px">
-            <div class="m3-flex m3-justify-between" style="align-items:flex-start;gap:10px;margin-bottom:8px">
-              <div>
-                <div style="font-weight:700;font-size:14px">${ATS.esc(a.name)}</div>
-                <div class="m3-text-muted" style="font-size:12px;margin-top:2px">${ATS.esc(a.type || '')} · ${ATS.esc(a.mode || '')}</div>
-              </div>
-              <span class="m3-chip ${a.result === 'Pass' ? 'm3-chip-success' : a.result === 'Fail' ? 'm3-chip-error' : 'm3-chip-warning'}">${ATS.esc(a.result || a.status)}</span>
-            </div>
-            ${a.dueDate ? `<div class="m3-text-faint" style="font-size:11.5px;margin-bottom:6px">Due: ${ATS.esc(a.dueDate)}</div>` : ''}
-            ${a.instructions ? `<div class="m3-text-muted" style="font-size:12px;white-space:pre-line;margin-top:6px">${ATS.esc(a.instructions)}</div>` : ''}
-            ${a.score !== '' && a.score != null ? `<div style="margin-top:8px;font-size:13px"><b>Score:</b> ${ATS.esc(a.score)} / ${ATS.esc(a.maxScore)}</div>` : ''}
-            ${a.mode === 'External' && a.link ? `<a href="${ATS.esc(a.link)}" target="_blank" rel="noopener" class="m3-btn m3-btn-filled m3-btn-sm m3-mt-3">Open Assessment</a>` : ''}
-          </div>`).join('')}</div>`
-          : `<div class="empty-tab"><span class="material-symbols-outlined" style="font-size:56px;color:#94A3B8">quiz</span>
-              <p class="m3-mt-3">No assessments assigned.</p></div>`}`;
-    }
-
-    /* ═══ ALERTS ═══ */
-    async function renderAlerts() {
-      const res = await call('portalGetAlertPrefs');
-      if (handleAuthError(res)) return;
-      if (!res.ok) { content.innerHTML = '<div class="empty-tab">Could not load</div>'; return; }
-      content.innerHTML = `
-        <div class="m3-card" style="padding:24px;max-width:720px">
-          <h1 class="m3-h3" style="margin-bottom:4px">Job Alerts</h1>
-          <p class="m3-text-muted" style="margin-bottom:20px">Get a <b>weekly email every Monday</b> with new jobs matching your preferences.</p>
-          <form id="alertForm" onsubmit="saveAlerts(event)">
-            <div class="m3-field" style="margin-bottom:16px">
-              <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
-                <input type="checkbox" id="alertEnabled" ${res.enabled ? 'checked' : ''}>
-                <span class="m3-field-label" style="margin-bottom:0;text-transform:none;font-size:13px">Enable weekly job alerts</span>
-              </label>
-            </div>
-            <div class="form-grid">
-              <div class="m3-field full"><label class="m3-field-label">Keywords (comma-separated)</label>
-                <input class="m3-input" name="keywords" value="${ATS.esc(res.keywords||'')}" placeholder="e.g. CNC, VMC, Quality"></div>
-              <div class="m3-field full"><label class="m3-field-label">Preferred Locations</label>
-                <input class="m3-input" name="locations" value="${ATS.esc(res.locations||'')}" placeholder="e.g. Bangalore, Chennai"></div>
-            </div>
-            <p class="m3-text-caption" style="margin-top:12px">Leave keywords and locations blank to receive alerts for <b>all new jobs</b>.</p>
-            <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px">
-              <button type="submit" class="m3-btn m3-btn-filled" id="saveAlertBtn">Save Preferences</button>
-            </div>
-          </form>
-          ${res.lastSent ? `<p class="m3-text-caption" style="margin-top:16px">Last week's digest sent: ${ATS.esc(res.lastSent)}</p>` : '<p class="m3-text-caption" style="margin-top:16px">No digest sent yet.</p>'}
-        </div>`;
-    }
-
-    window.saveAlerts = async function (e) {
-      e.preventDefault();
-      const btn = document.getElementById('saveAlertBtn');
-      const fd = new FormData(e.target);
-      btn.disabled = true; btn.textContent = 'Saving…';
-      const res = await call('portalUpdateAlertPrefs', {
-        enabled: document.getElementById('alertEnabled').checked,
-        keywords: fd.get('keywords'), locations: fd.get('locations')
-      });
-      btn.disabled = false; btn.textContent = 'Save Preferences';
-      if (res.ok) ATS.toast('Preferences saved', 'success');
-      else ATS.toast(res.error || 'Save failed', 'error');
-    };
-
-    /* ═══ ACCOUNT ═══ */
-    async function renderAccount() {
-      content.innerHTML = `
-        <div class="m3-card" style="padding:24px;max-width:600px;margin-bottom:20px">
-          <h1 class="m3-h3" style="margin-bottom:4px">Account</h1>
-          <p class="m3-text-muted" style="margin-bottom:20px">${ATS.esc(session.email)}</p>
-          <h3 class="m3-h4" style="margin-bottom:12px">Change Password</h3>
-          <div class="m3-field" style="margin-bottom:12px"><label class="m3-field-label">Current Password</label><input type="password" class="m3-input" id="chCurPw" autocomplete="current-password"></div>
-          <div class="m3-field" style="margin-bottom:12px"><label class="m3-field-label">New Password</label>
-            <input type="password" class="m3-input" id="chNewPw" autocomplete="new-password" oninput="updatePwStrength()">
-            <div class="strength" id="chStrength"><div class="strength-bar"></div><div class="strength-bar"></div><div class="strength-bar"></div></div>
-          </div>
-          <div class="m3-field" style="margin-bottom:16px"><label class="m3-field-label">Confirm New Password</label><input type="password" class="m3-input" id="chConfirmPw" autocomplete="new-password"></div>
-          <div id="chErr" style="color:#DC2626;font-size:12px;margin-bottom:8px"></div>
-          <button class="m3-btn m3-btn-filled" id="chBtn" onclick="doChangePassword()">Update Password</button>
-        </div>`;
-    }
-
-    window.updatePwStrength = function () {
-      const s = ATS.passwordStrength(document.getElementById('chNewPw').value);
-      document.querySelectorAll('#chStrength .strength-bar').forEach((bar, i) => {
-        bar.className = 'strength-bar' + (i < s.score ? ' on-' + s.score : '');
-      });
-    };
-
-    window.doChangePassword = async function () {
-      const cur = document.getElementById('chCurPw').value;
-      const nw = document.getElementById('chNewPw').value;
-      const cf = document.getElementById('chConfirmPw').value;
-      const errEl = document.getElementById('chErr');
-      errEl.textContent = '';
-      if (!cur || !nw) { errEl.textContent = 'All fields are required'; return; }
-      if (nw !== cf) { errEl.textContent = 'New passwords do not match'; return; }
-      if (!ATS.passwordStrength(nw).valid) { errEl.textContent = 'Password does not meet requirements'; return; }
-      const btn = document.getElementById('chBtn');
-      btn.disabled = true; btn.textContent = 'Updating…';
-      const res = await call('portalChangePassword', { currentPassword: cur, newPassword: nw });
-      btn.disabled = false; btn.textContent = 'Update Password';
-      if (res.ok) {
-        ATS.toast('Password updated', 'success');
-        document.getElementById('chCurPw').value = '';
-        document.getElementById('chNewPw').value = '';
-        document.getElementById('chConfirmPw').value = '';
-        updatePwStrength();
-      } else errEl.textContent = res.error || 'Update failed';
-    };
-
-    /* ═══ TAB MAP ═══ */
-    const TABS = {
-      dashboard: renderDashboard,
-      findJobs: renderFindJobs,
-      cv: renderCV,
-      profile: renderProfile,
-      applications: renderApplications,
-      interviews: renderInterviews,
-      documents: renderDocuments,
-      assessments: renderAssessments,
-      alerts: renderAlerts,
-      account: renderAccount
-    };
-
-    // Check for direct apply URL (e.g., from career page)
-    const urlParams = new URLSearchParams(window.location.search);
-    const directJobId = urlParams.get('job');
-    const isTalent = urlParams.get('talent');
-    
-    if (directJobId || isTalent === 'true') {
-      switchTo('findJobs');
-      setTimeout(() => {
-        if (directJobId) {
-          if (confirm('You are applying for Job ID: ' + directJobId + '. Continue?')) {
-            applyForJob(directJobId, 'this role');
-          }
-        } else if (isTalent === 'true') {
-          if (confirm('Submit your profile to our Talent Pool?')) {
-            applyTalentPool();
-          }
-        }
-      }, 500);
+    if (res && res.ok) alert('Profile saved!');
+    else alert((res && res.error) || 'Save failed');
+  } catch (e) { alert(e.message); }
+  btn.disabled = false; btn.textContent = 'Save Profile';
+}
+
+/* ============================================================
+   ALERTS TAB
+   ============================================================ */
+async function loadAlertsTab() {
+  try {
+    const res = await ATS.post('portalGetAlertPrefs', { token: TOKEN });
+    const p = res || {};
+    document.getElementById('alertEnabled').checked = p.enabled === true;
+    document.getElementById('alertKeywords').value = p.keywords || '';
+    document.getElementById('alertLocations').value = p.locations || '';
+    document.getElementById('alertLastSent').textContent = p.lastSent ? 'Last sent: ' + p.lastSent : '';
+  } catch (e) { alert(e.message); }
+}
+
+async function saveAlerts(ev) {
+  ev.preventDefault();
+  const btn = document.getElementById('alertSubmit');
+  btn.disabled = true; btn.textContent = 'Saving…';
+  try {
+    const res = await ATS.post('portalUpdateAlertPrefs', {
+      token: TOKEN,
+      enabled: document.getElementById('alertEnabled').checked,
+      keywords: document.getElementById('alertKeywords').value.trim(),
+      locations: document.getElementById('alertLocations').value.trim()
+    });
+    if (res && res.ok) alert('Alert preferences saved!');
+    else alert((res && res.error) || 'Save failed');
+  } catch (e) { alert(e.message); }
+  btn.disabled = false; btn.textContent = 'Save Preferences';
+}
+
+/* ============================================================
+   ACCOUNT TAB
+   ============================================================ */
+async function changePassword(ev) {
+  ev.preventDefault();
+  const btn = document.getElementById('pwdSubmit');
+  const cur = document.getElementById('pwdCurrent').value;
+  const nw = document.getElementById('pwdNew').value;
+  if (!cur || !nw) return;
+  btn.disabled = true; btn.textContent = 'Changing…';
+  try {
+    const res = await ATS.post('portalChangePassword', {
+      token: TOKEN, currentPassword: cur, newPassword: nw
+    });
+    if (res && res.ok) {
+      alert('Password changed successfully.');
+      document.getElementById('pwdForm').reset();
     } else {
-      render();
+      alert((res && res.error) || 'Change failed');
     }
-  })();
-  </script>
+  } catch (e) { alert(e.message); }
+  btn.disabled = false; btn.textContent = 'Change Password';
+}
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+function esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+}
+
+function readFileAsDataUrl(file) {
+  return new Promise(function(resolve, reject) {
+    const r = new FileReader();
+    r.onload = function() { resolve(r.result); };
+    r.onerror = function() { reject(new Error('FileReader failed')); };
+    r.readAsDataURL(file);
+  });
+}
+</script>
 </body>
 </html>
