@@ -54,7 +54,7 @@
     <h1 class="title" id="title">Sign in</h1>
     <p class="subtitle" id="subtitle">Access your candidate portal</p>
 
-    <!-- ============ SIGN IN ============ -->
+    <!-- SIGN IN -->
     <div class="screen active" id="screen-signin">
       <div class="field">
         <label class="field-label">Email</label>
@@ -79,7 +79,7 @@
       </div>
     </div>
 
-    <!-- ============ REGISTER ============ -->
+    <!-- REGISTER -->
     <div class="screen" id="screen-register">
       <div class="field">
         <label class="field-label">Full Name <span style="color:#DC2626">*</span></label>
@@ -119,7 +119,7 @@
       </div>
     </div>
 
-    <!-- ============ FORGOT PASSWORD ============ -->
+    <!-- FORGOT PASSWORD -->
     <div class="screen" id="screen-forgot">
       <div class="info-banner">Enter your registered email. We'll send a 6-digit code to reset your password.</div>
       <div class="field">
@@ -133,7 +133,7 @@
       </div>
     </div>
 
-    <!-- ============ RESET PASSWORD ============ -->
+    <!-- RESET PASSWORD -->
     <div class="screen" id="screen-reset">
       <div class="info-banner">Enter the 6-digit code we sent to <b id="resetSentTo"></b>, then set your new password.</div>
       <div class="field">
@@ -165,7 +165,7 @@
       </div>
     </div>
 
-    <!-- ============ SUCCESS ============ -->
+    <!-- SUCCESS -->
     <div class="screen success-screen" id="screen-success">
       <div class="success-icon"><span class="material-symbols-outlined" style="font-size:36px">check</span></div>
       <h2 class="title" style="margin-bottom:8px" id="successTitle">You're in!</h2>
@@ -175,60 +175,23 @@
 
   <script src="app.js"></script>
   <script>
-  // ─────────────────────────────────────────────────────────────
-  // Guard: if app.js failed to load, show a clear error
-  // ─────────────────────────────────────────────────────────────
-  if (typeof ATS === 'undefined') {
-    document.body.innerHTML =
-      '<div style="padding:40px 20px;text-align:center;font-family:sans-serif;max-width:500px;margin:auto">' +
-      '<h2 style="color:#DC2626;margin-top:60px">Configuration Error</h2>' +
-      '<p style="color:#64748B">The portal could not load its API configuration (app.js).</p>' +
-      '<p style="color:#64748B">Please refresh the page.</p>' +
-      '<button onclick="location.reload()" style="margin-top:20px;padding:10px 24px;background:#1A365D;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer">Reload</button>' +
-      '</div>';
-  } else {
+  // ═══════════════════════════════════════════════════════════════
+  // GLOBAL STATE
+  // ═══════════════════════════════════════════════════════════════
+  var RESET_EMAIL = '';
 
-  let RESET_EMAIL = '';
-
-  // ─────────────────────────────────────────────────────────────
-  // BUG FIX: Robust Indian mobile validator
-  // Accepts: 9148330562, +919148330562, 919148330562,
-  //          09148330562, "+91 91483 30562", "91483-30562"
-  // ─────────────────────────────────────────────────────────────
-  function validateIndianMobile(raw) {
-    const original = String(raw || '').trim();
-    if (!original) return { valid: false, error: 'Phone number is required' };
-
-    const digits = original.replace(/\D/g, '');
-    const totalLen = digits.length;
-
-    let normalized = digits;
-    // Strip +91/91 prefix ONLY when the result is exactly 10 digits
-    if (digits.length === 12 && digits.startsWith('91')) {
-      normalized = digits.slice(2);
-    }
-    // Strip leading 0 ONLY when the result is exactly 10 digits
-    else if (digits.length === 11 && digits.startsWith('0')) {
-      normalized = digits.slice(1);
-    }
-
-    if (normalized.length !== 10) {
-      return {
-        valid: false,
-        error: 'Mobile must be 10 digits (you entered ' + totalLen + ' digit' +
-               (totalLen === 1 ? '' : 's') + ')'
-      };
-    }
-    if (!/^[6-9]/.test(normalized)) {
-      return { valid: false, error: 'Mobile must start with 6, 7, 8, or 9' };
-    }
-    return { valid: true, normalized: normalized };
-  }
+  // ═══════════════════════════════════════════════════════════════
+  // UI HELPERS (all defined at top level so inline onclick can find them)
+  // ═══════════════════════════════════════════════════════════════
 
   function goTo(name) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById('screen-' + name).classList.add('active');
-    const titles = {
+    console.log('[nav] →', name);
+    document.querySelectorAll('.screen').forEach(function (s) { s.classList.remove('active'); });
+    var screen = document.getElementById('screen-' + name);
+    if (!screen) { console.error('[nav] missing screen:', name); return; }
+    screen.classList.add('active');
+
+    var titles = {
       'signin':   ['Sign in', 'Access your candidate portal'],
       'register': ['Create account', 'Join the Raveone candidate portal'],
       'forgot':   ['Forgot password', "We'll help you reset it"],
@@ -237,29 +200,29 @@
     };
     document.getElementById('title').textContent = titles[name][0];
     document.getElementById('subtitle').textContent = titles[name][1];
-    ['signinError','regError','forgotError','resetError'].forEach(id => {
-      const e = document.getElementById(id); if (e) e.textContent = '';
+
+    ['signinError', 'regError', 'forgotError', 'resetError'].forEach(function (id) {
+      var e = document.getElementById(id); if (e) e.textContent = '';
     });
   }
 
   function togglePw(id, btn) {
-    const inp = document.getElementById(id);
-    const icon = btn.querySelector('.material-symbols-outlined');
+    var inp = document.getElementById(id);
+    var icon = btn.querySelector('.material-symbols-outlined');
     if (inp.type === 'password') { inp.type = 'text'; icon.textContent = 'visibility_off'; }
     else { inp.type = 'password'; icon.textContent = 'visibility'; }
   }
 
-  // Fallback if ATS.passwordStrength is unavailable
   function checkPasswordStrength(pw) {
-    if (typeof ATS !== 'undefined' && typeof ATS.passwordStrength === 'function') {
+    if (typeof ATS !== 'undefined' && ATS.passwordStrength) {
       return ATS.passwordStrength(pw);
     }
-    const checks = {
-      length: pw.length >= 8,
-      letter: /[a-zA-Z]/.test(pw),
-      number: /\d/.test(pw)
+    var checks = {
+      length: (pw || '').length >= 8,
+      letter: /[a-zA-Z]/.test(pw || ''),
+      number: /\d/.test(pw || '')
     };
-    const score = [checks.length, checks.letter, checks.number].filter(Boolean).length;
+    var score = [checks.length, checks.letter, checks.number].filter(Boolean).length;
     return {
       valid: checks.length && checks.letter && checks.number,
       score: score,
@@ -269,205 +232,296 @@
   }
 
   function updateStrength(pwId, barId, reqId) {
-    const pw = document.getElementById(pwId).value;
-    const s = checkPasswordStrength(pw);
-    document.querySelectorAll('#' + barId + ' .strength-bar').forEach((bar, i) => {
+    var pw = document.getElementById(pwId).value;
+    var s = checkPasswordStrength(pw);
+    document.querySelectorAll('#' + barId + ' .strength-bar').forEach(function (bar, i) {
       bar.className = 'strength-bar' + (i < s.score ? ' on-' + s.score : '');
     });
-    const txt = document.getElementById(pwId.replace('Password', 'StrengthText'));
+    var txt = document.getElementById(pwId.replace('Password', 'StrengthText'));
     if (txt) txt.textContent = pw ? (s.level === 'strong' ? 'Strong' : s.level === 'fair' ? 'Fair - add more' : 'Weak') : '';
-    const req = document.getElementById(reqId);
+    var req = document.getElementById(reqId);
     if (req) {
-      req.querySelectorAll('[data-check]').forEach(el => {
-        const key = el.dataset.check;
-        const ok = s.checks[key];
+      req.querySelectorAll('[data-check]').forEach(function (el) {
+        var key = el.dataset.check;
+        var ok = s.checks[key];
         el.textContent = (ok ? '\u2713 ' : '\u2717 ') + el.dataset.label;
         el.className = ok ? 'ok' : '';
       });
     }
   }
 
-  // ─────────────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════
   // SIGN IN
-  // ─────────────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════
+
   async function doSignIn() {
-    const email = document.getElementById('signinEmail').value.trim().toLowerCase();
-    const password = document.getElementById('signinPassword').value;
-    const errEl = document.getElementById('signinError');
+    console.log('[signin] clicked');
+    var email = document.getElementById('signinEmail').value.trim().toLowerCase();
+    var password = document.getElementById('signinPassword').value;
+    var errEl = document.getElementById('signinError');
     errEl.textContent = '';
 
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent = 'Enter a valid email'; return; }
     if (!password) { errEl.textContent = 'Enter your password'; return; }
 
-    const btn = document.getElementById('signinBtn');
+    var btn = document.getElementById('signinBtn');
     btn.disabled = true; btn.textContent = 'Signing in...';
 
     try {
-      const res = await ATS.post('portalLoginWithPassword', { email, password });
+      var res = await ATS.post('portalLoginWithPassword', { email: email, password: password });
       btn.disabled = false; btn.textContent = 'Sign In';
+      console.log('[signin] response:', res);
 
-      if (!res || !res.ok) { errEl.textContent = (res && res.error) || 'Sign in failed'; return; }
+      if (!res || !res.ok) {
+        errEl.textContent = (res && res.error) || 'Sign in failed';
+        return;
+      }
 
-      ATS.saveSession('candidate', { token: res.token, email: res.email, name: res.name, expiresAt: res.expiresAt });
+      ATS.saveSession('candidate', {
+        token: res.token, email: res.email, name: res.name, expiresAt: res.expiresAt
+      });
       showSuccess('Signed in as ' + res.name);
     } catch (e) {
       btn.disabled = false; btn.textContent = 'Sign In';
+      console.error('[signin] error:', e);
       errEl.textContent = 'Network error: ' + (e.message || 'please try again');
     }
   }
 
-  // ─────────────────────────────────────────────────────────────
-  // REGISTER — FIXED PHONE HANDLING
-  // ─────────────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════
+  // REGISTER
+  // ═══════════════════════════════════════════════════════════════
+
   async function doRegister() {
-    const name = document.getElementById('regName').value.trim();
-    const email = document.getElementById('regEmail').value.trim().toLowerCase();
-    const phoneRaw = document.getElementById('regPhone').value;
-    const password = document.getElementById('regPassword').value;
-    const errEl = document.getElementById('regError');
+    console.log('[register] clicked');
+    var name = document.getElementById('regName').value.trim();
+    var email = document.getElementById('regEmail').value.trim().toLowerCase();
+    var phoneRaw = document.getElementById('regPhone').value;
+    var password = document.getElementById('regPassword').value;
+    var errEl = document.getElementById('regError');
     errEl.textContent = '';
 
     if (!name) { errEl.textContent = 'Name is required'; return; }
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent = 'Enter a valid email'; return; }
 
-    // FIXED: robust validation with clear error
-    const phoneCheck = validateIndianMobile(phoneRaw);
-    if (!phoneCheck.valid) {
-      errEl.textContent = phoneCheck.error;
+    // Use global validator if available, else inline
+    var phone = null;
+    if (typeof validateIndianMobile === 'function') {
+      phone = validateIndianMobile(phoneRaw);
+    } else {
+      var digits = String(phoneRaw || '').replace(/\D/g, '');
+      var n = digits;
+      if (digits.length === 12 && digits.indexOf('91') === 0) n = digits.slice(2);
+      else if (digits.length === 11 && digits.charAt(0) === '0') n = digits.slice(1);
+      phone = /^[6-9]\d{9}$/.test(n) ? n : null;
+    }
+    if (!phone) {
+      errEl.textContent = 'Enter a valid 10-digit Indian mobile (e.g. 9148330562)';
       return;
     }
-    const phone = phoneCheck.normalized;   // 10-digit string
 
     if (!checkPasswordStrength(password).valid) {
       errEl.textContent = 'Password does not meet requirements';
       return;
     }
 
-    const btn = document.getElementById('regBtn');
+    var btn = document.getElementById('regBtn');
     btn.disabled = true; btn.textContent = 'Creating account...';
 
     try {
-      const res = await ATS.post('portalRegisterWithPassword', { email, password, name, phone });
+      var res = await ATS.post('portalRegisterWithPassword', {
+        email: email, password: password, name: name, phone: phone
+      });
       btn.disabled = false; btn.textContent = 'Create Account';
+      console.log('[register] response:', res);
 
-      if (!res || !res.ok) { errEl.textContent = (res && res.error) || 'Registration failed'; return; }
+      if (!res || !res.ok) {
+        errEl.textContent = (res && res.error) || 'Registration failed';
+        return;
+      }
 
-      ATS.saveSession('candidate', { token: res.token, email: res.email, name: res.name, expiresAt: res.expiresAt });
+      ATS.saveSession('candidate', {
+        token: res.token, email: res.email, name: res.name, expiresAt: res.expiresAt
+      });
       showSuccess('Welcome, ' + res.name + '!');
     } catch (e) {
       btn.disabled = false; btn.textContent = 'Create Account';
+      console.error('[register] error:', e);
       errEl.textContent = 'Network error: ' + (e.message || 'please try again');
     }
   }
 
-  // ─────────────────────────────────────────────────────────────
-  // FORGOT PASSWORD
-  // ─────────────────────────────────────────────────────────────
-  async function doForgotRequest() {
-    const email = document.getElementById('forgotEmail').value.trim().toLowerCase();
-    const errEl = document.getElementById('forgotError');
-    errEl.textContent = '';
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent = 'Enter a valid email'; return; }
+  // ═══════════════════════════════════════════════════════════════
+  // FORGOT PASSWORD — the function that was previously broken
+  // ═══════════════════════════════════════════════════════════════
 
-    const btn = document.getElementById('forgotBtn');
-    btn.disabled = true; btn.textContent = 'Sending...';
+  async function doForgotRequest() {
+    console.log('[forgot] clicked');   // ← if you don't see this in console, function is not bound
+
+    var email = document.getElementById('forgotEmail').value.trim().toLowerCase();
+    var errEl = document.getElementById('forgotError');
+    errEl.textContent = '';
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errEl.textContent = 'Enter a valid email';
+      return;
+    }
+
+    var btn = document.getElementById('forgotBtn');
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
 
     try {
-      const res = await ATS.post('portalRequestPasswordReset', { email });
-      btn.disabled = false; btn.textContent = 'Send Reset Code';
+      var res = await ATS.post('portalRequestPasswordReset', { email: email });
+      btn.disabled = false;
+      btn.textContent = 'Send Reset Code';
+      console.log('[forgot] response:', res);
 
-      if (!res || !res.ok) { errEl.textContent = (res && res.error) || 'Could not send code'; return; }
+      if (!res || !res.ok) {
+        errEl.textContent = (res && res.error) || 'Could not send code';
+        return;
+      }
 
       RESET_EMAIL = email;
       document.getElementById('resetSentTo').textContent = email;
-      document.getElementById('resetOtp').querySelector('input').focus();
+      var firstOtp = document.getElementById('resetOtp').querySelector('input');
+      if (firstOtp) firstOtp.focus();
       goTo('reset');
     } catch (e) {
-      btn.disabled = false; btn.textContent = 'Send Reset Code';
+      btn.disabled = false;
+      btn.textContent = 'Send Reset Code';
+      console.error('[forgot] error:', e);
       errEl.textContent = 'Network error: ' + (e.message || 'please try again');
     }
   }
 
-  // ─────────────────────────────────────────────────────────────
-  // OTP INPUTS
-  // ─────────────────────────────────────────────────────────────
-  const resetOtp = document.getElementById('resetOtp').querySelectorAll('input');
-  resetOtp.forEach((inp, i) => {
-    inp.addEventListener('input', () => {
-      inp.value = inp.value.replace(/\D/g, '').substring(0, 1);
-      inp.classList.toggle('filled', !!inp.value);
-      if (inp.value && i < 5) resetOtp[i + 1].focus();
-    });
-    inp.addEventListener('keydown', e => { if (e.key === 'Backspace' && !inp.value && i > 0) resetOtp[i - 1].focus(); });
-    inp.addEventListener('paste', e => {
-      const t = (e.clipboardData).getData('text').replace(/\D/g, '').substring(0, 6);
-      if (t.length === 6) { resetOtp.forEach((x, j) => { x.value = t[j]; x.classList.add('filled'); }); e.preventDefault(); }
-    });
-  });
-
-  // ─────────────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════
   // RESET PASSWORD
-  // ─────────────────────────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════
+
   async function doResetPassword() {
-    const code = Array.from(resetOtp).map(x => x.value).join('');
-    const newPassword = document.getElementById('resetPassword').value;
-    const errEl = document.getElementById('resetError');
+    console.log('[reset] clicked');
+    var otpInputs = document.getElementById('resetOtp').querySelectorAll('input');
+    var code = Array.from(otpInputs).map(function (x) { return x.value; }).join('');
+    var newPassword = document.getElementById('resetPassword').value;
+    var errEl = document.getElementById('resetError');
     errEl.textContent = '';
 
     if (!/^\d{6}$/.test(code)) { errEl.textContent = 'Enter the 6-digit code'; return; }
     if (!checkPasswordStrength(newPassword).valid) { errEl.textContent = 'Password does not meet requirements'; return; }
     if (!RESET_EMAIL) { errEl.textContent = 'Session expired. Please start over.'; goTo('forgot'); return; }
 
-    const btn = document.getElementById('resetBtn');
-    btn.disabled = true; btn.textContent = 'Resetting...';
+    var btn = document.getElementById('resetBtn');
+    btn.disabled = true;
+    btn.textContent = 'Resetting...';
 
     try {
-      const res = await ATS.post('portalResetPassword', { email: RESET_EMAIL, code, newPassword });
-      btn.disabled = false; btn.textContent = 'Reset Password';
+      var res = await ATS.post('portalResetPassword', {
+        email: RESET_EMAIL, code: code, newPassword: newPassword
+      });
+      btn.disabled = false;
+      btn.textContent = 'Reset Password';
+      console.log('[reset] response:', res);
 
-      if (!res || !res.ok) { errEl.textContent = (res && res.error) || 'Reset failed'; return; }
+      if (!res || !res.ok) {
+        errEl.textContent = (res && res.error) || 'Reset failed';
+        return;
+      }
 
       ATS.toast('Password reset. Please sign in.', 'success');
-      resetOtp.forEach(x => { x.value = ''; x.classList.remove('filled'); });
+      otpInputs.forEach(function (x) { x.value = ''; x.classList.remove('filled'); });
       document.getElementById('resetPassword').value = '';
       RESET_EMAIL = '';
       goTo('signin');
     } catch (e) {
-      btn.disabled = false; btn.textContent = 'Reset Password';
+      btn.disabled = false;
+      btn.textContent = 'Reset Password';
+      console.error('[reset] error:', e);
       errEl.textContent = 'Network error: ' + (e.message || 'please try again');
     }
   }
+
+  // ═══════════════════════════════════════════════════════════════
+  // SUCCESS
+  // ═══════════════════════════════════════════════════════════════
 
   function showSuccess(msg) {
     document.getElementById('successTitle').textContent = 'Welcome!';
     document.getElementById('successMsg').textContent = msg || 'Redirecting to your portal...';
     goTo('success');
-    setTimeout(() => window.location.replace('portal-app.html'), 900);
+    setTimeout(function () { window.location.replace('portal-app.html'); }, 900);
   }
 
-  // ─────────────────────────────────────────────────────────────
-  // Enter key handlers
-  // ─────────────────────────────────────────────────────────────
-  document.getElementById('signinPassword').addEventListener('keydown', e => { if (e.key === 'Enter') doSignIn(); });
-  document.getElementById('signinEmail').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('signinPassword').focus(); });
-  document.getElementById('forgotEmail').addEventListener('keydown', e => { if (e.key === 'Enter') doForgotRequest(); });
+  // ═══════════════════════════════════════════════════════════════
+  // BOOT — runs when DOM is ready
+  // ═══════════════════════════════════════════════════════════════
 
-  // ─────────────────────────────────────────────────────────────
-  // Auto-redirect if already logged in
-  // ─────────────────────────────────────────────────────────────
-  const urlParams = new URLSearchParams(window.location.search);
-  const hasApplyParam = (urlParams.get('job') || urlParams.get('talent'));
+  document.addEventListener('DOMContentLoaded', function () {
+    console.log('[boot] portal-login.html ready');
 
-  if (ATS.isLoggedIn('candidate')) {
-    let redirectUrl = 'portal-app.html';
-    if (urlParams.get('job')) redirectUrl += '?job=' + encodeURIComponent(urlParams.get('job'));
-    if (urlParams.get('talent')) redirectUrl += '?talent=' + encodeURIComponent(urlParams.get('talent'));
-    window.location.replace(redirectUrl);
-  } else if (hasApplyParam) {
-    goTo('register');
-  }
+    // Guard: app.js missing?
+    if (typeof ATS === 'undefined') {
+      document.body.innerHTML =
+        '<div style="padding:40px 20px;text-align:center;font-family:sans-serif;max-width:500px;margin:auto">' +
+        '<h2 style="color:#DC2626;margin-top:60px">Configuration Error</h2>' +
+        '<p style="color:#64748B">The login page could not load <code>app.js</code>.</p>' +
+        '<p style="color:#64748B">Please refresh the page or contact support.</p>' +
+        '<button onclick="location.reload()" style="margin-top:20px;padding:10px 24px;background:#1A365D;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer">Reload</button>' +
+        '</div>';
+      return;
+    }
 
-  } // end ATS guard
+    // Enter key on password
+    var signinPwd = document.getElementById('signinPassword');
+    if (signinPwd) {
+      signinPwd.addEventListener('keydown', function (e) { if (e.key === 'Enter') doSignIn(); });
+    }
+    var signinEmail = document.getElementById('signinEmail');
+    if (signinEmail) {
+      signinEmail.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') document.getElementById('signinPassword').focus();
+      });
+    }
+    var forgotEmail = document.getElementById('forgotEmail');
+    if (forgotEmail) {
+      forgotEmail.addEventListener('keydown', function (e) { if (e.key === 'Enter') doForgotRequest(); });
+    }
+
+    // OTP auto-advance
+    var otpInputs = document.querySelectorAll('#resetOtp input');
+    otpInputs.forEach(function (inp, i) {
+      inp.addEventListener('input', function () {
+        inp.value = inp.value.replace(/\D/g, '').substring(0, 1);
+        inp.classList.toggle('filled', !!inp.value);
+        if (inp.value && i < otpInputs.length - 1) otpInputs[i + 1].focus();
+      });
+      inp.addEventListener('keydown', function (e) {
+        if (e.key === 'Backspace' && !inp.value && i > 0) otpInputs[i - 1].focus();
+      });
+      inp.addEventListener('paste', function (e) {
+        var t = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').substring(0, 6);
+        if (t.length === 6) {
+          otpInputs.forEach(function (x, j) { x.value = t[j]; x.classList.add('filled'); });
+          e.preventDefault();
+        }
+      });
+    });
+
+    // Auto-redirect if already logged in
+    var urlParams = new URLSearchParams(window.location.search);
+    var hasApplyParam = urlParams.get('job') || urlParams.get('talent');
+
+    if (ATS.isLoggedIn('candidate')) {
+      console.log('[boot] already logged in — redirecting');
+      var redirectUrl = 'portal-app.html';
+      if (urlParams.get('job')) redirectUrl += '?job=' + encodeURIComponent(urlParams.get('job'));
+      if (urlParams.get('talent')) redirectUrl += '?talent=' + encodeURIComponent(urlParams.get('talent'));
+      window.location.replace(redirectUrl);
+    } else if (hasApplyParam) {
+      console.log('[boot] apply param detected — opening register');
+      goTo('register');
+    }
+  });
   </script>
 </body>
 </html>
