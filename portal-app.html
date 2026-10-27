@@ -60,9 +60,7 @@
   <!-- Panels -->
   <main class="max-w-6xl mx-auto p-4">
 
-    <!-- ============================== -->
     <!-- DASHBOARD -->
-    <!-- ============================== -->
     <section id="panel-dashboard" class="panel">
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
         <div class="bg-white rounded-xl border border-slate-200 p-4 text-center">
@@ -95,9 +93,7 @@
       </div>
     </section>
 
-    <!-- ============================== -->
     <!-- FIND JOBS -->
-    <!-- ============================== -->
     <section id="panel-jobs" class="panel hidden">
       <div class="bg-white rounded-xl border border-slate-200 p-4 mb-3 flex justify-between items-center flex-wrap gap-2">
         <div>
@@ -111,9 +107,7 @@
       </div>
     </section>
 
-    <!-- ============================== -->
     <!-- APPLICATIONS -->
-    <!-- ============================== -->
     <section id="panel-apps" class="panel hidden">
       <div class="bg-white rounded-xl border border-slate-200 p-4 mb-3">
         <h1 class="text-lg font-black text-slate-900">Your Applications</h1>
@@ -124,9 +118,7 @@
       </div>
     </section>
 
-    <!-- ============================== -->
     <!-- INTERVIEWS -->
-    <!-- ============================== -->
     <section id="panel-interviews" class="panel hidden">
       <div class="bg-white rounded-xl border border-slate-200 p-4 mb-3">
         <h1 class="text-lg font-black text-slate-900">Your Interviews</h1>
@@ -147,9 +139,7 @@
       </div>
     </section>
 
-    <!-- ============================== -->
     <!-- DOCUMENTS -->
-    <!-- ============================== -->
     <section id="panel-docs" class="panel hidden">
       <div class="bg-white rounded-xl border border-slate-200 p-4 mb-3">
         <div class="flex justify-between items-center flex-wrap gap-2">
@@ -176,9 +166,7 @@
       </div>
     </section>
 
-    <!-- ============================== -->
     <!-- PROFILE -->
-    <!-- ============================== -->
     <section id="panel-profile" class="panel hidden">
       <div class="bg-white rounded-xl border border-slate-200 p-4 mb-3">
         <h1 class="text-lg font-black text-slate-900">Your Profile</h1>
@@ -246,9 +234,7 @@
       </form>
     </section>
 
-    <!-- ============================== -->
     <!-- JOB ALERTS -->
-    <!-- ============================== -->
     <section id="panel-alerts" class="panel hidden">
       <div class="bg-white rounded-xl border border-slate-200 p-5 max-w-2xl">
         <h1 class="text-lg font-black text-slate-900 mb-1">Job Alerts</h1>
@@ -274,9 +260,7 @@
       </div>
     </section>
 
-    <!-- ============================== -->
     <!-- ACCOUNT -->
-    <!-- ============================== -->
     <section id="panel-account" class="panel hidden">
       <div class="bg-white rounded-xl border border-slate-200 p-5 max-w-2xl mb-4">
         <h1 class="text-lg font-black text-slate-900 mb-1">Account</h1>
@@ -420,7 +404,7 @@
 <script src="app.js"></script>
 <script>
 /* ============================================================
-   BOOT GUARD — Verify ATS is loaded before doing anything
+   BOOT GUARD
    ============================================================ */
 document.addEventListener('DOMContentLoaded', function() {
   if (typeof ATS === 'undefined' || !ATS || !ATS.API_URL) {
@@ -434,7 +418,12 @@ document.addEventListener('DOMContentLoaded', function() {
     return;
   }
 
-  TOKEN = localStorage.getItem(TOKEN_KEY);
+  // ── FIX: Read the JSON session saved by portal-login.html ──
+  const sessionRaw = localStorage.getItem(TOKEN_KEY);
+  let session = null;
+  try { session = sessionRaw ? JSON.parse(sessionRaw) : null; } catch (e) {}
+  TOKEN = session ? session.token : null;
+
   if (!TOKEN) {
     document.getElementById('authGate').classList.remove('hidden');
     return;
@@ -445,8 +434,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 /* ============================================================
    GLOBALS
+   FIX: TOKEN_KEY changed from 'ats_portal' to 'ats_candidate'
    ============================================================ */
-const TOKEN_KEY = 'ats_portal';
+const TOKEN_KEY = 'ats_candidate';
 let TOKEN = null;
 let PROFILE = null;
 let ALL_JOBS = [];
@@ -465,7 +455,7 @@ async function bootApp() {
 
     renderDashboard(res);
 
-    // ── FIX (Bug #1): backend returns `profile`, not `user` ──
+    // FIX: backend returns `profile`, not `user`
     const p = res.profile || {};
     document.getElementById('hdrEmail').textContent = p.email || '';
     document.getElementById('acctEmail').textContent = p.email || '';
@@ -507,13 +497,14 @@ function switchTab(name) {
 function logout() {
   if (!confirm('Sign out?')) return;
   ATS.post('portalLogout', { token: TOKEN }).finally(function() {
-    localStorage.removeItem(TOKEN_KEY);
+    // FIX: remove the correct key
+    localStorage.removeItem('ats_candidate');
     location.href = 'portal-login.html';
   });
 }
 
 /* ============================================================
-   DASHBOARD (with 30-second cache — Bug #9)
+   DASHBOARD (with 30-second cache)
    ============================================================ */
 async function loadDashboard(force) {
   if (!force && Date.now() - _dashLoadedAt < 30000) return;
@@ -665,7 +656,7 @@ function closePortalApply() {
   APPLYING_JOB = null;
 }
 
-// 5 MB cap (Bug #7)
+// 5 MB cap
 document.getElementById('paResumeFile')?.addEventListener('change', function(e) {
   const f = e.target.files[0];
   const info = document.getElementById('paResumeInfo');
@@ -683,7 +674,6 @@ document.getElementById('paResumeFile')?.addEventListener('change', function(e) 
 async function submitPortalApplication(ev) {
   ev.preventDefault();
 
-  // Bug #5 — guard against missing job
   if (!APPLYING_JOB) {
     alert('Session error. Please close this dialog and try again.');
     return;
@@ -747,8 +737,6 @@ async function submitPortalApplication(ev) {
     const res = await ATS.post('portalApplyForJob', payload);
     if (!res || res.ok !== true) {
       const errMsg = (res && res.error) || 'Submission failed. Please try again.';
-
-      // Bug #6 — broader duplicate detection
       const m = errMsg.match(/(APP-\d+)/);
       if (m) {
         const refId = m[1];
