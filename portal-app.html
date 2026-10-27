@@ -10,6 +10,28 @@
   * { font-family: 'Roboto', -apple-system, sans-serif; }
   body { background: #F8FAFC; margin: 0; }
   .tab-active { color: #fff; border-bottom-color: #fff !important; }
+  .edu-card, .exp-card { transition: all .15s; }
+  .edu-card:hover, .exp-card:hover { border-color: #3B82F6; }
+  .form-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: #475569; display: block; margin-bottom: 4px; }
+  .form-input { width: 100%; padding: 8px 12px; font-size: 13px; border: 1.5px solid #E2E8F0; border-radius: 8px; outline: none; font-family: inherit; box-sizing: border-box; }
+  .form-input:focus { border-color: #1A365D; box-shadow: 0 0 0 3px rgba(26,54,93,0.12); }
+  .cv-preview { max-width: 780px; margin: 0 auto; background: #fff; padding: 40px; font-family: Arial, sans-serif; color: #111827; }
+  .cv-preview h1 { font-size: 24px; font-weight: 800; margin: 0 0 4px; color: #111827; }
+  .cv-preview .cv-contact { font-size: 11px; color: #6B7280; margin-bottom: 4px; }
+  .cv-preview .cv-section { margin-top: 22px; }
+  .cv-preview .cv-section-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; color: #A16207; border-bottom: 1px solid #E8DDCB; padding-bottom: 4px; margin-bottom: 8px; }
+  .cv-preview .cv-ivory { background: #FAF7F2; border: 1px solid #E8DDCB; border-radius: 4px; padding: 10px 14px; font-size: 11px; line-height: 1.7; }
+  .cv-preview .cv-ivory strong { color: #A16207; }
+  .cv-preview .cv-entry { margin-bottom: 12px; }
+  .cv-preview .cv-entry-title { font-size: 12px; font-weight: 700; color: #111827; }
+  .cv-preview .cv-entry-meta { font-size: 10.5px; color: #6B7280; margin-top: 1px; }
+  .cv-preview .cv-entry-bullets { font-size: 11px; color: #111827; line-height: 1.6; margin-top: 4px; padding-left: 16px; }
+  .cv-preview .cv-entry-bullets li { margin-bottom: 2px; }
+  .cv-preview .cv-edu-grid { display: grid; grid-template-columns: 2fr 1.2fr 1fr; gap: 8px; font-size: 11px; padding: 6px 0; border-bottom: 1px solid #F1F5F9; }
+  .cv-preview .cv-edu-grid:last-child { border-bottom: none; }
+  .cv-preview .cv-edu-degree { font-weight: 700; }
+  .cv-preview .cv-edu-institution { color: #6B7280; }
+  .cv-preview .cv-edu-right { text-align: right; color: #A16207; font-weight: 600; }
 </style>
 </head>
 <body>
@@ -57,72 +79,38 @@
     <!-- DASHBOARD -->
     <section id="panel-dashboard" class="panel">
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-        <div class="bg-white rounded-xl border border-slate-200 p-4 text-center">
-          <div class="text-2xl font-black text-[#1A365D]" id="statTotal">—</div>
-          <div class="text-[10px] font-bold uppercase text-slate-500 mt-1">Applications</div>
-        </div>
-        <div class="bg-white rounded-xl border border-slate-200 p-4 text-center">
-          <div class="text-2xl font-black text-emerald-700" id="statActive">—</div>
-          <div class="text-[10px] font-bold uppercase text-slate-500 mt-1">Active</div>
-        </div>
-        <div class="bg-white rounded-xl border border-slate-200 p-4 text-center">
-          <div class="text-2xl font-black text-purple-700" id="statInterviews">—</div>
-          <div class="text-[10px] font-bold uppercase text-slate-500 mt-1">Interviews</div>
-        </div>
-        <div class="bg-white rounded-xl border border-slate-200 p-4 text-center">
-          <div class="text-2xl font-black text-amber-700" id="statOffers">—</div>
-          <div class="text-[10px] font-bold uppercase text-slate-500 mt-1">Offers</div>
-        </div>
+        <div class="bg-white rounded-xl border border-slate-200 p-4 text-center"><div class="text-2xl font-black text-[#1A365D]" id="statTotal">—</div><div class="text-[10px] font-bold uppercase text-slate-500 mt-1">Applications</div></div>
+        <div class="bg-white rounded-xl border border-slate-200 p-4 text-center"><div class="text-2xl font-black text-emerald-700" id="statActive">—</div><div class="text-[10px] font-bold uppercase text-slate-500 mt-1">Active</div></div>
+        <div class="bg-white rounded-xl border border-slate-200 p-4 text-center"><div class="text-2xl font-black text-purple-700" id="statInterviews">—</div><div class="text-[10px] font-bold uppercase text-slate-500 mt-1">Interviews</div></div>
+        <div class="bg-white rounded-xl border border-slate-200 p-4 text-center"><div class="text-2xl font-black text-amber-700" id="statOffers">—</div><div class="text-[10px] font-bold uppercase text-slate-500 mt-1">Offers</div></div>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="bg-white rounded-xl border border-slate-200 p-5">
-          <h2 class="text-sm font-black text-slate-900 mb-3">Recent Applications</h2>
-          <div id="recentApps"><div class="text-center text-slate-400 text-xs py-6">Loading…</div></div>
-        </div>
-        <div class="bg-white rounded-xl border border-slate-200 p-5">
-          <h2 class="text-sm font-black text-slate-900 mb-3">Upcoming Interviews</h2>
-          <div id="upcomingInterviews"><div class="text-center text-slate-400 text-xs py-6">Loading…</div></div>
-        </div>
+        <div class="bg-white rounded-xl border border-slate-200 p-5"><h2 class="text-sm font-black text-slate-900 mb-3">Recent Applications</h2><div id="recentApps"><div class="text-center text-slate-400 text-xs py-6">Loading…</div></div></div>
+        <div class="bg-white rounded-xl border border-slate-200 p-5"><h2 class="text-sm font-black text-slate-900 mb-3">Upcoming Interviews</h2><div id="upcomingInterviews"><div class="text-center text-slate-400 text-xs py-6">Loading…</div></div></div>
       </div>
     </section>
 
     <!-- FIND JOBS -->
     <section id="panel-jobs" class="panel hidden">
       <div class="bg-white rounded-xl border border-slate-200 p-4 mb-3 flex justify-between items-center flex-wrap gap-2">
-        <div>
-          <h1 class="text-lg font-black text-slate-900">Find Your Next Role</h1>
-          <p class="text-xs text-slate-500 mt-1">Apply to any open position with one click</p>
-        </div>
+        <div><h1 class="text-lg font-black text-slate-900">Find Your Next Role</h1><p class="text-xs text-slate-500 mt-1">Apply to any open position with one click</p></div>
         <input type="text" id="jobSearch" placeholder="Search jobs…" class="px-3 py-2 border border-slate-300 rounded-lg text-sm w-64" oninput="renderJobsList()">
       </div>
-      <div id="jobsList" class="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div class="text-center text-slate-400 text-xs py-8 col-span-2">Loading jobs…</div>
-      </div>
+      <div id="jobsList" class="grid grid-cols-1 md:grid-cols-2 gap-3"><div class="text-center text-slate-400 text-xs py-8 col-span-2">Loading jobs…</div></div>
     </section>
 
     <!-- APPLICATIONS -->
     <section id="panel-apps" class="panel hidden">
-      <div class="bg-white rounded-xl border border-slate-200 p-4 mb-3">
-        <h1 class="text-lg font-black text-slate-900">Your Applications</h1>
-        <p class="text-xs text-slate-500 mt-1" id="appsSummary">—</p>
-      </div>
+      <div class="bg-white rounded-xl border border-slate-200 p-4 mb-3"><h1 class="text-lg font-black text-slate-900">Your Applications</h1><p class="text-xs text-slate-500 mt-1" id="appsSummary">—</p></div>
       <div id="appsList" class="space-y-2"><div class="text-center text-slate-400 text-xs py-8">Loading…</div></div>
     </section>
 
     <!-- INTERVIEWS -->
     <section id="panel-interviews" class="panel hidden">
-      <div class="bg-white rounded-xl border border-slate-200 p-4 mb-3">
-        <h1 class="text-lg font-black text-slate-900">Your Interviews</h1>
-      </div>
+      <div class="bg-white rounded-xl border border-slate-200 p-4 mb-3"><h1 class="text-lg font-black text-slate-900">Your Interviews</h1></div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <h2 class="text-xs font-black uppercase text-emerald-700 mb-2">Upcoming</h2>
-          <div id="intUpcoming" class="space-y-2"><div class="text-center text-slate-400 text-xs py-6">Loading…</div></div>
-        </div>
-        <div>
-          <h2 class="text-xs font-black uppercase text-slate-500 mb-2">Past</h2>
-          <div id="intPast" class="space-y-2"><div class="text-center text-slate-400 text-xs py-6">Loading…</div></div>
-        </div>
+        <div><h2 class="text-xs font-black uppercase text-emerald-700 mb-2">Upcoming</h2><div id="intUpcoming" class="space-y-2"><div class="text-center text-slate-400 text-xs py-6">Loading…</div></div></div>
+        <div><h2 class="text-xs font-black uppercase text-slate-500 mb-2">Past</h2><div id="intPast" class="space-y-2"><div class="text-center text-slate-400 text-xs py-6">Loading…</div></div></div>
       </div>
     </section>
 
@@ -130,20 +118,13 @@
     <section id="panel-docs" class="panel hidden">
       <div class="bg-white rounded-xl border border-slate-200 p-4 mb-3">
         <div class="flex justify-between items-center flex-wrap gap-2">
-          <div>
-            <h1 class="text-lg font-black text-slate-900">Your Documents</h1>
-            <p class="text-xs text-slate-500 mt-1">Upload certificates and verification docs (max 10 MB)</p>
-          </div>
+          <div><h1 class="text-lg font-black text-slate-900">Your Documents</h1><p class="text-xs text-slate-500 mt-1">Upload certificates and verification docs (max 10 MB)</p></div>
           <button onclick="document.getElementById('docFile').click()" class="px-4 py-2 bg-[#1A365D] text-white rounded-lg text-xs font-bold">+ Upload</button>
         </div>
         <div class="mt-3 grid grid-cols-2 gap-2">
           <select id="docType" class="px-3 py-2 border border-slate-300 rounded-lg text-sm">
-            <option>Resume</option>
-            <option>Education Certificate</option>
-            <option>ID Proof</option>
-            <option>Experience Letter</option>
-            <option>Offer Letter</option>
-            <option>Other</option>
+            <option>Resume</option><option>Education Certificate</option><option>ID Proof</option>
+            <option>Experience Letter</option><option>Offer Letter</option><option>Other</option>
           </select>
           <input type="file" id="docFile" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" class="hidden" onchange="uploadDoc(this)">
         </div>
@@ -151,25 +132,20 @@
       <div id="docsList" class="space-y-2"><div class="text-center text-slate-400 text-xs py-6">Loading…</div></div>
     </section>
 
-    <!-- ★ NEW: ASSESSMENTS -->
+    <!-- ASSESSMENTS -->
     <section id="panel-assessments" class="panel hidden">
-      <div class="bg-white rounded-xl border border-slate-200 p-4 mb-3">
-        <h1 class="text-lg font-black text-slate-900">Your Assessments</h1>
-        <p class="text-xs text-slate-500 mt-1">Tests assigned by Raveone or the hiring company</p>
-      </div>
-      <div id="assessmentsList" class="space-y-2">
-        <div class="text-center text-slate-400 text-xs py-8">Loading…</div>
-      </div>
+      <div class="bg-white rounded-xl border border-slate-200 p-4 mb-3"><h1 class="text-lg font-black text-slate-900">Your Assessments</h1><p class="text-xs text-slate-500 mt-1">Tests assigned by Raveone or the hiring company</p></div>
+      <div id="assessmentsList" class="space-y-2"><div class="text-center text-slate-400 text-xs py-8">Loading…</div></div>
     </section>
 
-    <!-- PROFILE (★ NEW: Photo + CV Download) -->
+    <!-- PROFILE (with Education + Experience builders + CV Preview) -->
     <section id="panel-profile" class="panel hidden">
       <div class="bg-white rounded-xl border border-slate-200 p-4 mb-3">
         <h1 class="text-lg font-black text-slate-900">Your Profile</h1>
-        <p class="text-xs text-slate-500 mt-1">This information is used when you apply for jobs</p>
+        <p class="text-xs text-slate-500 mt-1">This information is used when you apply for jobs and is included in your CV</p>
       </div>
 
-      <!-- ★ NEW: Photo + CV card -->
+      <!-- Photo + CV actions -->
       <div class="bg-white rounded-xl border border-slate-200 p-5 mb-3">
         <div class="flex items-center gap-4 flex-wrap">
           <div class="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center overflow-hidden border-2 border-slate-200 flex-shrink-0">
@@ -178,46 +154,73 @@
           </div>
           <div class="flex-1 min-w-0">
             <div class="text-sm font-bold text-slate-900">Profile photo &amp; CV</div>
-            <div class="text-xs text-slate-500 mt-0.5">Photo shows on client-facing CV. Max 3 MB (JPG / PNG / WEBP).</div>
+            <div class="text-xs text-slate-500 mt-0.5">Photo shows on client-facing CV. Max 3 MB.</div>
           </div>
           <div class="flex gap-2 flex-wrap">
             <input type="file" id="photoFile" accept=".jpg,.jpeg,.png,.webp" class="hidden" onchange="uploadProfilePhoto(this)">
-            <button onclick="document.getElementById('photoFile').click()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">
-              📸 Upload Photo
-            </button>
-            <button onclick="downloadCV('pdf')" class="px-3 py-2 bg-[#1A365D] hover:bg-[#2A5487] text-white rounded-lg text-xs font-bold">
-              📄 CV (PDF)
-            </button>
-            <button onclick="downloadCV('docx')" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">
-              📝 CV (DOCX)
-            </button>
+            <button onclick="document.getElementById('photoFile').click()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">📸 Upload Photo</button>
+            <button onclick="openCVPreview()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">👁 Preview CV</button>
+            <button onclick="downloadCV('pdf')" class="px-3 py-2 bg-[#1A365D] hover:bg-[#2A5487] text-white rounded-lg text-xs font-bold">📄 CV (PDF)</button>
+            <button onclick="downloadCV('docx')" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">📝 CV (DOCX)</button>
           </div>
         </div>
       </div>
 
-      <form id="profileForm" onsubmit="return saveProfile(event)" class="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
+      <!-- Basic fields -->
+      <div class="bg-white rounded-xl border border-slate-200 p-5 mb-3">
+        <h2 class="text-sm font-black text-slate-900 mb-3">Basic Details</h2>
         <div class="grid grid-cols-2 gap-3">
-          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Full Name</label><input type="text" id="pfName" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
-          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Phone</label><input type="tel" id="pfPhone" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
-          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Location</label><input type="text" id="pfLocation" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
-          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Education</label><input type="text" id="pfEducation" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
-          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Total Experience</label><input type="text" id="pfTotalExp" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" placeholder="e.g. 5 years"></div>
-          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Relevant Experience</label><input type="text" id="pfRelExp" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
-          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Current Company</label><input type="text" id="pfCurrentCompany" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
-          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Current Designation</label><input type="text" id="pfCurrentDesignation" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
-          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Current CTC</label><input type="text" id="pfCurrentCtc" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
-          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Expected CTC</label><input type="text" id="pfExpectedCtc" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
-          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Notice Period</label><input type="text" id="pfNotice" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
-          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Reason for Leaving</label><input type="text" id="pfReason" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+          <div><label class="form-label">Full Name</label><input type="text" id="pfName" class="form-input"></div>
+          <div><label class="form-label">Phone</label><input type="tel" id="pfPhone" class="form-input"></div>
+          <div><label class="form-label">Location</label><input type="text" id="pfLocation" class="form-input"></div>
+          <div><label class="form-label">Education (summary)</label><input type="text" id="pfEducation" class="form-input" placeholder="e.g. B.E. Mechanical"></div>
+          <div><label class="form-label">Total Experience</label><input type="text" id="pfTotalExp" class="form-input" placeholder="e.g. 5 years"></div>
+          <div><label class="form-label">Relevant Experience</label><input type="text" id="pfRelExp" class="form-input"></div>
+          <div><label class="form-label">Current Company</label><input type="text" id="pfCurrentCompany" class="form-input"></div>
+          <div><label class="form-label">Current Designation</label><input type="text" id="pfCurrentDesignation" class="form-input"></div>
+          <div><label class="form-label">Current CTC</label><input type="text" id="pfCurrentCtc" class="form-input"></div>
+          <div><label class="form-label">Expected CTC</label><input type="text" id="pfExpectedCtc" class="form-input"></div>
+          <div><label class="form-label">Notice Period</label><input type="text" id="pfNotice" class="form-input" placeholder="e.g. 30 days"></div>
+          <div><label class="form-label">Reason for Leaving</label><input type="text" id="pfReason" class="form-input"></div>
         </div>
-        <div>
-          <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Skills (comma separated)</label>
-          <input type="text" id="pfSkills" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" placeholder="e.g. CNC, VMC, GD&T">
+        <div class="mt-3"><label class="form-label">Skills (comma separated)</label><input type="text" id="pfSkills" class="form-input" placeholder="e.g. CNC, VMC, GD&T, ISO 13485"></div>
+        <div class="mt-3"><label class="form-label">Certifications</label><input type="text" id="pfCertifications" class="form-input" placeholder="e.g. ISO 9001 Lead Auditor, Six Sigma Green Belt"></div>
+        <div class="mt-3"><label class="form-label">Languages Known</label><input type="text" id="pfLanguages" class="form-input" placeholder="e.g. English, Hindi, Kannada"></div>
+      </div>
+
+      <!-- EDUCATION BUILDER -->
+      <div class="bg-white rounded-xl border border-slate-200 p-5 mb-3">
+        <div class="flex justify-between items-center mb-3">
+          <div>
+            <h2 class="text-sm font-black text-slate-900">Education</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Add your qualifications (most recent first)</p>
+          </div>
+          <button onclick="addEducation()" class="px-3 py-2 bg-[#1A365D] hover:bg-[#2A5487] text-white rounded-lg text-xs font-bold">+ Add Education</button>
         </div>
-        <div class="flex justify-end pt-2">
-          <button type="submit" id="pfSubmit" class="px-5 py-2 bg-[#1A365D] text-white rounded-lg text-sm font-bold">Save Profile</button>
+        <div id="educationList" class="space-y-2">
+          <div class="text-center text-slate-400 text-xs py-4">No education entries yet — click "+ Add Education"</div>
         </div>
-      </form>
+      </div>
+
+      <!-- EXPERIENCE BUILDER -->
+      <div class="bg-white rounded-xl border border-slate-200 p-5 mb-3">
+        <div class="flex justify-between items-center mb-3">
+          <div>
+            <h2 class="text-sm font-black text-slate-900">Work Experience</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Add your roles (most recent first)</p>
+          </div>
+          <button onclick="addExperience()" class="px-3 py-2 bg-[#1A365D] hover:bg-[#2A5487] text-white rounded-lg text-xs font-bold">+ Add Experience</button>
+        </div>
+        <div id="experienceList" class="space-y-2">
+          <div class="text-center text-slate-400 text-xs py-4">No experience entries yet — click "+ Add Experience"</div>
+        </div>
+      </div>
+
+      <!-- Save all -->
+      <div class="bg-white rounded-xl border border-slate-200 p-4 flex justify-between items-center sticky bottom-2 shadow-lg">
+        <div class="text-xs text-slate-500" id="profileSaveStatus">Changes not saved</div>
+        <button onclick="saveProfile()" id="pfSubmit" class="px-6 py-2.5 bg-[#1A365D] hover:bg-[#2A5487] text-white rounded-lg text-sm font-bold">💾 Save Profile</button>
+      </div>
     </section>
 
     <!-- JOB ALERTS -->
@@ -226,12 +229,9 @@
         <h1 class="text-lg font-black text-slate-900 mb-1">Job Alerts</h1>
         <p class="text-xs text-slate-500 mb-4">Get weekly emails with new roles matching your criteria</p>
         <form id="alertsForm" onsubmit="return saveAlerts(event)" class="space-y-3">
-          <label class="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" id="alertEnabled" class="w-4 h-4">
-            <span class="text-sm font-bold text-slate-800">Enable weekly job alerts</span>
-          </label>
-          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Keywords</label><input type="text" id="alertKeywords" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" placeholder="e.g. CNC, VMC, Quality"></div>
-          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Preferred Locations</label><input type="text" id="alertLocations" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm" placeholder="e.g. Bangalore, Chennai"></div>
+          <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="alertEnabled" class="w-4 h-4"><span class="text-sm font-bold text-slate-800">Enable weekly job alerts</span></label>
+          <div><label class="form-label">Keywords</label><input type="text" id="alertKeywords" class="form-input" placeholder="e.g. CNC, VMC, Quality"></div>
+          <div><label class="form-label">Preferred Locations</label><input type="text" id="alertLocations" class="form-input" placeholder="e.g. Bangalore, Chennai"></div>
           <div class="flex justify-between items-center pt-2">
             <span class="text-xs text-slate-500" id="alertLastSent"></span>
             <button type="submit" id="alertSubmit" class="px-5 py-2 bg-[#1A365D] text-white rounded-lg text-sm font-bold">Save Preferences</button>
@@ -253,8 +253,8 @@
       <div class="bg-white rounded-xl border border-slate-200 p-5 max-w-2xl">
         <h2 class="text-sm font-black text-slate-900 mb-3">Change Password</h2>
         <form id="pwdForm" onsubmit="return changePassword(event)" class="space-y-3">
-          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">Current Password</label><input type="password" id="pwdCurrent" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
-          <div><label class="block text-xs font-bold uppercase text-slate-600 mb-1">New Password</label><input type="password" id="pwdNew" required minlength="8" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"><p class="text-[11px] text-slate-500 mt-1">Min 8 chars, 1 letter, 1 number</p></div>
+          <div><label class="form-label">Current Password</label><input type="password" id="pwdCurrent" required class="form-input"></div>
+          <div><label class="form-label">New Password</label><input type="password" id="pwdNew" required minlength="8" class="form-input"><p class="text-[11px] text-slate-500 mt-1">Min 8 chars, 1 letter, 1 number</p></div>
           <div class="flex justify-end"><button type="submit" id="pwdSubmit" class="px-5 py-2 bg-[#1A365D] text-white rounded-lg text-sm font-bold">Change Password</button></div>
         </form>
       </div>
@@ -263,49 +263,62 @@
   </main>
 </div>
 
+<!-- CV PREVIEW MODAL -->
+<div id="cvPreviewModal" class="fixed inset-0 z-50 hidden" style="background:rgba(15,23,42,.75);">
+  <div class="flex flex-col min-h-screen">
+    <div class="bg-white border-b border-slate-200 px-4 py-3 flex justify-between items-center">
+      <div>
+        <div class="text-sm font-black text-slate-900">CV Preview</div>
+        <div class="text-xs text-slate-500">This is how your CV will look when downloaded</div>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="downloadCV('pdf')" class="px-3 py-2 bg-[#1A365D] text-white rounded-lg text-xs font-bold">📄 Download PDF</button>
+        <button onclick="downloadCV('docx')" class="px-3 py-2 bg-slate-100 text-slate-700 rounded-lg text-xs font-bold">📝 Download DOCX</button>
+        <button onclick="closeCVPreview()" class="px-3 py-2 border border-slate-300 text-slate-700 rounded-lg text-xs font-bold">Close ✕</button>
+      </div>
+    </div>
+    <div class="flex-1 overflow-y-auto p-4 bg-slate-100">
+      <div id="cvPreviewContent"></div>
+    </div>
+  </div>
+</div>
+
 <!-- PORTAL APPLY MODAL -->
 <div id="portalApplyModal" class="fixed inset-0 z-50 hidden" style="background:rgba(15,23,42,.6);backdrop-filter:blur(4px);">
   <div class="flex items-start justify-center min-h-screen p-4 pt-8 overflow-y-auto">
     <div class="bg-white rounded-2xl max-w-2xl w-full shadow-2xl my-4">
       <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
-        <div>
-          <h2 class="text-lg font-bold text-slate-900">Apply for this role</h2>
-          <p class="text-xs text-slate-500 mt-0.5" id="paJobTitle">—</p>
-        </div>
+        <div><h2 class="text-lg font-bold text-slate-900">Apply for this role</h2><p class="text-xs text-slate-500 mt-0.5" id="paJobTitle">—</p></div>
         <button onclick="closePortalApply()" class="text-slate-400 hover:text-slate-700 text-2xl leading-none">&times;</button>
       </div>
       <form id="portalApplyForm" onsubmit="return submitPortalApplication(event)" class="px-6 py-5 space-y-4 max-h-[75vh] overflow-y-auto">
-        <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 text-xs text-blue-900">
-          <b>Review your profile below.</b> Pre-filled from your existing profile. Update anything before submitting.
-        </div>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 text-xs text-blue-900"><b>Review your profile below.</b> Pre-filled from your profile. Update anything before submitting.</div>
         <div>
           <h3 class="text-xs font-black uppercase tracking-wider text-slate-500 mb-2">Personal Details</h3>
           <div class="grid grid-cols-2 gap-3">
-            <div><label class="block text-xs font-bold text-slate-600 mb-1">Full Name *</label><input type="text" id="paName" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
-            <div><label class="block text-xs font-bold text-slate-600 mb-1">Phone *</label><input type="tel" id="paPhone" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
-            <div><label class="block text-xs font-bold text-slate-600 mb-1">Location</label><input type="text" id="paLocation" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
-            <div><label class="block text-xs font-bold text-slate-600 mb-1">Education</label><input type="text" id="paEducation" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+            <div><label class="form-label">Full Name *</label><input type="text" id="paName" required class="form-input"></div>
+            <div><label class="form-label">Phone *</label><input type="tel" id="paPhone" required class="form-input"></div>
+            <div><label class="form-label">Location</label><input type="text" id="paLocation" class="form-input"></div>
+            <div><label class="form-label">Education</label><input type="text" id="paEducation" class="form-input"></div>
           </div>
         </div>
         <div>
           <h3 class="text-xs font-black uppercase tracking-wider text-slate-500 mb-2">Professional Details</h3>
           <div class="grid grid-cols-2 gap-3">
-            <div><label class="block text-xs font-bold text-slate-600 mb-1">Total Experience</label><input type="text" id="paTotalExp" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
-            <div><label class="block text-xs font-bold text-slate-600 mb-1">Relevant Experience</label><input type="text" id="paRelExp" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
-            <div><label class="block text-xs font-bold text-slate-600 mb-1">Current Company</label><input type="text" id="paCurrentCompany" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
-            <div><label class="block text-xs font-bold text-slate-600 mb-1">Current Designation</label><input type="text" id="paCurrentDesignation" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
-            <div><label class="block text-xs font-bold text-slate-600 mb-1">Current CTC</label><input type="text" id="paCurrentCtc" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
-            <div><label class="block text-xs font-bold text-slate-600 mb-1">Expected CTC</label><input type="text" id="paExpectedCtc" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
-            <div><label class="block text-xs font-bold text-slate-600 mb-1">Notice Period</label><input type="text" id="paNotice" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
-            <div><label class="block text-xs font-bold text-slate-600 mb-1">Reason for Leaving</label><input type="text" id="paReason" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+            <div><label class="form-label">Total Experience</label><input type="text" id="paTotalExp" class="form-input"></div>
+            <div><label class="form-label">Relevant Experience</label><input type="text" id="paRelExp" class="form-input"></div>
+            <div><label class="form-label">Current Company</label><input type="text" id="paCurrentCompany" class="form-input"></div>
+            <div><label class="form-label">Current Designation</label><input type="text" id="paCurrentDesignation" class="form-input"></div>
+            <div><label class="form-label">Current CTC</label><input type="text" id="paCurrentCtc" class="form-input"></div>
+            <div><label class="form-label">Expected CTC</label><input type="text" id="paExpectedCtc" class="form-input"></div>
+            <div><label class="form-label">Notice Period</label><input type="text" id="paNotice" class="form-input"></div>
+            <div><label class="form-label">Reason for Leaving</label><input type="text" id="paReason" class="form-input"></div>
           </div>
-          <div class="mt-3"><label class="block text-xs font-bold text-slate-600 mb-1">Skills</label><input type="text" id="paSkills" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"></div>
+          <div class="mt-3"><label class="form-label">Skills</label><input type="text" id="paSkills" class="form-input"></div>
         </div>
         <div>
           <h3 class="text-xs font-black uppercase tracking-wider text-slate-500 mb-2">Resume</h3>
-          <div id="paResumeExisting" class="hidden text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2 mb-2">
-            ✓ Resume on file. <a href="#" id="paResumeExistingLink" target="_blank" class="font-bold underline">View</a>
-          </div>
+          <div id="paResumeExisting" class="hidden text-xs text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2 mb-2">✓ Resume on file. <a href="#" id="paResumeExistingLink" target="_blank" class="font-bold underline">View</a></div>
           <input type="file" id="paResumeFile" accept=".pdf,.doc,.docx" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:font-semibold file:bg-[#1A365D] file:text-white file:cursor-pointer">
           <p id="paResumeInfo" class="text-[11px] text-slate-500 mt-1">Optional — upload to replace. Max 5 MB.</p>
         </div>
@@ -323,24 +336,14 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   if (typeof ATS === 'undefined' || !ATS || !ATS.API_URL) {
-    document.body.innerHTML =
-      '<div style="padding:40px 20px;text-align:center;font-family:sans-serif;max-width:500px;margin:auto">' +
-      '<h2 style="color:#DC2626;margin-top:60px">Configuration Error</h2>' +
-      '<p style="color:#64748B">The portal could not load its API configuration (app.js). Please refresh.</p>' +
-      '<button onclick="location.reload()" style="margin-top:20px;padding:10px 24px;background:#1A365D;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer">Reload</button>' +
-      '</div>';
+    document.body.innerHTML = '<div style="padding:40px;text-align:center;font-family:sans-serif"><h2 style="color:#DC2626">Configuration Error</h2><p>Could not load app.js. Please refresh.</p><button onclick="location.reload()" style="margin-top:20px;padding:10px 24px;background:#1A365D;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer">Reload</button></div>';
     return;
   }
-
   const sessionRaw = localStorage.getItem(TOKEN_KEY);
   let session = null;
   try { session = sessionRaw ? JSON.parse(sessionRaw) : null; } catch (e) {}
   TOKEN = session ? session.token : null;
-
-  if (!TOKEN) {
-    document.getElementById('authGate').classList.remove('hidden');
-    return;
-  }
+  if (!TOKEN) { document.getElementById('authGate').classList.remove('hidden'); return; }
   document.getElementById('app').classList.remove('hidden');
   bootApp();
 });
@@ -351,6 +354,10 @@ let PROFILE = null;
 let ALL_JOBS = [];
 let ALL_APPS = [];
 let APPLYING_JOB = null;
+let EDU_LIST = [];
+let EXP_LIST = [];
+let EDITING_EDU_IDX = -1;
+let EDITING_EXP_IDX = -1;
 let _dashLoadedAt = 0;
 
 async function bootApp() {
@@ -365,11 +372,8 @@ async function bootApp() {
     _dashLoadedAt = Date.now();
     PROFILE = p;
   } catch (e) {
-    console.error(e);
     if (/session|not authenticated|invalid|expired/i.test(e.message)) {
-      localStorage.removeItem(TOKEN_KEY);
-      location.href = 'portal-login.html';
-      return;
+      localStorage.removeItem(TOKEN_KEY); location.href = 'portal-login.html'; return;
     }
     alert('Could not load dashboard: ' + e.message);
   }
@@ -391,8 +395,7 @@ function switchTab(name) {
 function logout() {
   if (!confirm('Sign out?')) return;
   ATS.post('portalLogout', { token: TOKEN }).finally(function() {
-    localStorage.removeItem('ats_candidate');
-    location.href = 'portal-login.html';
+    localStorage.removeItem('ats_candidate'); location.href = 'portal-login.html';
   });
 }
 
@@ -410,22 +413,16 @@ function renderDashboard(data) {
   document.getElementById('statActive').textContent = s.activeApplications || 0;
   document.getElementById('statInterviews').textContent = s.upcomingInterviews || 0;
   document.getElementById('statOffers').textContent = s.offers || 0;
-
   const apps = data.applications || [];
   document.getElementById('recentApps').innerHTML = apps.length
     ? apps.map(function(a) {
-        return '<div class="flex justify-between items-center py-2 border-b border-slate-100 text-xs">' +
-          '<div><div class="font-bold text-slate-900">' + esc(a.jobTitle || '—') + '</div>' +
-          '<div class="text-slate-500">' + esc(a.appId) + ' · ' + esc(a.appliedAt || '') + '</div></div>' +
-          '<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800">' + esc(a.status || '—') + '</span></div>';
+        return '<div class="flex justify-between items-center py-2 border-b border-slate-100 text-xs"><div><div class="font-bold text-slate-900">' + esc(a.jobTitle || '—') + '</div><div class="text-slate-500">' + esc(a.appId) + ' · ' + esc(a.appliedAt || '') + '</div></div><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800">' + esc(a.status || '—') + '</span></div>';
       }).join('')
     : '<div class="text-center text-slate-400 text-xs py-6">No applications yet</div>';
-
   const ints = data.upcomingInterviews || [];
   document.getElementById('upcomingInterviews').innerHTML = ints.length
     ? ints.map(function(i) {
-        return '<div class="py-2 border-b border-slate-100 text-xs"><div class="font-bold text-slate-900">' + esc(i.position || i.jobTitle || '—') + '</div>' +
-          '<div class="text-slate-500">' + esc(i.date) + ' ' + esc(i.time) + ' · ' + esc(i.mode) + '</div></div>';
+        return '<div class="py-2 border-b border-slate-100 text-xs"><div class="font-bold text-slate-900">' + esc(i.position || i.jobTitle || '—') + '</div><div class="text-slate-500">' + esc(i.date) + ' ' + esc(i.time) + ' · ' + esc(i.mode) + '</div></div>';
       }).join('')
     : '<div class="text-center text-slate-400 text-xs py-6">No interviews scheduled</div>';
 }
@@ -434,40 +431,17 @@ async function loadJobsTab() {
   document.getElementById('jobsList').innerHTML = '<div class="text-center text-slate-400 text-xs py-8 col-span-2">Loading jobs…</div>';
   try {
     const res = await ATS.post('portalGetActiveJobs', { token: TOKEN });
-    if (!res || !res.ok) {
-      document.getElementById('jobsList').innerHTML = '<div class="text-center text-red-500 text-xs py-8 col-span-2">' + esc((res && res.error) || 'Failed to load jobs') + '</div>';
-      return;
-    }
-    ALL_JOBS = res.jobs || [];
-    renderJobsList();
-  } catch (e) {
-    document.getElementById('jobsList').innerHTML = '<div class="text-center text-red-500 text-xs py-8 col-span-2">' + esc(e.message) + '</div>';
-  }
+    if (!res || !res.ok) { document.getElementById('jobsList').innerHTML = '<div class="text-center text-red-500 text-xs py-8 col-span-2">' + esc((res && res.error) || 'Failed') + '</div>'; return; }
+    ALL_JOBS = res.jobs || []; renderJobsList();
+  } catch (e) { document.getElementById('jobsList').innerHTML = '<div class="text-center text-red-500 text-xs py-8 col-span-2">' + esc(e.message) + '</div>'; }
 }
 
 function renderJobsList() {
   const q = (document.getElementById('jobSearch').value || '').toLowerCase().trim();
-  const filtered = ALL_JOBS.filter(function(j) {
-    if (!q) return true;
-    return ((j.title || '') + ' ' + (j.company || '') + ' ' + (j.location || '') + ' ' + (j.category || '')).toLowerCase().indexOf(q) !== -1;
-  });
-  if (!filtered.length) {
-    document.getElementById('jobsList').innerHTML = '<div class="text-center text-slate-400 text-xs py-8 col-span-2">No jobs found</div>';
-    return;
-  }
+  const filtered = ALL_JOBS.filter(function(j) { if (!q) return true; return ((j.title||'')+' '+(j.company||'')+' '+(j.location||'')+' '+(j.category||'')).toLowerCase().indexOf(q) !== -1; });
+  if (!filtered.length) { document.getElementById('jobsList').innerHTML = '<div class="text-center text-slate-400 text-xs py-8 col-span-2">No jobs found</div>'; return; }
   document.getElementById('jobsList').innerHTML = filtered.map(function(j) {
-    return '<div class="bg-white rounded-xl border border-slate-200 p-4 hover:border-blue-300 transition">' +
-      '<div class="text-[10px] font-black uppercase text-blue-700 mb-1">' + esc(j.jobId) + '</div>' +
-      '<h3 class="font-bold text-slate-900 text-sm mb-1">' + esc(j.title) + '</h3>' +
-      '<div class="text-xs text-slate-600 mb-2">' + esc(j.company) + ' · ' + esc(j.location) + '</div>' +
-      '<div class="flex gap-1.5 flex-wrap mb-3 text-[10px]">' +
-        '<span class="px-2 py-0.5 bg-emerald-50 text-emerald-800 rounded font-bold">' + esc(j.salaryDisplay || 'Not disclosed') + '</span>' +
-        '<span class="px-2 py-0.5 bg-slate-100 text-slate-700 rounded font-bold">' + esc(j.employmentType || 'Full Time') + '</span>' +
-      '</div>' +
-      '<div class="flex gap-2">' +
-        '<a href="job.html?job=' + encodeURIComponent(j.jobId) + '" class="flex-1 py-2 border border-slate-300 rounded-lg text-xs font-bold text-slate-700 text-center hover:bg-slate-50" style="text-decoration:none">Details</a>' +
-        '<button onclick="openPortalApply(\'' + esc(j.jobId) + '\')" class="flex-1 py-2 bg-[#1A365D] text-white rounded-lg text-xs font-bold hover:bg-[#2A5487]">Apply</button>' +
-      '</div></div>';
+    return '<div class="bg-white rounded-xl border border-slate-200 p-4 hover:border-blue-300 transition"><div class="text-[10px] font-black uppercase text-blue-700 mb-1">' + esc(j.jobId) + '</div><h3 class="font-bold text-slate-900 text-sm mb-1">' + esc(j.title) + '</h3><div class="text-xs text-slate-600 mb-2">' + esc(j.company) + ' · ' + esc(j.location) + '</div><div class="flex gap-1.5 flex-wrap mb-3 text-[10px]"><span class="px-2 py-0.5 bg-emerald-50 text-emerald-800 rounded font-bold">' + esc(j.salaryDisplay || 'Not disclosed') + '</span><span class="px-2 py-0.5 bg-slate-100 text-slate-700 rounded font-bold">' + esc(j.employmentType || 'Full Time') + '</span></div><div class="flex gap-2"><a href="job.html?job=' + encodeURIComponent(j.jobId) + '" class="flex-1 py-2 border border-slate-300 rounded-lg text-xs font-bold text-slate-700 text-center hover:bg-slate-50" style="text-decoration:none">Details</a><button onclick="openPortalApply(\'' + esc(j.jobId) + '\')" class="flex-1 py-2 bg-[#1A365D] text-white rounded-lg text-xs font-bold hover:bg-[#2A5487]">Apply</button></div></div>';
   }).join('');
 }
 
@@ -480,7 +454,6 @@ async function openPortalApply(jobId) {
     if (!pRes || !pRes.ok) throw new Error((pRes && pRes.error) || 'Could not load profile');
     PROFILE = pRes.profile || {};
   } catch (e) { alert('Could not load your profile: ' + e.message); return; }
-
   const p = PROFILE;
   document.getElementById('paJobTitle').textContent = job.title + (job.company ? ' · ' + job.company : '');
   document.getElementById('paName').value = p.name || '';
@@ -496,63 +469,40 @@ async function openPortalApply(jobId) {
   document.getElementById('paNotice').value = p.noticePeriod || '';
   document.getElementById('paReason').value = p.reasonLeaving || '';
   document.getElementById('paSkills').value = p.skills || '';
-
   const existingBox = document.getElementById('paResumeExisting');
-  if (p.resumeLink) {
-    existingBox.classList.remove('hidden');
-    document.getElementById('paResumeExistingLink').href = p.resumeLink;
-  } else {
-    existingBox.classList.add('hidden');
-  }
+  if (p.resumeLink) { existingBox.classList.remove('hidden'); document.getElementById('paResumeExistingLink').href = p.resumeLink; }
+  else existingBox.classList.add('hidden');
   document.getElementById('paResumeFile').value = '';
   document.getElementById('paResumeInfo').textContent = p.resumeLink ? 'Optional — upload new version to replace. Max 5 MB.' : 'Please attach a resume. Max 5 MB.';
-  document.getElementById('paResumeInfo').className = 'text-[11px] text-slate-500 mt-1';
   document.getElementById('paError').classList.add('hidden');
   document.getElementById('portalApplyModal').classList.remove('hidden');
 }
 
-function closePortalApply() {
-  document.getElementById('portalApplyModal').classList.add('hidden');
-  APPLYING_JOB = null;
-}
+function closePortalApply() { document.getElementById('portalApplyModal').classList.add('hidden'); APPLYING_JOB = null; }
 
 document.getElementById('paResumeFile').addEventListener('change', function(e) {
-  const f = e.target.files[0];
-  const info = document.getElementById('paResumeInfo');
+  const f = e.target.files[0]; const info = document.getElementById('paResumeInfo');
   if (!f) return;
-  if (f.size > 5 * 1024 * 1024) {
-    info.textContent = '❌ File is too large (' + (f.size / 1024 / 1024).toFixed(1) + ' MB). Max 5 MB.';
-    info.className = 'text-[11px] text-red-600 mt-1 font-semibold';
-    e.target.value = '';
-    return;
-  }
-  info.textContent = '✓ ' + f.name + ' (' + (f.size / 1024).toFixed(0) + ' KB)';
-  info.className = 'text-[11px] text-emerald-700 mt-1 font-semibold';
+  if (f.size > 5 * 1024 * 1024) { info.textContent = '❌ Too large (max 5 MB)'; info.className = 'text-[11px] text-red-600 mt-1 font-semibold'; e.target.value = ''; return; }
+  info.textContent = '✓ ' + f.name + ' (' + (f.size/1024).toFixed(0) + ' KB)'; info.className = 'text-[11px] text-emerald-700 mt-1 font-semibold';
 });
 
 async function submitPortalApplication(ev) {
   ev.preventDefault();
-  if (!APPLYING_JOB) { alert('Session error. Please close and try again.'); return; }
-  const btn = document.getElementById('paSubmitBtn');
-  const errEl = document.getElementById('paError');
+  if (!APPLYING_JOB) { alert('Session error. Close and try again.'); return; }
+  const btn = document.getElementById('paSubmitBtn'); const errEl = document.getElementById('paError');
   function showError(msg) { errEl.textContent = msg; errEl.classList.remove('hidden'); btn.disabled = false; btn.textContent = 'Submit Application'; }
   errEl.classList.add('hidden');
-
   const name = document.getElementById('paName').value.trim();
   const phone = document.getElementById('paPhone').value.trim();
   if (!name) return showError('Name is required.');
   const digits = phone.replace(/\D/g, '').replace(/^91/, '').replace(/^0/, '');
-  if (!/^[6-9]\d{9}$/.test(digits)) return showError('Please enter a valid 10-digit Indian mobile number.');
-
+  if (!/^[6-9]\d{9}$/.test(digits)) return showError('Valid 10-digit mobile required.');
   const resumeFile = document.getElementById('paResumeFile').files[0];
   if (!resumeFile && !(PROFILE && PROFILE.resumeLink)) return showError('Please attach a resume.');
-
-  btn.disabled = true;
-  btn.textContent = 'Submitting…';
-
+  btn.disabled = true; btn.textContent = 'Submitting…';
   const payload = {
-    token: TOKEN,
-    jobId: APPLYING_JOB.jobId,
+    token: TOKEN, jobId: APPLYING_JOB.jobId,
     profile: {
       name: name, phone: phone,
       location: document.getElementById('paLocation').value.trim(),
@@ -568,25 +518,16 @@ async function submitPortalApplication(ev) {
       skills: document.getElementById('paSkills').value.trim()
     }
   };
-
-  if (resumeFile) {
-    try { payload.resumeData = await readFileAsDataUrl(resumeFile); payload.resumeName = resumeFile.name; }
-    catch (e) { return showError('Could not read file: ' + e.message); }
-  }
-
+  if (resumeFile) { try { payload.resumeData = await readFileAsDataUrl(resumeFile); payload.resumeName = resumeFile.name; } catch (e) { return showError('Could not read file'); } }
   try {
     const res = await ATS.post('portalApplyForJob', payload);
     if (!res || res.ok !== true) {
       const errMsg = (res && res.error) || 'Submission failed.';
       const m = errMsg.match(/(APP-\d+)/);
       if (m) {
-        const refId = m[1];
-        const cleanMsg = errMsg.replace(/\.?\s*(?:Reference|Ref)[:\s]*APP-\d+\.?/i, '').trim() + '.';
-        errEl.innerHTML = esc(cleanMsg) + '<br>Reference: <b>' + esc(refId) + '</b>.<br>' +
-          '<a href="portal-login.html?ref=' + encodeURIComponent(refId) + '" class="font-bold underline" style="color:#1A365D">Track →</a>';
-        errEl.classList.remove('hidden');
-        btn.disabled = false; btn.textContent = 'Submit Application';
-        return;
+        const refId = m[1]; const cleanMsg = errMsg.replace(/\.?\s*(?:Reference|Ref)[:\s]*APP-\d+\.?/i, '').trim() + '.';
+        errEl.innerHTML = esc(cleanMsg) + '<br>Reference: <b>' + esc(refId) + '</b>.<br><a href="portal-login.html?ref=' + encodeURIComponent(refId) + '" class="font-bold underline" style="color:#1A365D">Track →</a>';
+        errEl.classList.remove('hidden'); btn.disabled = false; btn.textContent = 'Submit Application'; return;
       }
       return showError(errMsg);
     }
@@ -600,39 +541,22 @@ async function loadAppsTab() {
   document.getElementById('appsList').innerHTML = '<div class="text-center text-slate-400 text-xs py-8">Loading…</div>';
   try {
     const res = await ATS.post('portalGetApplications', { token: TOKEN });
-    if (!res || !res.ok) {
-      document.getElementById('appsList').innerHTML = '<div class="text-center text-red-500 text-xs py-8">' + esc((res && res.error) || 'Failed') + '</div>';
-      return;
-    }
-    ALL_APPS = res.applications || [];
-    const stats = res.stats || {};
+    if (!res || !res.ok) { document.getElementById('appsList').innerHTML = '<div class="text-center text-red-500 text-xs py-8">' + esc((res && res.error) || 'Failed') + '</div>'; return; }
+    ALL_APPS = res.applications || []; const stats = res.stats || {};
     document.getElementById('appsSummary').textContent = (stats.total || 0) + ' total · ' + (stats.active || 0) + ' active · ' + (stats.closed || 0) + ' closed';
     document.getElementById('appsList').innerHTML = ALL_APPS.length
       ? ALL_APPS.map(function(a) {
-          return '<div class="bg-white rounded-xl border border-slate-200 p-4">' +
-            '<div class="flex justify-between items-start gap-2">' +
-              '<div class="flex-1 min-w-0">' +
-                '<div class="text-[10px] font-black text-blue-700">' + esc(a.appId) + '</div>' +
-                '<div class="font-bold text-slate-900 text-sm">' + esc(a.jobTitle) + '</div>' +
-                '<div class="text-xs text-slate-500">' + esc(a.jobLocation || '') + ' · Applied ' + esc(a.submittedDate) + '</div>' +
-              '</div>' +
-              '<span class="px-2 py-1 rounded text-[10px] font-bold bg-blue-100 text-blue-800">' + esc(a.status) + '</span>' +
-            '</div>' +
-            (a.canWithdraw ? '<div class="mt-2 text-right"><button onclick="withdrawApp(\'' + esc(a.appId) + '\')" class="text-[11px] font-bold text-red-600 hover:underline">Withdraw</button></div>' : '') +
-          '</div>';
+          return '<div class="bg-white rounded-xl border border-slate-200 p-4"><div class="flex justify-between items-start gap-2"><div class="flex-1 min-w-0"><div class="text-[10px] font-black text-blue-700">' + esc(a.appId) + '</div><div class="font-bold text-slate-900 text-sm">' + esc(a.jobTitle) + '</div><div class="text-xs text-slate-500">' + esc(a.jobLocation || '') + ' · Applied ' + esc(a.submittedDate) + '</div></div><span class="px-2 py-1 rounded text-[10px] font-bold bg-blue-100 text-blue-800">' + esc(a.status) + '</span></div>' + (a.canWithdraw ? '<div class="mt-2 text-right"><button onclick="withdrawApp(\'' + esc(a.appId) + '\')" class="text-[11px] font-bold text-red-600 hover:underline">Withdraw</button></div>' : '') + '</div>';
         }).join('')
       : '<div class="text-center text-slate-400 text-xs py-8">No applications yet</div>';
-  } catch (e) {
-    document.getElementById('appsList').innerHTML = '<div class="text-center text-red-500 text-xs py-8">' + esc(e.message) + '</div>';
-  }
+  } catch (e) { document.getElementById('appsList').innerHTML = '<div class="text-center text-red-500 text-xs py-8">' + esc(e.message) + '</div>'; }
 }
 
 async function withdrawApp(appId) {
   if (!confirm('Withdraw this application?')) return;
   try {
     const res = await ATS.post('portalWithdrawApplication', { token: TOKEN, appId: appId });
-    if (res && res.ok) loadAppsTab();
-    else alert((res && res.error) || 'Failed');
+    if (res && res.ok) loadAppsTab(); else alert((res && res.error) || 'Failed');
   } catch (e) { alert(e.message); }
 }
 
@@ -641,37 +565,21 @@ async function loadInterviewsTab() {
   document.getElementById('intPast').innerHTML = '<div class="text-center text-slate-400 text-xs py-6">Loading…</div>';
   try {
     const res = await ATS.post('portalGetInterviews', { token: TOKEN });
-    const up = (res && res.upcoming) || [];
-    const past = (res && res.past) || [];
+    const up = (res && res.upcoming) || []; const past = (res && res.past) || [];
     document.getElementById('intUpcoming').innerHTML = up.length
-      ? up.map(function(i) {
-          return '<div class="bg-white rounded-xl border border-emerald-200 p-3 text-xs">' +
-            '<div class="font-bold text-slate-900">' + esc(i.jobTitle) + '</div>' +
-            '<div class="text-slate-600 mt-1">' + esc(i.date) + ' ' + esc(i.time) + ' · ' + esc(i.mode) + '</div>' +
-            '<div class="mt-2 flex gap-2">' +
-              '<button onclick="respondInterview(\'' + esc(i.interviewId) + '\',\'Confirmed\')" class="px-2 py-1 bg-emerald-600 text-white rounded text-[10px] font-bold">Confirm</button>' +
-              '<button onclick="respondInterview(\'' + esc(i.interviewId) + '\',\'Cancelled\')" class="px-2 py-1 bg-red-600 text-white rounded text-[10px] font-bold">Cancel</button>' +
-            '</div></div>';
-        }).join('')
+      ? up.map(function(i) { return '<div class="bg-white rounded-xl border border-emerald-200 p-3 text-xs"><div class="font-bold text-slate-900">' + esc(i.jobTitle) + '</div><div class="text-slate-600 mt-1">' + esc(i.date) + ' ' + esc(i.time) + ' · ' + esc(i.mode) + '</div><div class="mt-2 flex gap-2"><button onclick="respondInterview(\'' + esc(i.interviewId) + '\',\'Confirmed\')" class="px-2 py-1 bg-emerald-600 text-white rounded text-[10px] font-bold">Confirm</button><button onclick="respondInterview(\'' + esc(i.interviewId) + '\',\'Cancelled\')" class="px-2 py-1 bg-red-600 text-white rounded text-[10px] font-bold">Cancel</button></div></div>'; }).join('')
       : '<div class="text-center text-slate-400 text-xs py-6">No upcoming interviews</div>';
     document.getElementById('intPast').innerHTML = past.length
-      ? past.map(function(i) {
-          return '<div class="bg-white rounded-xl border border-slate-200 p-3 text-xs">' +
-            '<div class="font-bold text-slate-900">' + esc(i.jobTitle) + '</div>' +
-            '<div class="text-slate-500">' + esc(i.date) + ' · ' + esc(i.company) + '</div></div>';
-        }).join('')
+      ? past.map(function(i) { return '<div class="bg-white rounded-xl border border-slate-200 p-3 text-xs"><div class="font-bold text-slate-900">' + esc(i.jobTitle) + '</div><div class="text-slate-500">' + esc(i.date) + ' · ' + esc(i.company) + '</div></div>'; }).join('')
       : '<div class="text-center text-slate-400 text-xs py-6">No past interviews</div>';
-  } catch (e) {
-    document.getElementById('intUpcoming').innerHTML = '<div class="text-center text-red-500 text-xs py-6">' + esc(e.message) + '</div>';
-  }
+  } catch (e) { document.getElementById('intUpcoming').innerHTML = '<div class="text-center text-red-500 text-xs py-6">' + esc(e.message) + '</div>'; }
 }
 
 async function respondInterview(interviewId, response) {
   if (!confirm('Respond "' + response + '"?')) return;
   try {
     const res = await ATS.post('portalRespondInterview', { token: TOKEN, interviewId: interviewId, response: response });
-    if (res && res.ok) loadInterviewsTab();
-    else alert((res && res.error) || 'Failed');
+    if (res && res.ok) loadInterviewsTab(); else alert((res && res.error) || 'Failed');
   } catch (e) { alert(e.message); }
 }
 
@@ -681,139 +589,51 @@ async function loadDocsTab() {
     const res = await ATS.post('portalGetDocuments', { token: TOKEN });
     const docs = (res && res.documents) || [];
     document.getElementById('docsList').innerHTML = docs.length
-      ? docs.map(function(d) {
-          return '<div class="bg-white rounded-xl border border-slate-200 p-3 flex justify-between items-center text-xs">' +
-            '<div><div class="font-bold text-slate-900">' + esc(d.docName) + '</div>' +
-            '<div class="text-slate-500">' + esc(d.docType) + ' · ' + esc(d.uploadedAt) + '</div></div>' +
-            '<div class="flex gap-2">' +
-              '<a href="' + esc(d.driveUrl) + '" target="_blank" class="font-bold text-blue-600">View</a>' +
-              '<button onclick="deleteDoc(\'' + esc(d.docId) + '\')" class="font-bold text-red-600">Delete</button>' +
-            '</div></div>';
-        }).join('')
+      ? docs.map(function(d) { return '<div class="bg-white rounded-xl border border-slate-200 p-3 flex justify-between items-center text-xs"><div><div class="font-bold text-slate-900">' + esc(d.docName) + '</div><div class="text-slate-500">' + esc(d.docType) + ' · ' + esc(d.uploadedAt) + '</div></div><div class="flex gap-2"><a href="' + esc(d.driveUrl) + '" target="_blank" class="font-bold text-blue-600">View</a><button onclick="deleteDoc(\'' + esc(d.docId) + '\')" class="font-bold text-red-600">Delete</button></div></div>'; }).join('')
       : '<div class="text-center text-slate-400 text-xs py-6">No documents uploaded yet</div>';
-  } catch (e) {
-    document.getElementById('docsList').innerHTML = '<div class="text-center text-red-500 text-xs py-6">' + esc(e.message) + '</div>';
-  }
+  } catch (e) { document.getElementById('docsList').innerHTML = '<div class="text-center text-red-500 text-xs py-6">' + esc(e.message) + '</div>'; }
 }
 
 async function uploadDoc(input) {
-  const file = input.files[0];
-  if (!file) return;
+  const file = input.files[0]; if (!file) return;
   if (file.size > 10 * 1024 * 1024) { alert('Max 10 MB'); input.value = ''; return; }
   const docType = document.getElementById('docType').value;
   try {
     const b64 = await readFileAsDataUrl(file);
     const res = await ATS.post('portalUploadDocument', { token: TOKEN, docType: docType, fileData: b64, fileName: file.name });
-    if (res && res.ok) { alert('Uploaded!'); loadDocsTab(); }
-    else alert((res && res.error) || 'Upload failed');
+    if (res && res.ok) { alert('Uploaded!'); loadDocsTab(); } else alert((res && res.error) || 'Upload failed');
   } catch (e) { alert(e.message); }
   input.value = '';
 }
 
 async function deleteDoc(docId) {
-  if (!confirm('Delete this document?')) return;
+  if (!confirm('Delete?')) return;
   try {
     const res = await ATS.post('portalDeleteDocument', { token: TOKEN, docId: docId });
-    if (res && res.ok) loadDocsTab();
-    else alert((res && res.error) || 'Failed');
+    if (res && res.ok) loadDocsTab(); else alert((res && res.error) || 'Failed');
   } catch (e) { alert(e.message); }
 }
 
-/* ★ NEW: ASSESSMENTS */
 async function loadAssessmentsTab() {
   document.getElementById('assessmentsList').innerHTML = '<div class="text-center text-slate-400 text-xs py-8">Loading…</div>';
   try {
     const res = await ATS.post('portalGetAssessments', { token: TOKEN });
-    if (!res || !res.ok) {
-      document.getElementById('assessmentsList').innerHTML = '<div class="text-center text-red-500 text-xs py-8">' + esc((res && res.error) || 'Failed') + '</div>';
-      return;
-    }
+    if (!res || !res.ok) { document.getElementById('assessmentsList').innerHTML = '<div class="text-center text-red-500 text-xs py-8">' + esc((res && res.error) || 'Failed') + '</div>'; return; }
     const list = res.assessments || [];
-    if (!list.length) {
-      document.getElementById('assessmentsList').innerHTML = '<div class="text-center text-slate-400 text-xs py-8">No assessments assigned yet</div>';
-      return;
-    }
+    if (!list.length) { document.getElementById('assessmentsList').innerHTML = '<div class="text-center text-slate-400 text-xs py-8">No assessments assigned yet</div>'; return; }
     document.getElementById('assessmentsList').innerHTML = list.map(function(a) {
-      const statusColor = a.status === 'Completed' ? 'bg-emerald-100 text-emerald-800'
-        : a.status === 'In Progress' ? 'bg-amber-100 text-amber-800'
-        : a.status === 'Expired' ? 'bg-red-100 text-red-800'
-        : 'bg-blue-100 text-blue-800';
+      const statusColor = a.status === 'Completed' ? 'bg-emerald-100 text-emerald-800' : a.status === 'Expired' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800';
       const resultColor = a.result === 'Pass' ? 'text-emerald-700' : a.result === 'Fail' ? 'text-red-700' : 'text-slate-500';
       const scoreText = (a.score !== '' && a.score !== null && a.score !== undefined) ? a.score + ' / ' + (a.maxScore || '—') : '—';
-      const actionBtn = (a.status !== 'Completed' && a.status !== 'Expired' && a.link)
-        ? '<a href="' + esc(a.link) + '" target="_blank" class="px-3 py-1.5 bg-[#1A365D] text-white rounded-lg text-xs font-bold" style="text-decoration:none">Open Assessment →</a>'
-        : '';
-      return '<div class="bg-white rounded-xl border border-slate-200 p-4">' +
-        '<div class="flex justify-between items-start gap-3 flex-wrap">' +
-          '<div class="flex-1 min-w-0">' +
-            '<div class="text-[10px] font-black text-blue-700">' + esc(a.assessmentId) + '</div>' +
-            '<h3 class="font-bold text-slate-900 text-sm">' + esc(a.name) + '</h3>' +
-            '<div class="text-xs text-slate-500 mt-0.5">' + esc(a.type || '') + ' · ' + esc(a.mode || '') + (a.dueDate ? ' · Due ' + esc(a.dueDate) : '') + '</div>' +
-          '</div>' +
-          '<span class="px-2 py-1 rounded text-[10px] font-bold ' + statusColor + '">' + esc(a.status) + '</span>' +
-        '</div>' +
-        '<div class="mt-3 flex items-center justify-between gap-3 flex-wrap">' +
-          '<div class="text-xs">' +
-            '<span class="text-slate-500">Score: </span>' +
-            '<span class="font-bold text-slate-900">' + scoreText + '</span>' +
-            '<span class="ml-3 text-slate-500">Result: </span>' +
-            '<span class="font-bold ' + resultColor + '">' + esc(a.result || 'Pending') + '</span>' +
-          '</div>' + actionBtn +
-        '</div>' +
-      '</div>';
+      const actionBtn = (a.status !== 'Completed' && a.status !== 'Expired' && a.link) ? '<a href="' + esc(a.link) + '" target="_blank" class="px-3 py-1.5 bg-[#1A365D] text-white rounded-lg text-xs font-bold" style="text-decoration:none">Open Assessment →</a>' : '';
+      return '<div class="bg-white rounded-xl border border-slate-200 p-4"><div class="flex justify-between items-start gap-3 flex-wrap"><div class="flex-1 min-w-0"><div class="text-[10px] font-black text-blue-700">' + esc(a.assessmentId) + '</div><h3 class="font-bold text-slate-900 text-sm">' + esc(a.name) + '</h3><div class="text-xs text-slate-500 mt-0.5">' + esc(a.type || '') + ' · ' + esc(a.mode || '') + (a.dueDate ? ' · Due ' + esc(a.dueDate) : '') + '</div></div><span class="px-2 py-1 rounded text-[10px] font-bold ' + statusColor + '">' + esc(a.status) + '</span></div><div class="mt-3 flex items-center justify-between gap-3 flex-wrap"><div class="text-xs"><span class="text-slate-500">Score: </span><span class="font-bold text-slate-900">' + scoreText + '</span><span class="ml-3 text-slate-500">Result: </span><span class="font-bold ' + resultColor + '">' + esc(a.result || 'Pending') + '</span></div>' + actionBtn + '</div></div>';
     }).join('');
-  } catch (e) {
-    document.getElementById('assessmentsList').innerHTML = '<div class="text-center text-red-500 text-xs py-8">' + esc(e.message) + '</div>';
-  }
+  } catch (e) { document.getElementById('assessmentsList').innerHTML = '<div class="text-center text-red-500 text-xs py-8">' + esc(e.message) + '</div>'; }
 }
 
-/* ★ NEW: PHOTO UPLOAD */
-async function uploadProfilePhoto(input) {
-  const file = input.files[0];
-  if (!file) return;
-  if (file.size > 3 * 1024 * 1024) {
-    alert('Photo must be under 3 MB');
-    input.value = '';
-    return;
-  }
-  try {
-    const b64 = await readFileAsDataUrl(file);
-    const res = await ATS.post('portalUploadPhoto', {
-      token: TOKEN, fileData: b64, fileName: file.name
-    });
-    if (res && res.ok) {
-      alert('Photo uploaded!');
-      loadProfileTab();
-    } else {
-      alert((res && res.error) || 'Upload failed');
-    }
-  } catch (e) { alert(e.message); }
-  input.value = '';
-}
-
-/* ★ NEW: CV DOWNLOAD */
-async function downloadCV(format) {
-  const buttonLabel = format === 'pdf' ? 'PDF' : 'DOCX';
-  if (!confirm('Generate and download your CV as ' + buttonLabel + '? This may take 5-15 seconds.')) return;
-  try {
-    const res = await ATS.post('portalDownloadProfile', { token: TOKEN, format: format });
-    if (!res || !res.ok) { alert((res && res.error) || 'CV generation failed'); return; }
-
-    // Convert base64 → blob → download
-    const byteCharacters = atob(res.base64);
-    const byteArray = new Uint8Array(byteCharacters.length);
-    for (let i = 0; i < byteCharacters.length; i++) byteArray[i] = byteCharacters.charCodeAt(i);
-    const blob = new Blob([byteArray], { type: res.mimeType });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = res.filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  } catch (e) { alert('Error: ' + e.message); }
-}
+/* ══════════════════════════════════════════════════════════════
+   PROFILE — with Education/Experience builders
+   ══════════════════════════════════════════════════════════════ */
 
 async function loadProfileTab() {
   try {
@@ -822,18 +642,12 @@ async function loadProfileTab() {
     const p = res.profile || {};
     PROFILE = p;
 
-    // ★ Photo
-    const img = document.getElementById('profilePhoto');
-    const icon = document.getElementById('profilePhotoIcon');
-    if (p.photoUrl) {
-      img.src = p.photoUrl;
-      img.style.display = 'block';
-      icon.style.display = 'none';
-    } else {
-      img.style.display = 'none';
-      icon.style.display = 'inline';
-    }
+    // Photo
+    const img = document.getElementById('profilePhoto'); const icon = document.getElementById('profilePhotoIcon');
+    if (p.photoUrl) { img.src = p.photoUrl; img.style.display = 'block'; icon.style.display = 'none'; }
+    else { img.style.display = 'none'; icon.style.display = 'inline'; }
 
+    // Basic fields
     document.getElementById('pfName').value = p.name || '';
     document.getElementById('pfPhone').value = p.phone || '';
     document.getElementById('pfLocation').value = p.location || '';
@@ -847,11 +661,201 @@ async function loadProfileTab() {
     document.getElementById('pfNotice').value = p.noticePeriod || '';
     document.getElementById('pfReason').value = p.reasonLeaving || '';
     document.getElementById('pfSkills').value = p.skills || '';
+    document.getElementById('pfCertifications').value = p.certifications || '';
+    document.getElementById('pfLanguages').value = p.languages || '';
+
+    // Education and Experience arrays
+    EDU_LIST = Array.isArray(p.educationList) ? p.educationList.slice() : [];
+    EXP_LIST = Array.isArray(p.experience) ? p.experience.slice() : [];
+    EDITING_EDU_IDX = -1;
+    EDITING_EXP_IDX = -1;
+    renderEducationList();
+    renderExperienceList();
+    markSaveStatus(false);
+
   } catch (e) { alert(e.message); }
 }
 
-async function saveProfile(ev) {
-  ev.preventDefault();
+function markSaveStatus(saved) {
+  const el = document.getElementById('profileSaveStatus');
+  if (!el) return;
+  el.textContent = saved ? '✅ All changes saved' : '⚠️ Unsaved changes';
+  el.style.color = saved ? '#16A34A' : '#B45309';
+}
+
+/* ── EDUCATION builder ── */
+function renderEducationList() {
+  const container = document.getElementById('educationList');
+  if (!EDU_LIST.length && EDITING_EDU_IDX === -1) {
+    container.innerHTML = '<div class="text-center text-slate-400 text-xs py-4">No education entries yet — click "+ Add Education"</div>';
+    return;
+  }
+  let html = '';
+  EDU_LIST.forEach(function(e, i) {
+    if (i === EDITING_EDU_IDX) {
+      html += renderEducationEditor(i, e);
+    } else {
+      const dates = (e.startDate || '') + (e.startDate && e.endDate ? ' – ' : '') + (e.endDate || '');
+      html += '<div class="edu-card bg-slate-50 border border-slate-200 rounded-lg p-3 flex justify-between items-start gap-3">' +
+        '<div class="flex-1 min-w-0"><div class="font-bold text-slate-900 text-sm">' + esc(e.degree || '') + (e.field ? ' — ' + esc(e.field) : '') + '</div>' +
+        '<div class="text-xs text-slate-600">' + esc(e.institution || '') + (dates ? ' · ' + esc(dates) : '') + '</div>' +
+        (e.grade ? '<div class="text-xs text-slate-500 mt-0.5">Grade: ' + esc(e.grade) + '</div>' : '') + '</div>' +
+        '<div class="flex gap-1 flex-shrink-0"><button onclick="editEducation(' + i + ')" class="px-2 py-1 text-xs font-bold text-blue-700 hover:bg-blue-50 rounded">Edit</button>' +
+        '<button onclick="deleteEducation(' + i + ')" class="px-2 py-1 text-xs font-bold text-red-600 hover:bg-red-50 rounded">Delete</button></div></div>';
+    }
+  });
+  container.innerHTML = html;
+}
+
+function renderEducationEditor(idx, e) {
+  return '<div class="bg-blue-50 border border-blue-300 rounded-lg p-3 space-y-2">' +
+    '<div class="text-xs font-black uppercase text-blue-700">' + (idx >= EDU_LIST.length ? 'New' : 'Editing') + ' Education Entry</div>' +
+    '<div class="grid grid-cols-2 gap-2">' +
+      '<div><label class="form-label">Degree *</label><input type="text" id="edu-degree-' + idx + '" class="form-input" value="' + esc(e.degree || '') + '" placeholder="e.g. B.E., B.Tech, MBA"></div>' +
+      '<div><label class="form-label">Field / Specialization</label><input type="text" id="edu-field-' + idx + '" class="form-input" value="' + esc(e.field || '') + '" placeholder="e.g. Mechanical Engineering"></div>' +
+      '<div class="col-span-2"><label class="form-label">Institution *</label><input type="text" id="edu-institution-' + idx + '" class="form-input" value="' + esc(e.institution || '') + '" placeholder="e.g. Dayanand Sagar College"></div>' +
+      '<div><label class="form-label">Grade / CGPA</label><input type="text" id="edu-grade-' + idx + '" class="form-input" value="' + esc(e.grade || '') + '" placeholder="e.g. 8.5 CGPA"></div>' +
+      '<div><label class="form-label">Dates (start–end)</label>' +
+        '<div class="flex gap-1"><input type="text" id="edu-start-' + idx + '" class="form-input" value="' + esc(e.startDate || '') + '" placeholder="2015-08" style="flex:1"><input type="text" id="edu-end-' + idx + '" class="form-input" value="' + esc(e.endDate || '') + '" placeholder="2019-05" style="flex:1"></div></div>' +
+    '</div>' +
+    '<div class="flex justify-end gap-2 pt-2"><button onclick="cancelEducationEdit()" class="px-3 py-1.5 border border-slate-300 rounded-lg text-xs font-bold text-slate-700 hover:bg-white">Cancel</button>' +
+    '<button onclick="saveEducationEntry(' + idx + ')" class="px-3 py-1.5 bg-[#1A365D] text-white rounded-lg text-xs font-bold hover:bg-[#2A5487]">Save Entry</button></div></div>';
+}
+
+function addEducation() {
+  EDU_LIST.push({ degree: '', field: '', institution: '', grade: '', startDate: '', endDate: '' });
+  EDITING_EDU_IDX = EDU_LIST.length - 1;
+  renderEducationList();
+  markSaveStatus(false);
+}
+
+function editEducation(idx) { EDITING_EDU_IDX = idx; renderEducationList(); }
+
+function cancelEducationEdit() {
+  if (EDITING_EDU_IDX >= 0 && !EDU_LIST[EDITING_EDU_IDX].degree && !EDU_LIST[EDITING_EDU_IDX].institution) {
+    EDU_LIST.splice(EDITING_EDU_IDX, 1);
+  }
+  EDITING_EDU_IDX = -1; renderEducationList();
+}
+
+function saveEducationEntry(idx) {
+  const degree = document.getElementById('edu-degree-' + idx).value.trim();
+  const institution = document.getElementById('edu-institution-' + idx).value.trim();
+  if (!degree) { alert('Degree is required'); return; }
+  if (!institution) { alert('Institution is required'); return; }
+  EDU_LIST[idx] = {
+    degree: degree,
+    field: document.getElementById('edu-field-' + idx).value.trim(),
+    institution: institution,
+    grade: document.getElementById('edu-grade-' + idx).value.trim(),
+    startDate: document.getElementById('edu-start-' + idx).value.trim(),
+    endDate: document.getElementById('edu-end-' + idx).value.trim()
+  };
+  EDITING_EDU_IDX = -1; renderEducationList(); markSaveStatus(false);
+}
+
+function deleteEducation(idx) {
+  if (!confirm('Delete this education entry?')) return;
+  EDU_LIST.splice(idx, 1);
+  if (EDITING_EDU_IDX === idx) EDITING_EDU_IDX = -1;
+  else if (EDITING_EDU_IDX > idx) EDITING_EDU_IDX--;
+  renderEducationList(); markSaveStatus(false);
+}
+
+/* ── EXPERIENCE builder ── */
+function renderExperienceList() {
+  const container = document.getElementById('experienceList');
+  if (!EXP_LIST.length && EDITING_EXP_IDX === -1) {
+    container.innerHTML = '<div class="text-center text-slate-400 text-xs py-4">No experience entries yet — click "+ Add Experience"</div>';
+    return;
+  }
+  let html = '';
+  EXP_LIST.forEach(function(e, i) {
+    if (i === EDITING_EXP_IDX) {
+      html += renderExperienceEditor(i, e);
+    } else {
+      const dates = (e.startDate || '') + (e.currentlyWorking ? ' – Present' : (e.endDate ? ' – ' + e.endDate : ''));
+      const bullets = Array.isArray(e.description) ? e.description.slice(0, 2) : [];
+      html += '<div class="exp-card bg-slate-50 border border-slate-200 rounded-lg p-3 flex justify-between items-start gap-3">' +
+        '<div class="flex-1 min-w-0"><div class="font-bold text-slate-900 text-sm">' + esc(e.title || '') + '</div>' +
+        '<div class="text-xs text-slate-600">' + esc(e.company || '') + (e.location ? ' · ' + esc(e.location) : '') + (dates ? ' · ' + esc(dates) : '') + '</div>' +
+        (bullets.length ? '<ul class="text-xs text-slate-500 mt-1 list-disc list-inside">' + bullets.map(function(b) { return '<li>' + esc(b) + '</li>'; }).join('') + '</ul>' : '') +
+        '</div>' +
+        '<div class="flex gap-1 flex-shrink-0"><button onclick="editExperience(' + i + ')" class="px-2 py-1 text-xs font-bold text-blue-700 hover:bg-blue-50 rounded">Edit</button>' +
+        '<button onclick="deleteExperience(' + i + ')" class="px-2 py-1 text-xs font-bold text-red-600 hover:bg-red-50 rounded">Delete</button></div></div>';
+    }
+  });
+  container.innerHTML = html;
+}
+
+function renderExperienceEditor(idx, e) {
+  const bulletsText = Array.isArray(e.description) ? e.description.join('\n') : '';
+  return '<div class="bg-blue-50 border border-blue-300 rounded-lg p-3 space-y-2">' +
+    '<div class="text-xs font-black uppercase text-blue-700">' + (idx >= EXP_LIST.length ? 'New' : 'Editing') + ' Experience Entry</div>' +
+    '<div class="grid grid-cols-2 gap-2">' +
+      '<div><label class="form-label">Job Title *</label><input type="text" id="exp-title-' + idx + '" class="form-input" value="' + esc(e.title || '') + '" placeholder="e.g. Senior Engineer"></div>' +
+      '<div><label class="form-label">Company *</label><input type="text" id="exp-company-' + idx + '" class="form-input" value="' + esc(e.company || '') + '" placeholder="e.g. Tata Motors"></div>' +
+      '<div><label class="form-label">Location</label><input type="text" id="exp-location-' + idx + '" class="form-input" value="' + esc(e.location || '') + '" placeholder="e.g. Bangalore"></div>' +
+      '<div><label class="form-label">Dates (start–end)</label>' +
+        '<div class="flex gap-1"><input type="text" id="exp-start-' + idx + '" class="form-input" value="' + esc(e.startDate || '') + '" placeholder="2020-01" style="flex:1"><input type="text" id="exp-end-' + idx + '" class="form-input" value="' + esc(e.endDate || '') + '" placeholder="2023-06" style="flex:1" ' + (e.currentlyWorking ? 'disabled' : '') + '></div></div>' +
+      '<div class="col-span-2 flex items-center gap-2"><input type="checkbox" id="exp-current-' + idx + '" ' + (e.currentlyWorking ? 'checked' : '') + ' onchange="toggleCurrentExp(' + idx + ')"><label for="exp-current-' + idx + '" class="text-xs font-bold text-slate-700 cursor-pointer">Currently working here</label></div>' +
+      '<div class="col-span-2"><label class="form-label">Description / Achievements (one bullet per line)</label><textarea id="exp-desc-' + idx + '" class="form-input" rows="4" placeholder="• Led FDA compliance initiatives&#10;• Managed CAPA processes">' + esc(bulletsText) + '</textarea></div>' +
+    '</div>' +
+    '<div class="flex justify-end gap-2 pt-2"><button onclick="cancelExperienceEdit()" class="px-3 py-1.5 border border-slate-300 rounded-lg text-xs font-bold text-slate-700 hover:bg-white">Cancel</button>' +
+    '<button onclick="saveExperienceEntry(' + idx + ')" class="px-3 py-1.5 bg-[#1A365D] text-white rounded-lg text-xs font-bold hover:bg-[#2A5487]">Save Entry</button></div></div>';
+}
+
+function addExperience() {
+  EXP_LIST.push({ title: '', company: '', location: '', startDate: '', endDate: '', currentlyWorking: false, description: [] });
+  EDITING_EXP_IDX = EXP_LIST.length - 1;
+  renderExperienceList(); markSaveStatus(false);
+}
+
+function editExperience(idx) { EDITING_EXP_IDX = idx; renderExperienceList(); }
+
+function cancelExperienceEdit() {
+  if (EDITING_EXP_IDX >= 0 && !EXP_LIST[EDITING_EXP_IDX].title && !EXP_LIST[EDITING_EXP_IDX].company) {
+    EXP_LIST.splice(EDITING_EXP_IDX, 1);
+  }
+  EDITING_EXP_IDX = -1; renderExperienceList();
+}
+
+function toggleCurrentExp(idx) {
+  const cb = document.getElementById('exp-current-' + idx);
+  const endInput = document.getElementById('exp-end-' + idx);
+  if (cb.checked) { endInput.value = ''; endInput.disabled = true; }
+  else endInput.disabled = false;
+}
+
+function saveExperienceEntry(idx) {
+  const title = document.getElementById('exp-title-' + idx).value.trim();
+  const company = document.getElementById('exp-company-' + idx).value.trim();
+  if (!title) { alert('Job title is required'); return; }
+  if (!company) { alert('Company is required'); return; }
+  const descRaw = document.getElementById('exp-desc-' + idx).value;
+  const bullets = descRaw.split('\n').map(function(s) { return s.replace(/^[•\-*]\s*/, '').trim(); }).filter(function(s) { return s.length > 0; });
+  EXP_LIST[idx] = {
+    title: title,
+    company: company,
+    location: document.getElementById('exp-location-' + idx).value.trim(),
+    startDate: document.getElementById('exp-start-' + idx).value.trim(),
+    endDate: document.getElementById('exp-end-' + idx).value.trim(),
+    currentlyWorking: document.getElementById('exp-current-' + idx).checked,
+    description: bullets
+  };
+  EDITING_EXP_IDX = -1; renderExperienceList(); markSaveStatus(false);
+}
+
+function deleteExperience(idx) {
+  if (!confirm('Delete this experience entry?')) return;
+  EXP_LIST.splice(idx, 1);
+  if (EDITING_EXP_IDX === idx) EDITING_EXP_IDX = -1;
+  else if (EDITING_EXP_IDX > idx) EDITING_EXP_IDX--;
+  renderExperienceList(); markSaveStatus(false);
+}
+
+/* ── Save profile (includes education + experience) ── */
+async function saveProfile() {
   const btn = document.getElementById('pfSubmit');
   btn.disabled = true; btn.textContent = 'Saving…';
   try {
@@ -870,15 +874,161 @@ async function saveProfile(ev) {
         expectedCtc: document.getElementById('pfExpectedCtc').value.trim(),
         noticePeriod: document.getElementById('pfNotice').value.trim(),
         reasonLeaving: document.getElementById('pfReason').value.trim(),
-        skills: document.getElementById('pfSkills').value.trim()
+        skills: document.getElementById('pfSkills').value.trim(),
+        certifications: document.getElementById('pfCertifications').value.trim(),
+        languages: document.getElementById('pfLanguages').value.trim(),
+        educationList: EDU_LIST,
+        experience: EXP_LIST
       }
     });
-    if (res && res.ok) alert('Profile saved!');
-    else alert((res && res.error) || 'Save failed');
-  } catch (e) { alert(e.message); }
-  btn.disabled = false; btn.textContent = 'Save Profile';
+    if (res && res.ok) {
+      markSaveStatus(true);
+      alert('✅ Profile saved!\n\nYour CV has been updated with your education and experience.');
+    } else {
+      alert((res && res.error) || 'Save failed');
+    }
+  } catch (e) { alert('Error: ' + e.message); }
+  btn.disabled = false; btn.textContent = '💾 Save Profile';
 }
 
+/* ── CV Preview ── */
+function openCVPreview() {
+  const html = buildCVPreviewHTML();
+  document.getElementById('cvPreviewContent').innerHTML = html;
+  document.getElementById('cvPreviewModal').classList.remove('hidden');
+}
+
+function closeCVPreview() { document.getElementById('cvPreviewModal').classList.add('hidden'); }
+
+function buildCVPreviewHTML() {
+  const p = {};
+  p.name = document.getElementById('pfName').value.trim() || 'Candidate';
+  p.email = PROFILE.email || '';
+  p.phone = document.getElementById('pfPhone').value.trim();
+  p.location = document.getElementById('pfLocation').value.trim();
+  p.totalExp = document.getElementById('pfTotalExp').value.trim();
+  p.relExp = document.getElementById('pfRelExp').value.trim();
+  p.education = document.getElementById('pfEducation').value.trim();
+  p.currentCtc = document.getElementById('pfCurrentCtc').value.trim();
+  p.expectedCtc = document.getElementById('pfExpectedCtc').value.trim();
+  p.noticePeriod = document.getElementById('pfNotice').value.trim();
+  p.reasonLeaving = document.getElementById('pfReason').value.trim();
+  p.currentDesignation = document.getElementById('pfCurrentDesignation').value.trim();
+  p.currentCompany = document.getElementById('pfCurrentCompany').value.trim();
+  p.skills = document.getElementById('pfSkills').value.trim();
+  p.certifications = document.getElementById('pfCertifications').value.trim();
+  p.languages = document.getElementById('pfLanguages').value.trim();
+
+  let html = '<div class="cv-preview">';
+  html += '<div style="text-align:center;margin-bottom:20px"><div style="font-size:10px;font-weight:800;color:#1A365D;letter-spacing:1px">RAVEONE CONSULTANTS</div><div style="font-size:9px;color:#6B7280">Executive Search &amp; Selection</div><div style="font-size:8px;font-weight:700;color:#DC2626;margin-top:2px">CANDIDATE PORTFOLIO</div></div>';
+  html += '<hr style="border:none;border-top:1px solid #E8DDCB;margin:12px 0">';
+  html += '<h1>' + esc(p.name) + '</h1>';
+  const line1 = [p.phone, p.email, p.location].filter(Boolean).join(' · ');
+  if (line1) html += '<div class="cv-contact">' + esc(line1) + '</div>';
+
+  // PROFILE
+  const profileItems = [];
+  if (p.totalExp || p.relExp) profileItems.push(['Experience', p.totalExp + (p.totalExp && p.relExp ? ' total · ' + p.relExp + ' relevant' : p.relExp ? ' · ' + p.relExp + ' relevant' : '')]);
+  if (p.education) profileItems.push(['Education', p.education]);
+  if (p.currentCtc) profileItems.push(['Current CTC', p.currentCtc]);
+  if (p.expectedCtc) profileItems.push(['Expected CTC', p.expectedCtc]);
+  if (p.noticePeriod) profileItems.push(['Notice Period', p.noticePeriod]);
+  if (p.location) profileItems.push(['Location', p.location]);
+  if (p.reasonLeaving) profileItems.push(['Reason for Leaving', p.reasonLeaving]);
+
+  if (profileItems.length) {
+    html += '<div class="cv-section"><div class="cv-section-title">▪ PROFILE</div><div class="cv-ivory">';
+    profileItems.forEach(function(item) { html += '<div><strong>' + esc(item[0]) + ':</strong> ' + esc(item[1]) + '</div>'; });
+    html += '</div></div>';
+  }
+
+  // CURRENT ROLE
+  if (p.currentDesignation || p.currentCompany) {
+    html += '<div class="cv-section"><div class="cv-section-title">CURRENT ROLE</div><div style="font-size:12px">' + esc([p.currentDesignation, p.currentCompany].filter(Boolean).join(' · ')) + '</div></div>';
+  }
+
+  // KEY SKILLS
+  if (p.skills) {
+    html += '<div class="cv-section"><div class="cv-section-title">KEY SKILLS</div><div style="font-size:11px">' + esc(p.skills.split(',').map(function(s) { return s.trim(); }).filter(Boolean).join(' · ')) + '</div></div>';
+  }
+
+  // WORK EXPERIENCE
+  if (EXP_LIST.length) {
+    html += '<div class="cv-section"><div class="cv-section-title">▪ WORK EXPERIENCE</div>';
+    EXP_LIST.forEach(function(e) {
+      html += '<div class="cv-entry"><div class="cv-entry-title">' + esc(e.title || '') + '</div>' +
+        '<div class="cv-entry-meta">' + esc([e.company, e.location].filter(Boolean).join(' · ')) + '</div>';
+      const dates = (e.startDate || '') + (e.currentlyWorking ? ' – Present' : (e.endDate ? ' – ' + e.endDate : ''));
+      if (dates) html += '<div class="cv-entry-meta" style="margin-bottom:4px">' + esc(dates) + '</div>';
+      if (Array.isArray(e.description) && e.description.length) {
+        html += '<ul class="cv-entry-bullets">' + e.description.map(function(b) { return '<li>' + esc(b) + '</li>'; }).join('') + '</ul>';
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+
+  // EDUCATION
+  if (EDU_LIST.length) {
+    html += '<div class="cv-section"><div class="cv-section-title">▪ EDUCATION</div>';
+    EDU_LIST.forEach(function(e) {
+      const degreeLine = (e.degree || '') + (e.field ? ' ' + e.field : '');
+      const dates = (e.startDate || '') + (e.startDate && e.endDate ? ' – ' : '') + (e.endDate || '');
+      const rightText = [dates, e.grade].filter(Boolean).join(' · ');
+      html += '<div class="cv-edu-grid"><div class="cv-edu-degree">' + esc(degreeLine) + '</div><div class="cv-edu-institution">' + esc(e.institution || '') + '</div><div class="cv-edu-right">' + esc(rightText || '—') + '</div></div>';
+    });
+    html += '</div>';
+  }
+
+  // CERTIFICATIONS
+  if (p.certifications) {
+    html += '<div class="cv-section"><div class="cv-section-title">CERTIFICATIONS</div><div style="font-size:11px">' + esc(p.certifications) + '</div></div>';
+  }
+
+  // ADDITIONAL
+  if (p.languages) {
+    html += '<div class="cv-section"><div class="cv-section-title">ADDITIONAL INFORMATION</div><div style="font-size:11px"><strong style="color:#6B7280">Languages:</strong> ' + esc(p.languages) + '</div></div>';
+  }
+
+  // Footer
+  html += '<div class="cv-section" style="margin-top:30px;padding-top:12px;border-top:1px solid #E8DDCB;text-align:center;font-size:9px;color:#6B7280">' +
+    'Prepared by Raveone Consultants · www.raveone.in · Generated ' + new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) + '</div>';
+
+  html += '</div>';
+  return html;
+}
+
+/* ── Photo upload ── */
+async function uploadProfilePhoto(input) {
+  const file = input.files[0]; if (!file) return;
+  if (file.size > 3 * 1024 * 1024) { alert('Max 3 MB'); input.value = ''; return; }
+  try {
+    const b64 = await readFileAsDataUrl(file);
+    const res = await ATS.post('portalUploadPhoto', { token: TOKEN, fileData: b64, fileName: file.name });
+    if (res && res.ok) { alert('Photo uploaded!'); loadProfileTab(); } else alert((res && res.error) || 'Upload failed');
+  } catch (e) { alert(e.message); }
+  input.value = '';
+}
+
+/* ── CV download ── */
+async function downloadCV(format) {
+  if (!confirm('Generate and download your CV as ' + format.toUpperCase() + '? This takes 5-15 seconds.')) return;
+  try {
+    const res = await ATS.post('portalDownloadProfile', { token: TOKEN, format: format });
+    if (!res || !res.ok) { alert((res && res.error) || 'CV generation failed'); return; }
+    const bytes = atob(res.base64);
+    const arr = new Uint8Array(bytes.length);
+    for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
+    const blob = new Blob([arr], { type: res.mimeType });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = res.filename;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch (e) { alert('Error: ' + e.message); }
+}
+
+/* ── Job Alerts ── */
 async function loadAlertsTab() {
   try {
     const res = await ATS.post('portalGetAlertPrefs', { token: TOKEN });
@@ -907,6 +1057,7 @@ async function saveAlerts(ev) {
   btn.disabled = false; btn.textContent = 'Save Preferences';
 }
 
+/* ── Account ── */
 async function changePassword(ev) {
   ev.preventDefault();
   const btn = document.getElementById('pwdSubmit');
@@ -922,6 +1073,7 @@ async function changePassword(ev) {
   btn.disabled = false; btn.textContent = 'Change Password';
 }
 
+/* ── Utilities ── */
 function esc(s) {
   return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
 }
