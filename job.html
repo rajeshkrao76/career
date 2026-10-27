@@ -9,12 +9,13 @@
 <style>
   * { font-family: 'Roboto', -apple-system, sans-serif; }
   body { background: #F8FAFC; margin: 0; }
-  .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 </style>
 </head>
 <body>
 
+<!-- ============================================================ -->
 <!-- Header -->
+<!-- ============================================================ -->
 <header class="bg-[#1A365D] text-white">
   <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
     <a href="index.html" class="flex items-center gap-3" style="text-decoration:none;">
@@ -28,7 +29,9 @@
   </div>
 </header>
 
+<!-- ============================================================ -->
 <!-- Main -->
+<!-- ============================================================ -->
 <main class="max-w-4xl mx-auto px-4 py-8" id="main">
   <div id="loading" class="text-center py-20">
     <div class="inline-block w-8 h-8 border-4 border-blue-200 border-t-[#1A365D] rounded-full animate-spin"></div>
@@ -43,7 +46,7 @@
   </div>
 
   <div id="jobDetail" class="hidden">
-    <!-- Job header card -->
+    <!-- Job header -->
     <div class="bg-white rounded-2xl border border-slate-200 p-6 mb-4">
       <div class="flex justify-between items-start gap-4 flex-wrap mb-3">
         <div class="flex-1 min-w-0">
@@ -147,7 +150,7 @@
         </div>
 
         <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Resume (PDF/DOC/DOCX, max 10 MB) *</label>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Resume (PDF/DOC/DOCX, max 5 MB) *</label>
           <input type="file" id="fResume" required accept=".pdf,.doc,.docx" class="w-full text-xs file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:font-semibold file:bg-[#1A365D] file:text-white file:cursor-pointer">
           <p id="fResumeInfo" class="text-[11px] text-slate-500 mt-1"></p>
         </div>
@@ -196,7 +199,9 @@
   </div>
 </div>
 
+<!-- ============================================================ -->
 <!-- Success Modal -->
+<!-- ============================================================ -->
 <div id="successModal" class="fixed inset-0 z-50 hidden" style="background:rgba(15,23,42,.6);backdrop-filter:blur(4px);">
   <div class="flex items-center justify-center min-h-screen p-4">
     <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl p-8 text-center">
@@ -216,31 +221,51 @@
   </div>
 </div>
 
+<!-- ============================================================ -->
+<!-- Scripts -->
+<!-- ============================================================ -->
 <script src="app.js"></script>
 <script>
 /* ============================================================
-   QUICK APPLY — Career Page
-   Requires app.js (provides ATS.API_URL and ATS.post)
+   BOOT GUARD — Bug #4 fix: verify app.js loaded before proceeding
    ============================================================ */
+document.addEventListener('DOMContentLoaded', function() {
+  if (typeof ATS === 'undefined' || !ATS || !ATS.API_URL) {
+    document.getElementById('loading').classList.add('hidden');
+    document.getElementById('notFound').classList.remove('hidden');
+    document.querySelector('#notFound h1').textContent = 'Configuration Error';
+    document.querySelector('#notFound p').textContent =
+      'The page could not load its API configuration (app.js). Please refresh or contact Raveone.';
+    console.error('ATS is undefined — app.js failed to load');
+    return;
+  }
+  bootJob();
+});
 
 let _job = null;
 
-// ── Boot ──
-document.addEventListener('DOMContentLoaded', async function() {
+async function bootJob() {
   const jobId = new URLSearchParams(location.search).get('job');
   if (!jobId) { showNotFound(); return; }
 
   try {
     const r = await fetch(ATS.API_URL + '?action=job&id=' + encodeURIComponent(jobId));
-    const data = await r.json();
+    let data;
+    try {
+      data = await r.json();
+    } catch (parseErr) {
+      console.error('Invalid JSON from server:', parseErr);
+      showNotFound();
+      return;
+    }
     if (!data || !data.jobId) { showNotFound(); return; }
     _job = data;
     renderJob(data);
   } catch (e) {
-    console.error(e);
+    console.error('Failed to fetch job:', e);
     showNotFound();
   }
-});
+}
 
 function showNotFound() {
   document.getElementById('loading').classList.add('hidden');
@@ -296,13 +321,16 @@ function esc(s) {
     .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
 }
 
-// ── Apply modal ──
+/* ============================================================
+   Apply modal
+   ============================================================ */
 function openApplyModal() {
   if (!_job) return;
   document.getElementById('applyJobTitle').textContent =
     _job.title + (_job.company ? ' · ' + _job.company : '');
   document.getElementById('applyForm').reset();
   document.getElementById('fResumeInfo').textContent = '';
+  document.getElementById('fResumeInfo').className = 'text-[11px] text-slate-500 mt-1';
   document.getElementById('applyError').classList.add('hidden');
   document.getElementById('applyModal').classList.remove('hidden');
   setTimeout(function() { document.getElementById('fName').focus(); }, 100);
@@ -316,13 +344,13 @@ function closeSuccess() {
   document.getElementById('successModal').classList.add('hidden');
 }
 
-// File size check
-document.getElementById('fResume')?.addEventListener('change', function(e) {
+// Bug #7 — 5 MB cap (was 10 MB)
+document.getElementById('fResume').addEventListener('change', function(e) {
   const f = e.target.files[0];
   const info = document.getElementById('fResumeInfo');
   if (!f) { info.textContent = ''; return; }
-  if (f.size > 10 * 1024 * 1024) {
-    info.textContent = '❌ File too large (' + (f.size / 1024 / 1024).toFixed(1) + ' MB). Max 10 MB.';
+  if (f.size > 5 * 1024 * 1024) {
+    info.textContent = '❌ File is too large (' + (f.size / 1024 / 1024).toFixed(1) + ' MB). Max 5 MB.';
     info.className = 'text-[11px] text-red-600 mt-1 font-semibold';
     e.target.value = '';
     return;
@@ -331,7 +359,9 @@ document.getElementById('fResume')?.addEventListener('change', function(e) {
   info.className = 'text-[11px] text-emerald-700 mt-1 font-semibold';
 });
 
-// ── Submit ──
+/* ============================================================
+   Submit application
+   ============================================================ */
 async function submitApplication(ev) {
   ev.preventDefault();
   const btn = document.getElementById('applySubmitBtn');
@@ -369,6 +399,7 @@ async function submitApplication(ev) {
 
   btn.textContent = 'Submitting…';
 
+  // Field names match backend extractFormFields_
   const payload = {
     action: 'submitCandidate',
     candidateName: name,
@@ -391,14 +422,26 @@ async function submitApplication(ev) {
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(payload)
     });
-    const res = await r.json();
+
+    // Bug #10 — safe JSON parse
+    let res;
+    try {
+      res = await r.json();
+    } catch (parseErr) {
+      return showError('Server returned an invalid response. Please try again or contact support.');
+    }
 
     if (!res || res.ok !== true) {
       const errMsg = (res && res.error) || 'Submission failed. Please try again.';
-      const m = errMsg.match(/Reference:\s*(APP-\d+)/);
+
+      // Bug #6 — broader duplicate regex (matches APP-\d+ anywhere)
+      const m = errMsg.match(/(APP-\d+)/);
       if (m) {
-        const trackUrl = 'portal-login.html?ref=' + encodeURIComponent(m[1]);
-        errEl.innerHTML = 'You have already applied for this job. Your reference is <b>' + esc(m[1]) + '</b>.<br>' +
+        const refId = m[1];
+        const cleanMsg = errMsg.replace(/\.?\s*(?:Reference|Ref)[:\s]*APP-\d+\.?/i, '').trim() + '.';
+        const trackUrl = 'portal-login.html?ref=' + encodeURIComponent(refId);
+        errEl.innerHTML =
+          esc(cleanMsg) + '<br>Your reference: <b>' + esc(refId) + '</b>.<br>' +
           '<a href="' + trackUrl + '" class="font-bold underline" style="color:#1A365D">Track your application →</a>';
         errEl.classList.remove('hidden');
         btn.disabled = false;
