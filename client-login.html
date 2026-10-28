@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Client Sign In - Raveone Client Portal</title>
+  <title>Client Sign In — Raveone Consultants</title>
   <meta name="robots" content="noindex">
   <link rel="stylesheet" href="design-system.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;700;800;900&family=Roboto:wght@400;500;700&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
   <style>
-    body { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #F0FDFA 0%, #E0F2FE 100%); padding: 20px; }
+    body { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #F8FAFC 0%, #ECFEFF 100%); padding: 20px; }
     .login-card { background: #fff; border-radius: 20px; padding: 36px 32px; max-width: 460px; width: 100%; box-shadow: 0 20px 50px -12px rgba(15,23,42,.15); }
-    .logo { width: 56px; height: 56px; border-radius: 16px; background: linear-gradient(135deg,#0E7490,#155E75); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 24px; margin: 0 auto 18px; }
+    .logo { width: 56px; height: 56px; border-radius: 16px; background: linear-gradient(135deg,#0E7490,#1A365D); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 24px; margin: 0 auto 18px; }
     .title { text-align: center; font-family: var(--m3-font-brand); font-size: 22px; font-weight: 800; color: #0F172A; margin-bottom: 4px; }
     .subtitle { text-align: center; color: #64748B; font-size: 13px; margin-bottom: 24px; }
     .screen { display: none; }
@@ -24,7 +24,7 @@
     .input-wrap input.error { border-color: #DC2626; }
     .eye-btn { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; border: none; background: none; cursor: pointer; color: #94A3B8; display: flex; align-items: center; justify-content: center; border-radius: 6px; }
     .eye-btn:hover { background: #F1F5F9; color: #475569; }
-    .field-error { color: #DC2626; font-size: 11px; margin-top: 4px; min-height: 14px; }
+    .field-error { color: #DC2626; font-size: 11.5px; margin-top: 4px; min-height: 14px; }
     .strength { display: flex; gap: 3px; margin-top: 6px; }
     .strength-bar { flex: 1; height: 4px; background: #E2E8F0; border-radius: 2px; transition: background .2s; }
     .strength-bar.on-1 { background: #DC2626; }
@@ -34,7 +34,7 @@
     .req-list { font-size: 10.5px; color: #94A3B8; margin-top: 6px; line-height: 1.7; }
     .req-list .ok { color: #16A34A; }
     .btn-primary { width: 100%; padding: 12px; background: #0E7490; color: #fff; border: none; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; font-family: inherit; margin-top: 6px; transition: all .15s; }
-    .btn-primary:hover:not(:disabled) { background: #155E75; }
+    .btn-primary:hover:not(:disabled) { background: #0F5A6E; }
     .btn-primary:disabled { opacity: .6; cursor: not-allowed; }
     .btn-link { background: none; border: none; color: #0E7490; font-weight: 600; cursor: pointer; font-size: 12px; padding: 0; font-family: inherit; }
     .btn-link:hover { text-decoration: underline; }
@@ -42,8 +42,8 @@
     .otp-row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin: 12px 0; }
     .otp-row input { aspect-ratio: 1; max-width: 44px; text-align: center; font-size: 18px; font-weight: 800; padding: 0; border: 1.5px solid #E2E8F0; border-radius: 8px; outline: none; font-family: inherit; transition: all .15s; }
     .otp-row input:focus { border-color: #0E7490; box-shadow: 0 0 0 3px rgba(14,116,144,.12); }
-    .otp-row input.filled { border-color: #0E7490; background: #F0FDFA; }
-    .info-banner { background: #ECFEFF; border-left: 3px solid #0E7490; padding: 10px 12px; border-radius: 6px; font-size: 12px; color: #155E75; margin-bottom: 14px; }
+    .otp-row input.filled { border-color: #0E7490; background: #F0FDFF; }
+    .info-banner { background: #ECFEFF; border-left: 3px solid #0E7490; padding: 10px 12px; border-radius: 6px; font-size: 12px; color: #155E75; margin-bottom: 14px; line-height: 1.5; }
     .success-screen { text-align: center; padding: 20px 0; }
     .success-icon { width: 64px; height: 64px; border-radius: 50%; background: #D1FAE5; color: #16A34A; font-size: 36px; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
   </style>
@@ -52,12 +52,12 @@
   <div class="login-card">
     <div class="logo">R</div>
     <h1 class="title" id="title">Client Sign In</h1>
-    <p class="subtitle" id="subtitle">Access your client portal</p>
+    <p class="subtitle" id="subtitle">Access the Raveone client portal</p>
 
-    <!-- ============ SIGN IN ============ -->
+    <!-- ── SIGN IN ── -->
     <div class="screen active" id="screen-signin">
       <div class="field">
-        <label class="field-label">Email</label>
+        <label class="field-label">Work Email</label>
         <div class="input-wrap">
           <input type="email" id="signinEmail" autocomplete="email" placeholder="you@company.com">
         </div>
@@ -79,10 +79,10 @@
       </div>
     </div>
 
-    <!-- ============ REGISTER ============ -->
+    <!-- ── REGISTER ── -->
     <div class="screen" id="screen-register">
       <div class="info-banner">
-        <b>Registration is auto-verified.</b> Use the email address registered with Raveone as your company's HR contact. If your email isn't on file, contact Raveone to be added first.
+        <b>Important:</b> Your email must already be registered by Raveone as a client contact. If you don't have access, contact <b>rajesh@raveone.in</b>.
       </div>
       <div class="field">
         <label class="field-label">Full Name <span style="color:#DC2626">*</span></label>
@@ -99,13 +99,13 @@
           <button type="button" class="eye-btn" onclick="togglePw('regPassword', this)"><span class="material-symbols-outlined" style="font-size:18px">visibility</span></button>
         </div>
         <div class="strength" id="regStrength">
-          <div class="strength-bar" data-i="1"></div><div class="strength-bar" data-i="2"></div><div class="strength-bar" data-i="3"></div>
+          <div class="strength-bar"></div><div class="strength-bar"></div><div class="strength-bar"></div>
         </div>
         <div class="strength-text" id="regStrengthText"></div>
         <div class="req-list" id="regReq">
-          <div data-check="length" data-label="At least 8 characters">At least 8 characters</div>
-          <div data-check="letter" data-label="Contains a letter">Contains a letter</div>
-          <div data-check="number" data-label="Contains a number">Contains a number</div>
+          <div data-check="length">✗ At least 8 characters</div>
+          <div data-check="letter">✗ Contains a letter</div>
+          <div data-check="number">✗ Contains a number</div>
         </div>
       </div>
       <div class="field-error" id="regError"></div>
@@ -115,23 +115,23 @@
       </div>
     </div>
 
-    <!-- ============ FORGOT PASSWORD ============ -->
+    <!-- ── FORGOT PASSWORD ── -->
     <div class="screen" id="screen-forgot">
-      <div class="info-banner">Enter your registered client email. We'll send a 6-digit reset code.</div>
+      <div class="info-banner">Enter your registered work email. We'll send a 6-digit code to reset your password.</div>
       <div class="field">
-        <label class="field-label">Email</label>
+        <label class="field-label">Work Email</label>
         <div class="input-wrap"><input type="email" id="forgotEmail" autocomplete="email" placeholder="you@company.com"></div>
       </div>
       <div class="field-error" id="forgotError"></div>
       <button class="btn-primary" id="forgotBtn" onclick="doForgotRequest()">Send Reset Code</button>
       <div class="row" style="justify-content:center">
-        <button class="btn-link" onclick="goTo('signin')">&larr; Back to sign in</button>
+        <button class="btn-link" onclick="goTo('signin')">← Back to sign in</button>
       </div>
     </div>
 
-    <!-- ============ RESET PASSWORD ============ -->
+    <!-- ── RESET PASSWORD ── -->
     <div class="screen" id="screen-reset">
-      <div class="info-banner">Enter the 6-digit code we sent to <b id="resetSentTo"></b>, then set your new password.</div>
+      <div class="info-banner">Enter the 6-digit code sent to <b id="resetSentTo"></b>, then set your new password.</div>
       <div class="field">
         <label class="field-label">Reset Code</label>
         <div class="otp-row" id="resetOtp">
@@ -146,56 +146,48 @@
           <button type="button" class="eye-btn" onclick="togglePw('resetPassword', this)"><span class="material-symbols-outlined" style="font-size:18px">visibility</span></button>
         </div>
         <div class="strength" id="resetStrength">
-          <div class="strength-bar" data-i="1"></div><div class="strength-bar" data-i="2"></div><div class="strength-bar" data-i="3"></div>
+          <div class="strength-bar"></div><div class="strength-bar"></div><div class="strength-bar"></div>
         </div>
         <div class="req-list" id="resetReq">
-          <div data-check="length" data-label="At least 8 characters">At least 8 characters</div>
-          <div data-check="letter" data-label="Contains a letter">Contains a letter</div>
-          <div data-check="number" data-label="Contains a number">Contains a number</div>
+          <div data-check="length">✗ At least 8 characters</div>
+          <div data-check="letter">✗ Contains a letter</div>
+          <div data-check="number">✗ Contains a number</div>
         </div>
       </div>
       <div class="field-error" id="resetError"></div>
       <button class="btn-primary" id="resetBtn" onclick="doResetPassword()">Reset Password</button>
       <div class="row" style="justify-content:center">
-        <button class="btn-link" onclick="goTo('signin')">&larr; Back to sign in</button>
+        <button class="btn-link" onclick="goTo('signin')">← Back to sign in</button>
       </div>
     </div>
 
-    <!-- ============ SUCCESS ============ -->
+    <!-- ── SUCCESS ── -->
     <div class="screen success-screen" id="screen-success">
       <div class="success-icon"><span class="material-symbols-outlined" style="font-size:36px">check</span></div>
-      <h2 class="title" style="margin-bottom:8px" id="successTitle">Welcome!</h2>
-      <p class="subtitle" id="successMsg">Redirecting to your client portal...</p>
+      <h2 class="title" style="margin-bottom:8px" id="successTitle">You're in!</h2>
+      <p class="subtitle" id="successMsg">Redirecting to your portal…</p>
     </div>
   </div>
 
   <script src="app.js"></script>
   <script>
-  // Guard: app.js must load
-  if (typeof ATS === 'undefined') {
-    document.body.innerHTML =
-      '<div style="padding:40px 20px;text-align:center;font-family:sans-serif;max-width:500px;margin:auto">' +
-      '<h2 style="color:#DC2626;margin-top:60px">Configuration Error</h2>' +
-      '<p style="color:#64748B">The client portal could not load its API configuration (app.js).</p>' +
-      '<p style="color:#64748B">Please refresh the page.</p>' +
-      '<button onclick="location.reload()" style="margin-top:20px;padding:10px 24px;background:#0E7490;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer">Reload</button>' +
-      '</div>';
-  } else {
-
   let RESET_EMAIL = '';
 
   function goTo(name) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById('screen-' + name).classList.add('active');
+    const scr = document.getElementById('screen-' + name);
+    if (scr) scr.classList.add('active');
     const titles = {
-      'signin':   ['Client Sign In', 'Access your client portal'],
-      'register': ['Create account', 'Register your HR / team access'],
-      'forgot':   ['Forgot password', "We'll help you reset it"],
-      'reset':    ['Reset password', 'Set your new password'],
-      'success':  ['Welcome!', 'Setting up your session...']
+      'signin':   ['Client Sign In', 'Access the Raveone client portal'],
+      'register': ['Create Client Account', 'Register your work email to get started'],
+      'forgot':   ['Forgot Password', 'We\'ll help you reset it'],
+      'reset':    ['Reset Password', 'Set your new password'],
+      'success':  ['Welcome!', 'Setting up your session…']
     };
-    document.getElementById('title').textContent = titles[name][0];
-    document.getElementById('subtitle').textContent = titles[name][1];
+    if (titles[name]) {
+      document.getElementById('title').textContent = titles[name][0];
+      document.getElementById('subtitle').textContent = titles[name][1];
+    }
     ['signinError','regError','forgotError','resetError'].forEach(id => {
       const e = document.getElementById(id); if (e) e.textContent = '';
     });
@@ -208,83 +200,49 @@
     else { inp.type = 'password'; icon.textContent = 'visibility'; }
   }
 
-  // Password strength — uses ATS if available, else local fallback
-  function checkPasswordStrength(pw) {
-    if (typeof ATS !== 'undefined' && typeof ATS.passwordStrength === 'function') {
-      return ATS.passwordStrength(pw);
-    }
-    const checks = {
-      length: pw.length >= 8,
-      letter: /[a-zA-Z]/.test(pw),
-      number: /\d/.test(pw)
-    };
-    const score = [checks.length, checks.letter, checks.number].filter(Boolean).length;
-    return {
-      valid: checks.length && checks.letter && checks.number,
-      score: score,
-      level: score >= 3 ? 'strong' : score >= 2 ? 'fair' : 'weak',
-      checks: checks
-    };
-  }
-
   function updateStrength(pwId, barId, reqId) {
     const pw = document.getElementById(pwId).value;
-    const s = checkPasswordStrength(pw);
+    const s = ATS.passwordStrength(pw);
     document.querySelectorAll('#' + barId + ' .strength-bar').forEach((bar, i) => {
       bar.className = 'strength-bar' + (i < s.score ? ' on-' + s.score : '');
     });
     const txt = document.getElementById(pwId.replace('Password', 'StrengthText'));
-    if (txt) txt.textContent = pw ? (s.level === 'strong' ? 'Strong' : s.level === 'fair' ? 'Fair - add more' : 'Weak') : '';
+    if (txt) txt.textContent = pw ? (s.level === 'strong' ? 'Strong' : s.level === 'fair' ? 'Fair — add more' : 'Weak') : '';
     const req = document.getElementById(reqId);
     if (req) {
       req.querySelectorAll('[data-check]').forEach(el => {
         const key = el.dataset.check;
         const ok = s.checks[key];
-        el.textContent = (ok ? '\u2713 ' : '\u2717 ') + el.dataset.label;
+        el.textContent = (ok ? '✓ ' : '✗ ') + el.textContent.replace(/^[✓✗]\s*/, '');
         el.className = ok ? 'ok' : '';
       });
     }
   }
 
-  // ─────────────────────────────────────────────────────
-  // SIGN IN
-  // ─────────────────────────────────────────────────────
+  /* ── SIGN IN ── */
   async function doSignIn() {
     const email = document.getElementById('signinEmail').value.trim().toLowerCase();
     const password = document.getElementById('signinPassword').value;
     const errEl = document.getElementById('signinError');
     errEl.textContent = '';
-
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent = 'Enter a valid email'; return; }
     if (!password) { errEl.textContent = 'Enter your password'; return; }
 
     const btn = document.getElementById('signinBtn');
-    btn.disabled = true; btn.textContent = 'Signing in...';
+    btn.disabled = true; btn.textContent = 'Signing in…';
+    const res = await ATS.post('clientLoginWithPassword', { email, password });
+    btn.disabled = false; btn.textContent = 'Sign In';
 
-    try {
-      const res = await ATS.post('clientLoginWithPassword', { email, password });
-      btn.disabled = false; btn.textContent = 'Sign In';
+    if (!res.ok) { errEl.textContent = res.error || 'Sign in failed'; return; }
 
-      if (!res || !res.ok) { errEl.textContent = (res && res.error) || 'Sign in failed'; return; }
-
-      ATS.saveSession('client', {
-        token: res.token,
-        email: res.email,
-        name: res.name,
-        clientId: res.clientId,
-        company: res.company,
-        expiresAt: res.expiresAt
-      });
-      showSuccess('Signed in as ' + (res.name || res.email));
-    } catch (e) {
-      btn.disabled = false; btn.textContent = 'Sign In';
-      errEl.textContent = 'Network error: ' + (e.message || 'please try again');
-    }
+    ATS.saveSession('client', {
+      token: res.token, email: res.email, name: res.name,
+      clientId: res.clientId, company: res.company, expiresAt: res.expiresAt
+    });
+    showSuccess('Signed in as ' + res.name);
   }
 
-  // ─────────────────────────────────────────────────────
-  // REGISTER — auto-verified from CLIENTS sheet on backend
-  // ─────────────────────────────────────────────────────
+  /* ── REGISTER ── */
   async function doRegister() {
     const name = document.getElementById('regName').value.trim();
     const email = document.getElementById('regEmail').value.trim().toLowerCase();
@@ -294,39 +252,23 @@
 
     if (!name) { errEl.textContent = 'Name is required'; return; }
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent = 'Enter a valid email'; return; }
-    if (!checkPasswordStrength(password).valid) { errEl.textContent = 'Password does not meet requirements'; return; }
+    if (!ATS.passwordStrength(password).valid) { errEl.textContent = 'Password does not meet requirements'; return; }
 
     const btn = document.getElementById('regBtn');
-    btn.disabled = true; btn.textContent = 'Creating account...';
+    btn.disabled = true; btn.textContent = 'Verifying & creating…';
+    const res = await ATS.post('clientRegisterWithPassword', { email, password, name });
+    btn.disabled = false; btn.textContent = 'Create Account';
 
-    try {
-      const res = await ATS.post('clientRegisterWithPassword', { email, password, name });
-      btn.disabled = false; btn.textContent = 'Create Account';
+    if (!res.ok) { errEl.textContent = res.error || 'Registration failed'; return; }
 
-      if (!res || !res.ok) {
-        // The backend's message about "email not registered with any client" is clear
-        errEl.textContent = (res && res.error) || 'Registration failed';
-        return;
-      }
-
-      ATS.saveSession('client', {
-        token: res.token,
-        email: res.email,
-        name: res.name,
-        clientId: res.clientId,
-        company: res.company,
-        expiresAt: res.expiresAt
-      });
-      showSuccess('Welcome, ' + res.name + (res.company ? ' (' + res.company + ')' : '') + '!');
-    } catch (e) {
-      btn.disabled = false; btn.textContent = 'Create Account';
-      errEl.textContent = 'Network error: ' + (e.message || 'please try again');
-    }
+    ATS.saveSession('client', {
+      token: res.token, email: res.email, name: res.name,
+      clientId: res.clientId, company: res.company, expiresAt: res.expiresAt
+    });
+    showSuccess('Welcome, ' + res.name + ' from ' + (res.company || 'your company') + '!');
   }
 
-  // ─────────────────────────────────────────────────────
-  // FORGOT PASSWORD
-  // ─────────────────────────────────────────────────────
+  /* ── FORGOT PASSWORD ── */
   async function doForgotRequest() {
     const email = document.getElementById('forgotEmail').value.trim().toLowerCase();
     const errEl = document.getElementById('forgotError');
@@ -334,27 +276,19 @@
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent = 'Enter a valid email'; return; }
 
     const btn = document.getElementById('forgotBtn');
-    btn.disabled = true; btn.textContent = 'Sending...';
+    btn.disabled = true; btn.textContent = 'Sending…';
+    const res = await ATS.post('clientRequestPasswordReset', { email });
+    btn.disabled = false; btn.textContent = 'Send Reset Code';
 
-    try {
-      const res = await ATS.post('clientRequestPasswordReset', { email });
-      btn.disabled = false; btn.textContent = 'Send Reset Code';
+    if (!res.ok) { errEl.textContent = res.error || 'Could not send code'; return; }
 
-      if (!res || !res.ok) { errEl.textContent = (res && res.error) || 'Could not send code'; return; }
-
-      RESET_EMAIL = email;
-      document.getElementById('resetSentTo').textContent = email;
-      document.getElementById('resetOtp').querySelector('input').focus();
-      goTo('reset');
-    } catch (e) {
-      btn.disabled = false; btn.textContent = 'Send Reset Code';
-      errEl.textContent = 'Network error: ' + (e.message || 'please try again');
-    }
+    RESET_EMAIL = email;
+    document.getElementById('resetSentTo').textContent = email;
+    document.getElementById('resetOtp').querySelector('input').focus();
+    goTo('reset');
   }
 
-  // ─────────────────────────────────────────────────────
-  // OTP INPUTS
-  // ─────────────────────────────────────────────────────
+  /* ── OTP INPUTS (reset screen) ── */
   const resetOtp = document.getElementById('resetOtp').querySelectorAll('input');
   resetOtp.forEach((inp, i) => {
     inp.addEventListener('input', () => {
@@ -369,57 +303,51 @@
     });
   });
 
-  // ─────────────────────────────────────────────────────
-  // RESET PASSWORD
-  // ─────────────────────────────────────────────────────
+  /* ── RESET PASSWORD ── */
   async function doResetPassword() {
-    const code = Array.from(resetOtp).map(x => x.value).join('');
+    // Use a simple loop to avoid Array.from issues on older browsers
+    let code = '';
+    for (let i = 0; i < resetOtp.length; i++) {
+      code += resetOtp[i].value;
+    }
+    
     const newPassword = document.getElementById('resetPassword').value;
     const errEl = document.getElementById('resetError');
     errEl.textContent = '';
-
+    
     if (!/^\d{6}$/.test(code)) { errEl.textContent = 'Enter the 6-digit code'; return; }
-    if (!checkPasswordStrength(newPassword).valid) { errEl.textContent = 'Password does not meet requirements'; return; }
+    if (!ATS.passwordStrength(newPassword).valid) { errEl.textContent = 'Password does not meet requirements'; return; }
     if (!RESET_EMAIL) { errEl.textContent = 'Session expired. Please start over.'; goTo('forgot'); return; }
 
     const btn = document.getElementById('resetBtn');
-    btn.disabled = true; btn.textContent = 'Resetting...';
+    btn.disabled = true; btn.textContent = 'Resetting…';
+    const res = await ATS.post('clientResetPassword', { email: RESET_EMAIL, code, newPassword });
+    btn.disabled = false; btn.textContent = 'Reset Password';
 
-    try {
-      const res = await ATS.post('clientResetPassword', { email: RESET_EMAIL, code, newPassword });
-      btn.disabled = false; btn.textContent = 'Reset Password';
+    if (!res.ok) { errEl.textContent = res.error || 'Reset failed'; return; }
 
-      if (!res || !res.ok) { errEl.textContent = (res && res.error) || 'Reset failed'; return; }
-
-      ATS.toast('Password reset. Please sign in.', 'success');
-      resetOtp.forEach(x => { x.value = ''; x.classList.remove('filled'); });
-      document.getElementById('resetPassword').value = '';
-      RESET_EMAIL = '';
-      goTo('signin');
-    } catch (e) {
-      btn.disabled = false; btn.textContent = 'Reset Password';
-      errEl.textContent = 'Network error: ' + (e.message || 'please try again');
-    }
+    ATS.toast('Password reset. Please sign in.', 'success');
+    resetOtp.forEach(x => { x.value = ''; x.classList.remove('filled'); });
+    document.getElementById('resetPassword').value = '';
+    RESET_EMAIL = '';
+    goTo('signin');
   }
 
   function showSuccess(msg) {
     document.getElementById('successTitle').textContent = 'Welcome!';
-    document.getElementById('successMsg').textContent = msg || 'Redirecting to your client portal...';
+    document.getElementById('successMsg').textContent = msg || 'Redirecting to your portal…';
     goTo('success');
     setTimeout(() => window.location.replace('client-app.html'), 900);
   }
 
-  // Enter key handlers
+  /* Enter key handlers */
   document.getElementById('signinPassword').addEventListener('keydown', e => { if (e.key === 'Enter') doSignIn(); });
   document.getElementById('signinEmail').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('signinPassword').focus(); });
   document.getElementById('forgotEmail').addEventListener('keydown', e => { if (e.key === 'Enter') doForgotRequest(); });
+  document.getElementById('resetPassword').addEventListener('keydown', e => { if (e.key === 'Enter') doResetPassword(); });
 
-  // Auto-redirect if already logged in
-  if (ATS.isLoggedIn('client')) {
-    window.location.replace('client-app.html');
-  }
-
-  } // end ATS guard
+  /* Already logged in? */
+  if (ATS.isLoggedIn('client')) window.location.replace('client-app.html');
   </script>
 </body>
 </html>
