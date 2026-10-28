@@ -10,6 +10,15 @@
 // ═══════════════════════════════════════════════════════════════════════════
 // CONFIG
 // ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════
+// FORCE CUSTOM DOMAIN
+// ═══════════════════════════════════════════════════════════════════════════
+(function() {
+  if (window.location.hostname === "rajeshkrao76.github.io") {
+    const newUrl = "https://career.raveone.in" + window.location.pathname.replace("/career", "") + window.location.search;
+    window.location.replace(newUrl);
+  }
+})();
 
 const API_URL = "https://script.google.com/macros/s/AKfycbzFSGlT2DgPg-U_vL2UsyNdX2cH9nflQ0X7sgmOTc97giY553WByUmxzppCAgBOq9aAiw/exec";
 
