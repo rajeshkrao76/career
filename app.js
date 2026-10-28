@@ -170,6 +170,57 @@ const ATS = {
   }
 };
 
+// ═══════════════════════════════════════════════════════════════════════════
+// AUTH GUARDS — required by client-app.html / portal-app.html
+// ═══════════════════════════════════════════════════════════════════════════
+
+/**
+ * Guard used at the top of app pages.
+ * Redirects to login if no valid session exists.
+ * Returns true if OK to continue; false if a redirect happened.
+ */
+ATS.requireAuth = function (key, loginPage) {
+  if (!ATS.isLoggedIn(key)) {
+    window.location.replace(loginPage || 'client-login.html');
+    return false;
+  }
+  return true;
+};
+
+/**
+ * Inspects an API response. If it indicates an expired or invalid session,
+ * clears the stored session and redirects to login. Otherwise does nothing.
+ *
+ * Usage:
+ *   const res = await ATS.post('clientGetDashboard', { token });
+ *   if (ATS.handleAuthError(res, 'client', 'client-login.html')) return;
+ *
+ * Returns true  → session invalid, redirect happened, caller should return
+ * Returns false → session fine, or error is not auth-related
+ */
+ATS.handleAuthError = function (res, key, loginPage) {
+  if (!res || res.ok === false) {
+    const msg = String((res && res.error) || '').toLowerCase();
+    if (msg.indexOf('invalid session') !== -1 ||
+        msg.indexOf('session expired') !== -1 ||
+        msg.indexOf('not authenticated') !== -1 ||
+        msg.indexOf('missing token') !== -1) {
+      ATS.clearSession(key);
+      window.location.replace(loginPage || 'client-login.html');
+      return true;
+    }
+  }
+  return false;
+};
+
+/**
+ * Alias for the standalone escapeHtml, exposed on ATS for template strings.
+ * client-app.html uses ATS.esc(...) inside innerHTML blocks.
+ */
+ATS.esc = function (str) {
+  return escapeHtml(str);
+};
+
 window.ATS = ATS;
 
 // ═══════════════════════════════════════════════════════════════════════════
