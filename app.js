@@ -6,15 +6,7 @@
    ⚠️ This file was rebuilt from scratch based on what the HTML files call.
    If your old app.js had extra features, report them.
    ============================================================================ */
-// ═══════════════════════════════════════════════════════════════════════════
-// FORCE CUSTOM DOMAIN
-// ═══════════════════════════════════════════════════════════════════════════
-(function() {
-  if (window.location.hostname === "rajeshkrao76.github.io") {
-    const newUrl = "https://career.raveone.in" + window.location.pathname.replace("/career", "") + window.location.search;
-    window.location.replace(newUrl);
-  }
-})();
+
 // ═══════════════════════════════════════════════════════════════════════════
 // CONFIG
 // ═══════════════════════════════════════════════════════════════════════════
