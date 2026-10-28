@@ -212,6 +212,23 @@ ATS.handleAuthError = function (res, key, loginPage) {
 ATS.esc = function (str) {
   return escapeHtml(str);
 };
+/**
+ * Map a candidate status to the correct Material 3 chip class.
+ * Used by client-app.html for status badges everywhere.
+ */
+ATS.statusClass = function (status) {
+  const s = String(status || '').toLowerCase();
+  if (s === 'submitted to client')   return 'm3-chip-warning';
+  if (s === 'shortlisted')            return 'm3-chip-success';
+  if (s === 'interview scheduled')    return 'm3-chip-primary';
+  if (s === 'offered')                return 'm3-chip-success';
+  if (s === 'hired')                  return 'm3-chip-success';
+  if (s === 'rejected')               return 'm3-chip-error';
+  if (s === 'withdrawn')              return 'm3-chip-neutral';
+  if (s === 'sourced')                return 'm3-chip-neutral';
+  if (s === 'jd shared')              return 'm3-chip-neutral';
+  return 'm3-chip-neutral';
+};
 
 window.ATS = ATS;
 
