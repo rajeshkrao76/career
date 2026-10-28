@@ -270,7 +270,7 @@
       const res = await call('clientGetCandidates');
       if (handleAuthError(res)) return;
       if (!res.ok) { content.innerHTML = '<div class="empty-tab">Could not load</div>'; return; }
-      const s = res.stats;
+    const s = res.stats || { total: 0, pending: 0, shortlisted: 0, interview: 0, offered: 0, hired: 0, rejected: 0 };
       content.innerHTML = `
         <div class="m3-flex m3-justify-between m3-items-center" style="margin-bottom:16px;flex-wrap:wrap;gap:10px">
           <h1 class="m3-h3">Candidates (${res.total})</h1>
