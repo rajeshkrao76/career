@@ -381,7 +381,7 @@
         </div>` : ''}
 
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
-          <button class="m3-btn m3-btn-filled" style="background:#16A34A" title="Candidate will be moved back to Raveone for scheduling" onclick="doAction('shortlist','${c.appId}')">✓ Shortlist</button>
+          <button class="m3-btn m3-btn-filled" style="background:#16A34A" title="Marks candidate as shortlisted" onclick="doAction('shortlist','${c.appId}')">✓ Shortlist</button>
           <button class="m3-btn m3-btn-outlined" onclick="doAction('hold','${c.appId}')">⏸ Hold</button>
           <button class="m3-btn m3-btn-outlined" style="color:#DC2626;border-color:#DC2626" onclick="doAction('reject','${c.appId}')">✗ Reject</button>
           <button class="m3-btn m3-btn-outlined" onclick="openRateModal('${c.appId}')">⭐ Rate</button>
@@ -417,7 +417,7 @@
       } else if (action === 'shortlist') {
         const note = prompt('Optional note (leave blank to skip):') || '';
         const res = await call('clientShortlistCandidate', { appId, note });
-        if (res.ok) { ATS.toast('Shortlisted — moved to Raveone for scheduling', 'success'); closeModal(); render(); }
+        if (res.ok) { ATS.toast('✓ Shortlisted', 'success'); closeModal(); render(); }
         else ATS.toast(res.error, 'error');
       } else if (action === 'hold') {
         const note = prompt('Hold note (optional):') || '';
