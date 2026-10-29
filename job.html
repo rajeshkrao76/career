@@ -6,13 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#1A365D">
 
-  <!-- ============ Dynamic SEO (populated by JS) ============ -->
   <title id="pageTitle">Job Details — Raveone Careers</title>
   <meta id="metaDescription" name="description" content="View full job details, responsibilities, requirements, and apply in 60 seconds.">
   <meta id="metaKeywords" name="keywords" content="jobs, careers, hiring, Raveone">
   <link id="canonicalLink" rel="canonical" href="https://career.raveone.in/job.html">
 
-  <!-- ============ Open Graph (populated by JS) ============ -->
   <meta property="og:type" content="article">
   <meta id="ogTitleMeta" property="og:title" content="Job Details — Raveone Careers">
   <meta id="ogDescription" property="og:description" content="Apply in 60 seconds. Verified role from MSME hiring partner.">
@@ -20,25 +18,20 @@
   <meta property="og:site_name" content="Raveone Careers">
   <meta id="ogImage" property="og:image" content="https://career.raveone.in/assets/og-image.png">
 
-  <!-- ============ Twitter ============ -->
   <meta name="twitter:card" content="summary_large_image">
   <meta id="twTitle" name="twitter:title" content="Job Details — Raveone Careers">
   <meta id="twDescription" name="twitter:description" content="Apply in 60 seconds. Verified role.">
   <meta id="twImage" name="twitter:image" content="https://career.raveone.in/assets/og-image.png">
 
-  <!-- ============ Favicon ============ -->
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231A365D'%3E%3Cpath d='M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6' stroke='white' stroke-width='2'/%3E%3C/svg%3E">
 
-  <!-- ============ Fonts ============ -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
 
-  <!-- ============ Styles ============ -->
   <link rel="stylesheet" href="style.css">
 
-  <!-- ============ Critical above-fold ============ -->
   <style>
     body { margin: 0; font-family: 'Inter', system-ui, sans-serif; background: #F8FAFC; color: #1E293B; -webkit-font-smoothing: antialiased; }
     #jobSchemaContainer { display: none; }
@@ -244,35 +237,37 @@
             Link
           </button>
         </div>
-<!-- ═══════════════════════════════════════════════════════════
-     QUICK APPLY — upload resume, auto-fill the form
-     ═══════════════════════════════════════════════════════════ -->
-<div id="quickApplyBox" class="m3-card" style="padding:20px;margin-bottom:16px;background:#F0FDF4;border:2px solid #16A34A">
-  <h3 class="m3-h4" style="margin:0 0 6px 0">⚡ Quick Apply</h3>
-  <p style="font-size:13px;color:#166534;margin:0 0 14px 0">
-    Upload your resume — <b>LinkedIn profile PDF, Naukri download, or any CV</b> — and we'll fill the form for you.
-  </p>
 
-  <input type="file" id="quickResume" accept=".pdf,.doc,.docx" style="display:none">
+        <!-- ═══════════════════════════════════════════════════════════
+             QUICK APPLY — upload resume, auto-fill the form
+             ═══════════════════════════════════════════════════════════ -->
+        <div id="quickApplyBox" style="padding:20px;margin-bottom:16px;background:#F0FDF4;border:2px solid #16A34A;border-radius:12px">
+          <h3 style="margin:0 0 6px 0;font-size:15px;font-weight:700;color:#166534">⚡ Quick Apply</h3>
+          <p style="font-size:13px;color:#166534;margin:0 0 14px 0">
+            Upload your resume — <b>LinkedIn profile PDF, Naukri download, or any CV</b> — and we'll fill the form for you.
+          </p>
 
-  <div id="quickDropZone"
-       style="border:2px dashed #16A34A;border-radius:10px;padding:24px;text-align:center;cursor:pointer;background:#fff"
-       onclick="document.getElementById('quickResume').click()">
-    <div style="font-size:32px">📄</div>
-    <div style="font-weight:700;font-size:13px;color:#166534;margin-top:6px">Click to upload your resume</div>
-    <div style="font-size:11px;color:#64748B;margin-top:4px">PDF, DOC, DOCX · max 5 MB</div>
-  </div>
+          <input type="file" id="quickResume" accept=".pdf,.doc,.docx" style="display:none">
 
-  <div id="quickProgress" style="display:none;margin-top:12px;text-align:center;font-size:13px;color:#166534">
-    ⏳ Parsing your resume… (5-10 seconds)
-  </div>
+          <div id="quickDropZone"
+               style="border:2px dashed #16A34A;border-radius:10px;padding:24px;text-align:center;cursor:pointer;background:#fff"
+               onclick="document.getElementById('quickResume').click()">
+            <div style="font-size:32px">📄</div>
+            <div style="font-weight:700;font-size:13px;color:#166534;margin-top:6px">Click to upload your resume</div>
+            <div style="font-size:11px;color:#64748B;margin-top:4px">PDF, DOC, DOCX · max 5 MB</div>
+          </div>
 
-  <div id="quickStatus" style="display:none;margin-top:12px;font-size:12px"></div>
+          <div id="quickProgress" style="display:none;margin-top:12px;text-align:center;font-size:13px;color:#166534">
+            ⏳ Parsing your resume… (5-10 seconds)
+          </div>
 
-  <div style="text-align:center;margin-top:14px;font-size:12px;color:#64748B">
-    Or <a href="#" onclick="document.getElementById('quickApplyBox').style.display='none';return false;" style="color:#1A365D;font-weight:600">fill the form manually</a> ↓
-  </div>
-</div>
+          <div id="quickStatus" style="display:none;margin-top:12px;font-size:12px"></div>
+
+          <div style="text-align:center;margin-top:14px;font-size:12px;color:#64748B">
+            Or <a href="#" onclick="document.getElementById('quickApplyBox').style.display='none';return false;" style="color:#1A365D;font-weight:600">fill the form manually</a> ↓
+          </div>
+        </div>
+
         <form id="applyForm" class="apply-form" novalidate>
 
           <div class="form-row form-row-2">
@@ -377,23 +372,26 @@
             We've sent a confirmation email. Our recruiter will reach out within 2–3 working days.
           </p>
           <a href="index.html#jobs" class="btn-primary btn-block">Browse more jobs</a>
+
+          <!-- 🎁 Standardized CV download panel — visible only after submit -->
+          <div style="margin-top:20px;padding:16px;background:#F0FDF4;border:2px solid #16A34A;border-radius:10px;text-align:center">
+            <div style="font-size:13px;font-weight:700;color:#166534;margin-bottom:8px">
+              🎁 Bonus — get a professional standardized CV you can use anywhere
+            </div>
+            <div style="font-size:12px;color:#166534;margin-bottom:12px">
+              We'll generate a clean, professionally formatted CV — perfect for Naukri, LinkedIn, Indeed, or Shine.
+            </div>
+            <button onclick="downloadStandardizedCV()"
+                    style="background:#16A34A;color:#fff;padding:10px 22px;border-radius:8px;border:none;
+                           font-weight:700;font-size:13px;cursor:pointer;font-family:inherit">
+              📥 Download my free CV (PDF)
+            </button>
+            <div style="font-size:11px;color:#64748B;margin-top:8px">
+              Also available as DOCX — <a href="#" onclick="downloadStandardizedCV('docx');return false;" style="color:#1A365D">download .docx</a>
+            </div>
+          </div>
         </div>
-<div style="margin-top:20px;padding:16px;background:#F0FDF4;border:2px solid #16A34A;border-radius:10px;text-align:center">
-  <div style="font-size:13px;font-weight:700;color:#166534;margin-bottom:8px">
-    🎁 Bonus — get a professional standardized CV you can use anywhere
-  </div>
-  <div style="font-size:12px;color:#166534;margin-bottom:12px">
-    We'll generate a clean, professionally formatted CV — perfect for Naukri, LinkedIn, Indeed, or Shine.
-  </div>
-  <button onclick="downloadStandardizedCV()"
-          style="background:#16A34A;color:#fff;padding:10px 22px;border-radius:8px;border:none;
-                 font-weight:700;font-size:13px;cursor:pointer;font-family:inherit">
-    📥 Download my free CV (PDF)
-  </button>
-  <div style="font-size:11px;color:#64748B;margin-top:8px">
-    Also available as DOCX — <a href="#" onclick="downloadStandardizedCV('docx');return false;" style="color:#1A365D">download .docx</a>
-  </div>
-</div>
+
       </div>
     </aside>
 
@@ -522,7 +520,6 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
-    // Show progress
     document.getElementById('quickProgress').style.display = 'block';
     document.getElementById('quickDropZone').style.display = 'none';
     document.getElementById('quickStatus').style.display = 'none';
@@ -551,7 +548,6 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
       }
 
-      // Auto-fill the form
       const p = res.parsed;
       const fill = function (id, val) {
         const el = document.getElementById(id);
@@ -569,41 +565,46 @@ document.addEventListener('DOMContentLoaded', function () {
       fill('fExpectedCtc', p.expectedCtc);
       fill('fNotice',      p.noticePeriod);
 
-      // Keep the parsed structure in hidden fields so submit can use it
-      let hiddenJson = document.getElementById('__parsedExperience');
-      if (!hiddenJson) {
-        hiddenJson = document.createElement('input');
-        hiddenJson.type = 'hidden';
-        hiddenJson.id = '__parsedExperience';
-        document.getElementById('applyForm').appendChild(hiddenJson);
-      }
-      hiddenJson.value = JSON.stringify(p.experience || []);
+      // Copy the uploaded file into the form's fResume input so Submit sees it
+      try {
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        document.getElementById('fResume').files = dt.files;
 
-      let hiddenEdu = document.getElementById('__parsedEducation');
-      if (!hiddenEdu) {
-        hiddenEdu = document.createElement('input');
-        hiddenEdu.type = 'hidden';
-        hiddenEdu.id = '__parsedEducation';
-        document.getElementById('applyForm').appendChild(hiddenEdu);
+        // Also update the upload zone display
+        const fileName = document.getElementById('uploadFileName');
+        const zone = document.getElementById('uploadZone');
+        if (fileName) {
+          fileName.textContent = file.name + ' (' + Math.round(file.size / 1024) + ' KB)';
+          fileName.style.color = '';
+        }
+        if (zone) zone.classList.add('has-file');
+      } catch (dtErr) {
+        console.warn('DataTransfer not supported — user must re-upload', dtErr);
       }
-      hiddenEdu.value = JSON.stringify(p.educationList || []);
 
-      let hiddenSkills = document.getElementById('__parsedSkills');
-      if (!hiddenSkills) {
-        hiddenSkills = document.createElement('input');
-        hiddenSkills.type = 'hidden';
-        hiddenSkills.id = '__parsedSkills';
-        document.getElementById('applyForm').appendChild(hiddenSkills);
-      }
-      hiddenSkills.value = (p.skills || []).join(', ');
+      // Hidden fields for parsed structured data
+      const ensureHidden = function (id) {
+        let el = document.getElementById(id);
+        if (!el) {
+          el = document.createElement('input');
+          el.type = 'hidden';
+          el.id = id;
+          document.getElementById('applyForm').appendChild(el);
+        }
+        return el;
+      };
 
-      // Show status
+      ensureHidden('__parsedExperience').value = JSON.stringify(p.experience || []);
+      ensureHidden('__parsedEducation').value  = JSON.stringify(p.educationList || []);
+      ensureHidden('__parsedSkills').value     = (p.skills || []).join(', ');
+      ensureHidden('__parsedLinkedin').value   = p.linkedin || '';
+
       const confidence = Math.round((p.confidence || 0) * 100);
       document.getElementById('quickStatus').style.display = 'block';
       document.getElementById('quickStatus').innerHTML =
         '<span style="color:#16A34A">✓ Resume parsed (' + confidence + '% confidence) — scroll down to review your auto-filled details</span>';
 
-      // Smooth scroll to the form
       setTimeout(function () {
         document.getElementById('applyForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 300);
@@ -616,7 +617,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 })();
-  async function downloadStandardizedCV(format) {
+
+async function downloadStandardizedCV(format) {
   format = format || 'pdf';
   const appId = document.getElementById('successAppId').textContent.trim();
   const email = (document.getElementById('fEmail').value || '').trim().toLowerCase();
