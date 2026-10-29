@@ -969,7 +969,6 @@ async function handleApplySubmit(job) {
 
   try {
     const resumeDataUri = await readFileAsDataURL(resumeFile);
-
     const payload = {
       action: 'submitCandidate',
       candidateName: name,
@@ -986,17 +985,17 @@ async function handleApplySubmit(job) {
       Expected_CTC: expectedCtc,
       Notice_Period: notice,
       Reason_for_Leaving: reason,
-       experience:    (function () {
-    try { return JSON.parse((document.getElementById('__parsedExperience') || {}).value || '[]'); }
-    catch (e) { return []; }
-  })(),
-  educationList: (function () {
-    try { return JSON.parse((document.getElementById('__parsedEducation') || {}).value || '[]'); }
-    catch (e) { return []; }
-  })(),
-  skills:        (document.getElementById('__parsedSkills') || {}).value || ''
+      experience:    (function () {
+        try { return JSON.parse((document.getElementById('__parsedExperience') || {}).value || '[]'); }
+        catch (e) { return []; }
+      })(),
+      educationList: (function () {
+        try { return JSON.parse((document.getElementById('__parsedEducation') || {}).value || '[]'); }
+        catch (e) { return []; }
+      })(),
+      skills:        (document.getElementById('__parsedSkills') || {}).value || '',
+      linkedin:      (document.getElementById('__parsedLinkedin') || {}).value || ''
     };
-
     const res = await ATS.post('submitCandidate', payload);
 
     if (!res || !res.ok) {
