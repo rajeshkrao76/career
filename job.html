@@ -378,7 +378,22 @@
           </p>
           <a href="index.html#jobs" class="btn-primary btn-block">Browse more jobs</a>
         </div>
-
+<div style="margin-top:20px;padding:16px;background:#F0FDF4;border:2px solid #16A34A;border-radius:10px;text-align:center">
+  <div style="font-size:13px;font-weight:700;color:#166534;margin-bottom:8px">
+    🎁 Bonus — get a professional standardized CV you can use anywhere
+  </div>
+  <div style="font-size:12px;color:#166534;margin-bottom:12px">
+    We'll generate a clean, professionally formatted CV — perfect for Naukri, LinkedIn, Indeed, or Shine.
+  </div>
+  <button onclick="downloadStandardizedCV()"
+          style="background:#16A34A;color:#fff;padding:10px 22px;border-radius:8px;border:none;
+                 font-weight:700;font-size:13px;cursor:pointer;font-family:inherit">
+    📥 Download my free CV (PDF)
+  </button>
+  <div style="font-size:11px;color:#64748B;margin-top:8px">
+    Also available as DOCX — <a href="#" onclick="downloadStandardizedCV('docx');return false;" style="color:#1A365D">download .docx</a>
+  </div>
+</div>
       </div>
     </aside>
 
@@ -601,6 +616,41 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 })();
+  async function downloadStandardizedCV(format) {
+  format = format || 'pdf';
+  const appId = document.getElementById('successAppId').textContent.trim();
+  const email = (document.getElementById('fEmail').value || '').trim().toLowerCase();
+
+  if (!appId || appId === '—') {
+    alert('Application ID missing — please reload');
+    return;
+  }
+  if (!email) {
+    alert('Email missing — please reload');
+    return;
+  }
+
+  ATS.toast('Preparing your CV…');
+
+  const res = await ATS.post('downloadStandardizedCV', { appId, email, format });
+
+  if (!res.ok) {
+    ATS.toast(res.error || 'Download failed', 'error');
+    return;
+  }
+
+  const bytes = Uint8Array.from(atob(res.base64), c => c.charCodeAt(0));
+  const blob = new Blob([bytes], { type: res.mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = res.filename;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+
+  ATS.toast('CV downloaded', 'success');
+}
+window.downloadStandardizedCV = downloadStandardizedCV;
 </script>
 </body>
 </html>
