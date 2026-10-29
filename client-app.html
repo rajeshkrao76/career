@@ -381,7 +381,7 @@
         </div>` : ''}
 
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
-          <button class="m3-btn m3-btn-filled" style="background:#16A34A" onclick="doAction('shortlist','${c.appId}')">✓ Shortlist</button>
+          <button class="m3-btn m3-btn-filled" style="background:#16A34A" title="Candidate will be moved back to Raveone for scheduling" onclick="doAction('shortlist','${c.appId}')">✓ Shortlist</button>
           <button class="m3-btn m3-btn-outlined" onclick="doAction('hold','${c.appId}')">⏸ Hold</button>
           <button class="m3-btn m3-btn-outlined" style="color:#DC2626;border-color:#DC2626" onclick="doAction('reject','${c.appId}')">✗ Reject</button>
           <button class="m3-btn m3-btn-outlined" onclick="openRateModal('${c.appId}')">⭐ Rate</button>
