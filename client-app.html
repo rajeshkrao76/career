@@ -270,7 +270,7 @@
       const res = await call('clientGetCandidates');
       if (handleAuthError(res)) return;
       if (!res.ok) { content.innerHTML = '<div class="empty-tab">Could not load</div>'; return; }
-    const s = res.stats || { total: 0, pending: 0, shortlisted: 0, interview: 0, offered: 0, hired: 0, rejected: 0 };
+      const s = res.stats || { total: 0, pending: 0, shortlisted: 0, interview: 0, offered: 0, hired: 0, rejected: 0 };
       content.innerHTML = `
         <div class="m3-flex m3-justify-between m3-items-center" style="margin-bottom:16px;flex-wrap:wrap;gap:10px">
           <h1 class="m3-h3">Candidates (${res.total})</h1>
@@ -380,8 +380,13 @@
             </div>`).join('')}
         </div>` : ''}
 
+        <div style="margin-bottom:12px">
+          <label class="m3-field-label">Note (optional)</label>
+          <textarea class="m3-textarea" id="actionNote" rows="2" placeholder="Add a note for Shortlist / Hold / Reject. Required for Reject." maxlength="500" style="margin-top:4px"></textarea>
+        </div>
+
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
-          <button class="m3-btn m3-btn-filled" style="background:#16A34A" title="Marks candidate as shortlisted" onclick="doAction('shortlist','${c.appId}')">✓ Shortlist</button>
+          <button class="m3-btn m3-btn-filled" style="background:#16A34A" onclick="doAction('shortlist','${c.appId}')">✓ Shortlist</button>
           <button class="m3-btn m3-btn-outlined" onclick="doAction('hold','${c.appId}')">⏸ Hold</button>
           <button class="m3-btn m3-btn-outlined" style="color:#DC2626;border-color:#DC2626" onclick="doAction('reject','${c.appId}')">✗ Reject</button>
           <button class="m3-btn m3-btn-outlined" onclick="openRateModal('${c.appId}')">⭐ Rate</button>
@@ -408,20 +413,25 @@
     };
 
     window.doAction = async function (action, appId) {
+      // Read the note from the inline field in the modal
+      const noteEl = document.getElementById('actionNote');
+      const note = noteEl ? noteEl.value.trim() : '';
+
       if (action === 'reject') {
-        const reason = prompt('Reason for rejection (required):');
-        if (!reason || !reason.trim()) return;
-        const res = await call('clientRejectCandidate', { appId, reason: reason.trim() });
-       if (res.ok) { ATS.toast('Rejected — removed from your list', 'success'); closeModal(); render(); }
+        if (!note) {
+          ATS.toast('Please enter a reason for rejection', 'error');
+          if (noteEl) noteEl.focus();
+          return;
+        }
+        const res = await call('clientRejectCandidate', { appId, reason: note });
+        if (res.ok) { ATS.toast('Rejected', 'success'); closeModal(); render(); }
         else ATS.toast(res.error, 'error');
       } else if (action === 'shortlist') {
-        const note = prompt('Optional note (leave blank to skip):') || '';
-        const res = await call('clientShortlistCandidate', { appId, note });
+        const res = await call('clientShortlistCandidate', { appId, note: note });
         if (res.ok) { ATS.toast('✓ Shortlisted', 'success'); closeModal(); render(); }
         else ATS.toast(res.error, 'error');
       } else if (action === 'hold') {
-        const note = prompt('Hold note (optional):') || '';
-        const res = await call('clientHoldCandidate', { appId, note });
+        const res = await call('clientHoldCandidate', { appId, note: note });
         if (res.ok) { ATS.toast('Put on hold'); closeModal(); render(); }
         else ATS.toast(res.error, 'error');
       }
@@ -430,9 +440,22 @@
     window.addComment = async function (appId) {
       const comment = document.getElementById('commentBox').value.trim();
       if (!comment) { ATS.toast('Comment cannot be empty', 'error'); return; }
+
       const res = await call('clientAddComment', { appId, comment });
-      if (res.ok) { ATS.toast('Comment posted', 'success'); openCandidate(appId); }
-      else ATS.toast(res.error, 'error');
+      if (!res.ok) { ATS.toast(res.error, 'error'); return; }
+
+      ATS.toast('Comment posted', 'success');
+
+      // Preserve scroll position while the modal reloads
+      const modal = document.getElementById('atsModal');
+      const scrollY = modal ? modal.scrollTop : 0;
+
+      await openCandidate(appId);
+
+      requestAnimationFrame(function () {
+        const m = document.getElementById('atsModal');
+        if (m) m.scrollTop = scrollY;
+      });
     };
 
     window.openRateModal = function (appId) {
