@@ -417,7 +417,7 @@
       } else if (action === 'shortlist') {
         const note = prompt('Optional note (leave blank to skip):') || '';
         const res = await call('clientShortlistCandidate', { appId, note });
-        if (res.ok) { ATS.toast('Shortlisted', 'success'); closeModal(); render(); }
+        if (res.ok) { ATS.toast('Shortlisted — moved to Raveone for scheduling', 'success'); closeModal(); render(); }
         else ATS.toast(res.error, 'error');
       } else if (action === 'hold') {
         const note = prompt('Hold note (optional):') || '';
