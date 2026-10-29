@@ -412,7 +412,7 @@
         const reason = prompt('Reason for rejection (required):');
         if (!reason || !reason.trim()) return;
         const res = await call('clientRejectCandidate', { appId, reason: reason.trim() });
-        if (res.ok) { ATS.toast('Rejected', 'success'); closeModal(); render(); }
+       if (res.ok) { ATS.toast('Rejected — removed from your list', 'success'); closeModal(); render(); }
         else ATS.toast(res.error, 'error');
       } else if (action === 'shortlist') {
         const note = prompt('Optional note (leave blank to skip):') || '';
