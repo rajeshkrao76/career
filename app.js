@@ -985,7 +985,16 @@ async function handleApplySubmit(job) {
       Current_CTC: currentCtc,
       Expected_CTC: expectedCtc,
       Notice_Period: notice,
-      Reason_for_Leaving: reason
+      Reason_for_Leaving: reason,
+       experience:    (function () {
+    try { return JSON.parse((document.getElementById('__parsedExperience') || {}).value || '[]'); }
+    catch (e) { return []; }
+  })(),
+  educationList: (function () {
+    try { return JSON.parse((document.getElementById('__parsedEducation') || {}).value || '[]'); }
+    catch (e) { return []; }
+  })(),
+  skills:        (document.getElementById('__parsedSkills') || {}).value || ''
     };
 
     const res = await ATS.post('submitCandidate', payload);
