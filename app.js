@@ -1023,6 +1023,16 @@ async function handleApplySubmit(job) {
     btn.disabled = false;
     btnText.textContent = originalText;
 
+    // Save the auto-created portal session so "Complete My Profile" lands logged-in
+    if (res.portalToken && res.portalEmail) {
+      ATS.saveSession('candidate', {
+        token:     res.portalToken,
+        email:     res.portalEmail,
+        name:      res.portalName || '',
+        expiresAt: res.portalExpires || ''
+      });
+    }
+
     document.getElementById('applySuccess').scrollIntoView({ behavior: 'smooth', block: 'center' });
 
   } catch (e) {
