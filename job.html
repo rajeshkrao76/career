@@ -362,33 +362,54 @@
 
         </form>
 
-        <div class="apply-success" id="applySuccess" hidden>
+                <div class="apply-success" id="applySuccess" hidden>
           <div class="success-icon">✓</div>
-          <h3 class="success-title">Application submitted</h3>
+          <h3 class="success-title">Application submitted!</h3>
           <p class="success-text">
             Reference ID: <strong id="successAppId">—</strong>
           </p>
           <p class="success-note">
             We've sent a confirmation email. Our recruiter will reach out within 2–3 working days.
           </p>
-          <a href="index.html#jobs" class="btn-primary btn-block">Browse more jobs</a>
 
-          <!-- 🎁 Standardized CV download panel — visible only after submit -->
-          <div style="margin-top:20px;padding:16px;background:#F0FDF4;border:2px solid #16A34A;border-radius:10px;text-align:center">
-            <div style="font-size:13px;font-weight:700;color:#166534;margin-bottom:8px">
-              🎁 Bonus — get a professional standardized CV you can use anywhere
+          <!-- PRIMARY: Complete profile in candidate portal (auto-logged-in) -->
+          <div style="margin-top:20px;padding:16px;background:#EFF6FF;border:2px solid #1A365D;border-radius:12px;text-align:left">
+            <div style="font-size:14px;font-weight:700;color:#1A365D;margin-bottom:6px">
+              🎯 Complete your profile → get better matches
             </div>
-            <div style="font-size:12px;color:#166534;margin-bottom:12px">
-              We'll generate a clean, professionally formatted CV — perfect for Naukri, LinkedIn, Indeed, or Shine.
+            <div style="font-size:12.5px;color:#334155;line-height:1.6;margin-bottom:12px">
+              Your auto-filled profile is <b>incomplete</b>. Add documents, skills, education certificates, and get a sharper CV that recruiters love. You're already signed in — one click.
+            </div>
+            <a href="portal-app.html"
+               style="display:block;text-align:center;background:#1A365D;color:#fff;padding:12px 20px;
+                      border-radius:8px;font-weight:700;font-size:13.5px;text-decoration:none">
+              Complete My Profile →
+            </a>
+          </div>
+
+          <!-- SECONDARY: Download CV -->
+          <div style="margin-top:12px;padding:16px;background:#F0FDF4;border:2px solid #16A34A;border-radius:12px;text-align:center">
+            <div style="font-size:13px;font-weight:700;color:#166534;margin-bottom:6px">
+              🎁 Download your free standardized CV
+            </div>
+            <div style="font-size:12px;color:#166534;margin-bottom:10px">
+              Professionally formatted — perfect for Naukri, LinkedIn, Indeed, or Shine.
             </div>
             <button onclick="downloadStandardizedCV()"
                     style="background:#16A34A;color:#fff;padding:10px 22px;border-radius:8px;border:none;
                            font-weight:700;font-size:13px;cursor:pointer;font-family:inherit">
-              📥 Download my free CV (PDF)
+              📥 Download CV (PDF)
             </button>
             <div style="font-size:11px;color:#64748B;margin-top:8px">
               Also available as DOCX — <a href="#" onclick="downloadStandardizedCV('docx');return false;" style="color:#1A365D">download .docx</a>
             </div>
+          </div>
+
+          <!-- Tertiary: browse more -->
+          <div style="text-align:center;margin-top:14px">
+            <a href="index.html#jobs" style="color:#64748B;font-size:12.5px;text-decoration:underline">
+              Browse more open jobs
+            </a>
           </div>
         </div>
 
