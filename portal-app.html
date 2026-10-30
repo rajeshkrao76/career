@@ -359,6 +359,18 @@ let EXP_LIST = [];
 let EDITING_EDU_IDX = -1;
 let EDITING_EXP_IDX = -1;
 let _dashLoadedAt = 0;
+const _tabLoadedAt = {
+  dashboard: 0, jobs: 0, apps: 0, interviews: 0,
+  docs: 0, assessments: 0, profile: 0, alerts: 0
+};
+const TAB_TTL = 30000;
+
+function _markTabLoaded(name) { _tabLoadedAt[name] = Date.now(); }
+function _isTabFresh(name) { return Date.now() - _tabLoadedAt[name] < TAB_TTL; }
+function _clearTabCache() {
+  Object.keys(_tabLoadedAt).forEach(function (k) { _tabLoadedAt[k] = 0; });
+  _dashLoadedAt = 0;
+}
 
 async function bootApp() {
   try {
@@ -370,6 +382,7 @@ async function bootApp() {
     document.getElementById('acctEmail').textContent = p.email || '';
     document.getElementById('acctName').textContent = p.name || '';
     _dashLoadedAt = Date.now();
+    _tabLoadedAt.dashboard = _dashLoadedAt;
     PROFILE = p;
   } catch (e) {
     if (/session|not authenticated|invalid|expired/i.test(e.message)) {
@@ -379,17 +392,27 @@ async function bootApp() {
   }
 }
 
-function switchTab(name) {
+function switchTab(name, force) {
   document.querySelectorAll('.panel').forEach(function(p) { p.classList.toggle('hidden', p.id !== 'panel-' + name); });
   document.querySelectorAll('.tab').forEach(function(t) { t.classList.toggle('tab-active', t.dataset.tab === name); });
-  if (name === 'dashboard') loadDashboard();
-  if (name === 'jobs') loadJobsTab();
-  if (name === 'apps') loadAppsTab();
-  if (name === 'interviews') loadInterviewsTab();
-  if (name === 'docs') loadDocsTab();
-  if (name === 'assessments') loadAssessmentsTab();
-  if (name === 'profile') loadProfileTab();
-  if (name === 'alerts') loadAlertsTab();
+
+  if (force) _tabLoadedAt[name] = 0;
+  if (_isTabFresh(name)) return;   // ← cache hit, skip fetch
+
+  const loaders = {
+    dashboard:    function () { return loadDashboard(true); },
+    jobs:         loadJobsTab,
+    apps:         loadAppsTab,
+    interviews:   loadInterviewsTab,
+    docs:         loadDocsTab,
+    assessments:  loadAssessmentsTab,
+    profile:      loadProfileTab,
+    alerts:       loadAlertsTab
+  };
+  const fn = loaders[name];
+  if (fn) {
+    Promise.resolve(fn()).then(function () { _markTabLoaded(name); });
+  }
 }
 
 function logout() {
@@ -400,10 +423,14 @@ function logout() {
 }
 
 async function loadDashboard(force) {
-  if (!force && Date.now() - _dashLoadedAt < 30000) return;
+  if (!force && _isTabFresh('dashboard')) return;
   try {
     const res = await ATS.post('portalGetDashboard', { token: TOKEN });
-    if (res && res.ok) { renderDashboard(res); _dashLoadedAt = Date.now(); }
+    if (res && res.ok) {
+      renderDashboard(res);
+      _dashLoadedAt = Date.now();
+      _tabLoadedAt.dashboard = _dashLoadedAt;
+    }
   } catch (e) {}
 }
 
@@ -533,6 +560,7 @@ async function submitPortalApplication(ev) {
     }
     closePortalApply();
     alert('✅ Application submitted!\n\nReference: ' + res.applicationId + '\nRole: ' + res.jobTitle);
+    _clearTabCache();
     loadAppsTab();
   } catch (e) { showError('Network error: ' + e.message); }
 }
@@ -556,7 +584,7 @@ async function withdrawApp(appId) {
   if (!confirm('Withdraw this application?')) return;
   try {
     const res = await ATS.post('portalWithdrawApplication', { token: TOKEN, appId: appId });
-    if (res && res.ok) loadAppsTab(); else alert((res && res.error) || 'Failed');
+  if (res && res.ok) { _clearTabCache(); loadAppsTab(); } else alert((res && res.error) || 'Failed');
   } catch (e) { alert(e.message); }
 }
 
@@ -579,7 +607,7 @@ async function respondInterview(interviewId, response) {
   if (!confirm('Respond "' + response + '"?')) return;
   try {
     const res = await ATS.post('portalRespondInterview', { token: TOKEN, interviewId: interviewId, response: response });
-    if (res && res.ok) loadInterviewsTab(); else alert((res && res.error) || 'Failed');
+       if (res && res.ok) { _tabLoadedAt.interviews = 0; loadInterviewsTab(); } else alert((res && res.error) || 'Failed');
   } catch (e) { alert(e.message); }
 }
 
@@ -601,7 +629,7 @@ async function uploadDoc(input) {
   try {
     const b64 = await readFileAsDataUrl(file);
     const res = await ATS.post('portalUploadDocument', { token: TOKEN, docType: docType, fileData: b64, fileName: file.name });
-    if (res && res.ok) { alert('Uploaded!'); loadDocsTab(); } else alert((res && res.error) || 'Upload failed');
+        if (res && res.ok) { alert('Uploaded!'); _tabLoadedAt.docs = 0; loadDocsTab(); } else alert((res && res.error) || 'Upload failed');
   } catch (e) { alert(e.message); }
   input.value = '';
 }
@@ -610,7 +638,7 @@ async function deleteDoc(docId) {
   if (!confirm('Delete?')) return;
   try {
     const res = await ATS.post('portalDeleteDocument', { token: TOKEN, docId: docId });
-    if (res && res.ok) loadDocsTab(); else alert((res && res.error) || 'Failed');
+     if (res && res.ok) { _tabLoadedAt.docs = 0; loadDocsTab(); } else alert((res && res.error) || 'Failed');
   } catch (e) { alert(e.message); }
 }
 
@@ -881,8 +909,9 @@ async function saveProfile() {
         experience: EXP_LIST
       }
     });
-    if (res && res.ok) {
+        if (res && res.ok) {
       markSaveStatus(true);
+      _clearTabCache();
       alert('✅ Profile saved!\n\nYour CV has been updated with your education and experience.');
     } else {
       alert((res && res.error) || 'Save failed');
@@ -1005,7 +1034,7 @@ async function uploadProfilePhoto(input) {
   try {
     const b64 = await readFileAsDataUrl(file);
     const res = await ATS.post('portalUploadPhoto', { token: TOKEN, fileData: b64, fileName: file.name });
-    if (res && res.ok) { alert('Photo uploaded!'); loadProfileTab(); } else alert((res && res.error) || 'Upload failed');
+        if (res && res.ok) { alert('Photo uploaded!'); _tabLoadedAt.profile = 0; loadProfileTab(); } else alert((res && res.error) || 'Upload failed');
   } catch (e) { alert(e.message); }
   input.value = '';
 }
