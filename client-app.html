@@ -82,7 +82,14 @@
     document.getElementById('companyName').textContent = session.company || 'Client Portal';
     document.getElementById('userSub').textContent = session.name || session.email;
     const content = document.getElementById('content');
-    let CURRENT_TAB = 'dashboard';
+      let CURRENT_TAB = 'dashboard';
+
+    /* ── Frontend tab cache: makes tab switches instant for 30s ── */
+    const _tabCache = {};
+    const TAB_TTL = 30000;
+    function _clearTabCache() {
+      Object.keys(_tabCache).forEach(function (k) { delete _tabCache[k]; });
+    }
 
     async function call(action, extra) {
       return ATS.post(action, Object.assign({ token: session.token }, extra || {}));
@@ -104,10 +111,40 @@
         render();
       });
     });
-    function render() {
+        function render(force) {
+      if (force) _clearTabCache();
+
+      const cached = _tabCache[CURRENT_TAB];
+      if (cached && Date.now() - cached.at < TAB_TTL) {
+        content.innerHTML = cached.html;
+        // Restore data references the tab's search/filter functions rely on
+        if (CURRENT_TAB === 'jobs' && window._JOBS_ALL_CACHE !== undefined) {
+          window._JOBS_ALL = window._JOBS_ALL_CACHE;
+        }
+        if (CURRENT_TAB === 'candidates' && window._CAND_ALL_CACHE !== undefined) {
+          window._CAND_ALL = window._CAND_ALL_CACHE;
+        }
+        return;
+      }
+
       content.innerHTML = '<div class="empty-tab">Loading…</div>';
       const fn = TABS[CURRENT_TAB];
-      if (fn) fn();
+      if (fn) {
+        Promise.resolve(fn()).then(function () {
+          if (CURRENT_TAB === 'jobs' && window._JOBS_ALL) {
+            window._JOBS_ALL_CACHE = window._JOBS_ALL;
+          }
+          if (CURRENT_TAB === 'candidates' && window._CAND_ALL) {
+            window._CAND_ALL_CACHE = window._CAND_ALL;
+          }
+          _tabCache[CURRENT_TAB] = {
+            html: content.innerHTML,
+            at: Date.now()
+          };
+        }).catch(function (e) {
+          console.error('Tab render failed:', e);
+        });
+      }
     }
 
     /* Modal helpers */
@@ -424,15 +461,15 @@
           return;
         }
         const res = await call('clientRejectCandidate', { appId, reason: note });
-        if (res.ok) { ATS.toast('Rejected', 'success'); closeModal(); render(); }
+      if (res.ok) { ATS.toast('Rejected', 'success'); closeModal(); render(true); }
         else ATS.toast(res.error, 'error');
       } else if (action === 'shortlist') {
         const res = await call('clientShortlistCandidate', { appId, note: note });
-        if (res.ok) { ATS.toast('✓ Shortlisted', 'success'); closeModal(); render(); }
+       if (res.ok) { ATS.toast('✓ Shortlisted', 'success'); closeModal(); render(true); }
         else ATS.toast(res.error, 'error');
       } else if (action === 'hold') {
         const res = await call('clientHoldCandidate', { appId, note: note });
-        if (res.ok) { ATS.toast('Put on hold'); closeModal(); render(); }
+      if (res.ok) { ATS.toast('Put on hold'); closeModal(); render(true); }
         else ATS.toast(res.error, 'error');
       }
     };
@@ -444,9 +481,9 @@
       const res = await call('clientAddComment', { appId, comment });
       if (!res.ok) { ATS.toast(res.error, 'error'); return; }
 
-      ATS.toast('Comment posted', 'success');
+     ATS.toast('Comment posted', 'success');
+      _clearTabCache();
 
-      // Preserve scroll position while the modal reloads
       const modal = document.getElementById('atsModal');
       const scrollY = modal ? modal.scrollTop : 0;
 
@@ -489,7 +526,7 @@
       btn.disabled = true; btn.textContent = 'Saving…';
       const res = await call('clientRateCandidate', { appId, rating });
       btn.disabled = false; btn.textContent = 'Submit Rating';
-      if (res.ok) { ATS.toast('Rated ' + rating + '/5'); closeModal(); openCandidate(appId); }
+      if (res.ok) { ATS.toast('Rated ' + rating + '/5'); closeModal(); _clearTabCache(); openCandidate(appId); }
       else ATS.toast(res.error, 'error');
     };
 
@@ -634,7 +671,7 @@
       if (!res.ok) { errEl.textContent = res.error || 'Submit failed'; return; }
       ATS.toast('Feedback submitted' + (res.statusChanged ? ' · Status → ' + res.statusChanged : ''), 'success');
       closeModal();
-      renderInterviewFeedback();
+      render(true);
     };
 
     /* ═══════════════════════════════════════════════════════
