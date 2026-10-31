@@ -162,11 +162,31 @@
             <button onclick="openCVPreview()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">👁 Preview CV</button>
             <button onclick="downloadCV('pdf')" class="px-3 py-2 bg-[#1A365D] hover:bg-[#2A5487] text-white rounded-lg text-xs font-bold">📄 CV (PDF)</button>
             <button onclick="downloadCV('docx')" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold">📝 CV (DOCX)</button>
-          </div>
+                    </div>
         </div>
       </div>
 
-      <!-- Basic fields -->
+      <!-- ═══ QUICK PROFILE BUILD — Upload CV & Auto-Fill ═══ -->
+      <div class="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl border-2 border-emerald-400 p-5 mb-3">
+        <div class="flex justify-between items-start flex-wrap gap-3">
+          <div class="flex-1 min-w-0">
+            <h2 class="text-sm font-black text-emerald-900">⚡ Quick Profile Build</h2>
+            <p class="text-xs text-emerald-800 mt-1 leading-relaxed">
+              Upload your CV — we'll auto-fill your profile with name, phone, education, work experience, and skills. Review the fields below and click <b>Save Profile</b> when ready.
+            </p>
+          </div>
+          <div class="flex-shrink-0">
+            <input type="file" id="profileResumeUpload" accept=".pdf,.doc,.docx" class="hidden" onchange="handleProfileResumeUpload(this)">
+            <button type="button" onclick="document.getElementById('profileResumeUpload').click()"
+                    class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold flex items-center gap-2">
+              📤 Upload CV & Auto-Fill
+            </button>
+          </div>
+        </div>
+        <div id="profileParseStatus" class="hidden mt-3 text-xs font-semibold"></div>
+      </div>
+
+          <!-- Basic fields -->
       <div class="bg-white rounded-xl border border-slate-200 p-5 mb-3">
         <h2 class="text-sm font-black text-slate-900 mb-3">Basic Details</h2>
         <div class="grid grid-cols-2 gap-3">
@@ -710,7 +730,168 @@ function markSaveStatus(saved) {
   el.textContent = saved ? '✅ All changes saved' : '⚠️ Unsaved changes';
   el.style.color = saved ? '#16A34A' : '#B45309';
 }
+/* ── Upload CV & parse → prefill profile ── */
+async function handleProfileResumeUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
 
+  const statusEl = document.getElementById('profileParseStatus');
+  statusEl.classList.remove('hidden');
+  statusEl.innerHTML = '<span style="color:#166534">⏳ Parsing your CV… (5–10 seconds)</span>';
+
+  if (file.size > 5 * 1024 * 1024) {
+    statusEl.innerHTML = '<span style="color:#DC2626">⚠️ File too large — max 5 MB.</span>';
+    input.value = '';
+    return;
+  }
+
+  try {
+    const dataUri = await readFileAsDataUrl(file);
+    const res = await ATS.post('parseResumePreview', {
+      resumeData: dataUri,
+      resumeName: file.name
+    });
+
+    if (!res || !res.ok) {
+      statusEl.innerHTML = '<span style="color:#DC2626">⚠️ Could not parse: ' +
+        esc((res && res.error) || 'unknown') +
+        '. You can fill the form manually below.</span>';
+      return;
+    }
+
+    const filled = fillProfileFromParsed(res.parsed);
+    if (!filled) {
+      statusEl.innerHTML = '<span style="color:#B45309">Cancelled — no changes made.</span>';
+      return;
+    }
+
+    // 1. Update RESUME_LINK on all candidate rows (primary resume)
+    let resumeLinkUpdated = false;
+    try {
+      const resumeRes = await ATS.post('portalUploadResume', {
+        token: TOKEN,
+        fileData: dataUri,
+        fileName: file.name
+      });
+      if (resumeRes && resumeRes.ok) {
+        PROFILE.resumeLink = resumeRes.resumeLink;
+        resumeLinkUpdated = true;
+        console.log('Resume uploaded — updated ' + resumeRes.rowsUpdated + ' row(s)');
+      } else if (resumeRes && /apply to a job first/i.test(resumeRes.error || '')) {
+        ATS.toast('CV parsed. Apply to a job to save it as your primary resume.', 'info');
+      } else {
+        console.warn('Resume link update failed:', (resumeRes && resumeRes.error) || 'unknown');
+      }
+    } catch (uploadErr) {
+      console.warn('Resume link update failed:', uploadErr);
+    }
+
+    // 2. Also add to Documents tab for visibility
+    try {
+      await ATS.post('portalUploadDocument', {
+        token: TOKEN,
+        docType: 'Resume',
+        fileData: dataUri,
+        fileName: file.name
+      });
+    } catch (docErr) {
+      console.warn('Document entry failed (non-fatal):', docErr);
+    }
+
+    const confidence = Math.round(((res.parsed && res.parsed.confidence) || 0) * 100);
+    let statusText = '✓ CV parsed (' + confidence + '% confidence).';
+    if (resumeLinkUpdated) {
+      statusText += ' Resume also saved as your primary CV.';
+    }
+    statusText += ' Review fields below, then click <b>Save Profile</b>.';
+    statusEl.innerHTML = '<span style="color:#166534">' + statusText + '</span>';
+
+  } catch (e) {
+    statusEl.innerHTML = '<span style="color:#DC2626">⚠️ Error: ' + esc(e.message) + '</span>';
+  } finally {
+    input.value = '';
+  }
+}
+
+function fillProfileFromParsed(p) {
+  if (!p) return false;
+
+  const hasExisting =
+    document.getElementById('pfName').value.trim() ||
+    document.getElementById('pfPhone').value.trim() ||
+    EDU_LIST.length > 0 ||
+    EXP_LIST.length > 0;
+
+  if (hasExisting) {
+    if (!confirm(
+      'Your profile has existing data.\n\nAuto-fill will:\n' +
+      '• Fill only EMPTY fields\n' +
+      '• ADD new education & experience entries\n\n' +
+      'Your existing entries are NOT deleted. Continue?'
+    )) return false;
+  }
+
+  const setIfEmpty = function (id, val) {
+    if (val === undefined || val === null || val === '') return;
+    const el = document.getElementById(id);
+    if (el && !el.value.trim()) el.value = val;
+  };
+
+  setIfEmpty('pfName',               p.name);
+  setIfEmpty('pfPhone',              String(p.phone || '').replace(/^\+91/, ''));
+  setIfEmpty('pfLocation',           p.location);
+  setIfEmpty('pfEducation',          p.education);
+  setIfEmpty('pfTotalExp',           p.totalExp);
+  setIfEmpty('pfRelExp',             p.relExp || p.totalExp);
+  setIfEmpty('pfCurrentCompany',     p.currentCompany);
+  setIfEmpty('pfCurrentDesignation', p.currentTitle || p.currentDesignation);
+  setIfEmpty('pfCurrentCtc',         p.currentCtc);
+  setIfEmpty('pfExpectedCtc',        p.expectedCtc);
+  setIfEmpty('pfNotice',             p.noticePeriod);
+  setIfEmpty('pfReason',             p.reasonLeaving);
+  setIfEmpty('pfSkills',             Array.isArray(p.skills) ? p.skills.join(', ') : p.skills);
+  setIfEmpty('pfCertifications',     Array.isArray(p.certifications) ? p.certifications.join(' | ') : p.certifications);
+  setIfEmpty('pfLanguages',          Array.isArray(p.languages) ? p.languages.join(', ') : p.languages);
+
+  if (Array.isArray(p.educationList) && p.educationList.length) {
+    p.educationList.forEach(function (e) {
+      let degree = String(e.degree || '').trim();
+      let field  = String(e.field  || '').trim();
+      // Normalize "Other" placeholder — LLM sometimes returns degree="Other", field=<actual degree>
+      if (degree.toLowerCase() === 'other' && field) {
+        degree = field;
+        field  = '';
+      }
+      EDU_LIST.push({
+        degree:      degree,
+        field:       field,
+        institution: String(e.institution || '').trim(),
+        grade:       String(e.grade       || '').trim(),
+        startDate:   String(e.startDate   || '').trim(),
+        endDate:     String(e.endDate     || '').trim()
+      });
+    });
+    renderEducationList();
+  }
+
+  if (Array.isArray(p.experience) && p.experience.length) {
+    p.experience.forEach(function (e) {
+      EXP_LIST.push({
+        title:            String(e.title    || '').trim(),
+        company:          String(e.company  || '').trim(),
+        location:         String(e.location || '').trim(),
+        startDate:        String(e.startDate || '').trim(),
+        endDate:          e.currentlyWorking ? '' : String(e.endDate || '').trim(),
+        currentlyWorking: !!e.currentlyWorking,
+        description:      Array.isArray(e.description) ? e.description.map(String) : []
+      });
+    });
+    renderExperienceList();
+  }
+
+  markSaveStatus(false);
+  return true;
+}
 /* ── EDUCATION builder ── */
 function renderEducationList() {
   const container = document.getElementById('educationList');
