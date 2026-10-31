@@ -12,7 +12,7 @@
 // ═══════════════════════════════════════════════════════════════════════════
 
 
-const API_URL = "https://script.google.com/macros/s/AKfycbybcgte1xwjigV4PrjBilK3Z_gAitIeCHYDIaX8sZYZYt7CuF6bkqc5apa3lxdvi74uig/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzFSGlT2DgPg-U_vL2UsyNdX2cH9nflQ0X7sgmOTc97giY553WByUmxzppCAgBOq9aAiw/exec";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // HELPERS
