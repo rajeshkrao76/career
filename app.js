@@ -99,33 +99,6 @@ const ATS = {
     }
   },
 
-  saveSession(key, data) {
-    try {
-      const k = key === 'client' ? 'ats_client' : 'ats_candidate';
-      localStorage.setItem(k, JSON.stringify(data));
-    } catch (e) {}
-  },
-
-  getSession(key) {
-    try {
-      const k = key === 'client' ? 'ats_client' : 'ats_candidate';
-      const raw = localStorage.getItem(k);
-      return raw ? JSON.parse(raw) : null;
-    } catch (e) { return null; }
-  },
-
-  isLoggedIn(key) {
-    const s = ATS.getSession(key);
-    return !!(s && s.token);
-  },
-
-  clearSession(key) {
-    try {
-      const k = key === 'client' ? 'ats_client' : 'ats_candidate';
-      localStorage.removeItem(k);
-    } catch (e) {}
-  },
-
   passwordStrength(pw) {
     const checks = {
       length: String(pw || '').length >= 8,
