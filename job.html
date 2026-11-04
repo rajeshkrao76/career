@@ -1,665 +1,691 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <base target="_top">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#1A365D">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loading… | Raveone Careers</title>
+<meta name="description" content="Curated job opportunities from Raveone Consultants — MSME hiring partners in India.">
+<link rel="canonical" id="canonicalLink" href="https://career.raveone.in/">
+<style>
+:root {
+  --navy: #1A365D; --navy-2: #2A5487;
+  --gold: #A16207; --gold-bg: #FEF3C7;
+  --bg: #F8FAFC; --surface: #FFFFFF; --border: #E2E8F0;
+  --text: #0F172A; --text-muted: #475569; --text-light: #94A3B8;
+  --blue: #2563EB; --blue-bg: #DBEAFE;
+  --success: #15803D; --success-bg: #D1FAE5;
+  --warning: #B45309; --warning-bg: #FEF3C7;
+  --danger: #B91C1C; --danger-bg: #FEE2E2;
+  --radius: 12px; --radius-lg: 16px;
+  --shadow: 0 1px 3px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04);
+  --shadow-md: 0 4px 12px -2px rgba(15,23,42,.08);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', Roboto, sans-serif;
+  background: var(--bg); color: var(--text); line-height: 1.6;
+  font-size: 15px; -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; }
 
-  <title id="pageTitle">Job Details — Raveone Careers</title>
-  <meta id="metaDescription" name="description" content="View full job details, responsibilities, requirements, and apply in 60 seconds.">
-  <meta id="metaKeywords" name="keywords" content="jobs, careers, hiring, Raveone">
-  <link id="canonicalLink" rel="canonical" href="https://career.raveone.in/job.html">
+/* Header */
+.site-header {
+  background: rgba(255,255,255,.95); border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 100; backdrop-filter: blur(12px);
+}
+.header-inner {
+  max-width: 1100px; margin: 0 auto; padding: 0 24px; height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 17px; color: var(--navy); }
+.brand-mark {
+  width: 34px; height: 34px; background: linear-gradient(135deg, var(--navy), var(--navy-2));
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  color: white; font-weight: 800; font-size: 15px;
+}
+.header-nav a { font-size: 14px; font-weight: 500; color: var(--text-muted); padding: 8px 14px; border-radius: 6px; }
+.header-nav a:hover { color: var(--text); background: var(--bg); }
 
-  <meta property="og:type" content="article">
-  <meta id="ogTitleMeta" property="og:title" content="Job Details — Raveone Careers">
-  <meta id="ogDescription" property="og:description" content="Apply in 60 seconds. Verified role from MSME hiring partner.">
-  <meta id="ogUrl" property="og:url" content="https://career.raveone.in/job.html">
-  <meta property="og:site_name" content="Raveone Careers">
-  <meta id="ogImage" property="og:image" content="https://career.raveone.in/assets/og-image.png">
+/* Layout */
+.detail-layout {
+  max-width: 1100px; margin: 0 auto; padding: 32px 24px 80px;
+  display: grid; grid-template-columns: 1fr 340px; gap: 32px; align-items: start;
+}
+@media (max-width: 900px) { .detail-layout { grid-template-columns: 1fr; } }
 
-  <meta name="twitter:card" content="summary_large_image">
-  <meta id="twTitle" name="twitter:title" content="Job Details — Raveone Careers">
-  <meta id="twDescription" name="twitter:description" content="Apply in 60 seconds. Verified role.">
-  <meta id="twImage" name="twitter:image" content="https://career.raveone.in/assets/og-image.png">
+/* Back link */
+.back-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: var(--text-muted); font-size: 14px; font-weight: 500;
+  margin-bottom: 20px; transition: color .15s;
+}
+.back-link:hover { color: var(--navy); }
 
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231A365D'%3E%3Cpath d='M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6' stroke='white' stroke-width='2'/%3E%3C/svg%3E">
+/* Detail card */
+.detail-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 32px; margin-bottom: 20px;
+}
+.detail-header h1 {
+  font-size: 30px; font-weight: 800; letter-spacing: -0.02em;
+  color: var(--navy); margin-bottom: 8px; line-height: 1.2;
+}
+.detail-company {
+  font-size: 16px; color: var(--text-muted); font-weight: 500; margin-bottom: 16px;
+}
+.detail-company a { color: var(--blue); }
+.detail-pills { display: flex; flex-wrap: wrap; gap: 8px; }
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
+.meta-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 12px; border-radius: 100px; font-size: 12.5px; font-weight: 600;
+}
+.meta-id       { background: var(--bg); color: var(--text-muted); font-family: ui-monospace, monospace; }
+.meta-loc      { background: var(--blue-bg); color: var(--blue); }
+.meta-exp      { background: var(--warning-bg); color: var(--warning); }
+.meta-salary   { background: var(--success-bg); color: var(--success); }
+.meta-type     { background: var(--bg); color: var(--text-muted); }
+.meta-positions{ background: var(--gold-bg); color: var(--gold); }
 
-  <link rel="stylesheet" href="style.css">
+/* Sections */
+.section-title {
+  font-size: 15px; font-weight: 700; color: var(--navy);
+  margin: 28px 0 12px; padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.section-title:first-of-type { margin-top: 0; }
+.section-body {
+  font-size: 14.5px; color: var(--text-muted); white-space: pre-wrap; line-height: 1.8;
+}
+.section-body ul { padding-left: 20px; }
+.section-body li { margin-bottom: 4px; }
 
-  <style>
-    body { margin: 0; font-family: 'Inter', system-ui, sans-serif; background: #F8FAFC; color: #1E293B; -webkit-font-smoothing: antialiased; }
-    #jobSchemaContainer { display: none; }
-    .loading-shimmer { background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
-    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-  </style>
+/* Skills chips */
+.skills-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.skill-tag {
+  padding: 6px 14px; background: var(--bg); border: 1px solid var(--border);
+  border-radius: 100px; font-size: 13px; font-weight: 500; color: var(--text-muted);
+}
 
-  <div id="jobSchemaContainer"></div>
+/* Benefits */
+.benefit-tag {
+  padding: 6px 14px; background: var(--success-bg); border: 1px solid #BBF7D0;
+  border-radius: 100px; font-size: 13px; font-weight: 500; color: var(--success);
+}
+
+/* Info grid */
+.info-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  background: var(--bg); border-radius: 8px; padding: 16px; margin-top: 12px;
+}
+.info-item label {
+  display: block; font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.4px; color: var(--text-light); margin-bottom: 4px;
+}
+.info-item span { font-size: 13.5px; color: var(--text); font-weight: 500; }
+
+/* Sidebar */
+.sidebar { position: sticky; top: 88px; }
+.apply-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 24px; margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+.apply-card h3 {
+  font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 12px;
+}
+.apply-card p {
+  font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6;
+}
+.btn-primary {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 14px 20px; background: var(--navy); color: white;
+  border: none; border-radius: 10px; font-weight: 600; font-size: 15px;
+  cursor: pointer; transition: all .15s; text-decoration: none;
+}
+.btn-primary:hover { background: var(--navy-2); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.btn-secondary {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  width: 100%; padding: 11px 16px; background: var(--surface); color: var(--text);
+  border: 1px solid var(--border); border-radius: 10px; font-weight: 600;
+  font-size: 13px; cursor: pointer; transition: all .15s; margin-top: 8px;
+}
+.btn-secondary:hover { background: var(--bg); border-color: var(--navy); }
+.detail-fact { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+.detail-fact:last-child { border-bottom: none; }
+.detail-fact .label { color: var(--text-muted); font-weight: 500; }
+.detail-fact .value { color: var(--text); font-weight: 600; text-align: right; }
+
+/* Skeleton */
+.skeleton {
+  background: linear-gradient(90deg, #F1F5F9 0%, #E2E8F0 50%, #F1F5F9 100%);
+  background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px;
+}
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+.skeleton-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 32px;
+}
+.skeleton-line { height: 16px; margin-bottom: 12px; }
+.skeleton-line-lg { height: 28px; width: 60%; margin-bottom: 16px; }
+.skeleton-line-md { width: 40%; }
+
+/* Error / 404 */
+.msg-box {
+  text-align: center; padding: 60px 24px; background: var(--surface);
+  border: 1px solid var(--border); border-radius: var(--radius);
+}
+.msg-box .icon { font-size: 48px; margin-bottom: 16px; }
+.msg-box h2 { font-size: 22px; color: var(--navy); margin-bottom: 8px; }
+.msg-box p { color: var(--text-muted); margin-bottom: 24px; }
+
+/* Footer */
+.site-footer { background: var(--navy); color: var(--text-light); padding: 40px 24px 32px; margin-top: 80px; }
+.footer-inner {
+  max-width: 1100px; margin: 0 auto; display: flex;
+  justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;
+}
+.footer-inner .brand { color: white; }
+
+@media (max-width: 640px) {
+  .detail-card { padding: 22px; }
+  .detail-header h1 { font-size: 24px; }
+  .info-grid { grid-template-columns: 1fr; }
+}
+</style>
 </head>
-
 <body>
 
-<header class="site-header" id="siteHeader">
-  <div class="container header-inner">
-    <a href="index.html" class="brand" aria-label="Raveone Careers — Home">
-      <span class="brand-mark" aria-hidden="true">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/>
-        </svg>
-      </span>
-      <span class="brand-text">
-        <span class="brand-title">Raveone Careers</span>
-        <span class="brand-sub">Executive Search &amp; Selection</span>
-      </span>
+<header class="site-header">
+  <div class="header-inner">
+    <a href="./" class="brand">
+      <div class="brand-mark">R</div>
+      <span>Raveone Careers</span>
     </a>
-    <nav class="main-nav" id="mainNav" aria-label="Main navigation">
-      <a href="index.html" class="nav-link">Home</a>
-      <a href="index.html#jobs" class="nav-link active">Job Vacancies</a>
-      <a href="pages.html?page=employers" class="nav-link">Employers (MSME)</a>
-      <a href="pages.html?page=submit-cv" class="nav-link">Submit CV</a>
-      <a href="pages.html?page=about" class="nav-link">About Us</a>
-      <a href="pages.html?page=process" class="nav-link">Our Process</a>
-      <a href="pages.html?page=contact" class="nav-link">Contact Us</a>
-      <a href="portal-login.html" class="nav-link" style="font-weight:700;color:#1A365D">🔐 Candidate Login</a>
+    <nav class="header-nav">
+      <a href="https://career.raveone.in/">All Jobs</a>
     </nav>
-    <div class="header-actions">
-      <button class="mobile-toggle" id="mobileToggle" aria-label="Open menu" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
   </div>
 </header>
 
-<nav class="breadcrumb" aria-label="Breadcrumb">
-  <div class="container breadcrumb-inner">
-    <a href="index.html">Home</a>
-    <span aria-hidden="true">/</span>
-    <a href="index.html#jobs">Job Vacancies</a>
-    <span aria-hidden="true">/</span>
-    <span id="crumbCurrent" class="breadcrumb-current">Job</span>
-  </div>
-</nav>
-
-<main class="job-detail" id="jobDetail">
-
-  <div class="container" id="jobLoading">
-    <div class="loading-header loading-shimmer"></div>
-    <div class="loading-meta loading-shimmer"></div>
-    <div class="loading-body loading-shimmer"></div>
-    <div class="loading-body loading-shimmer"></div>
-    <div class="loading-body loading-shimmer"></div>
-  </div>
-
-  <div class="container" id="jobError" hidden>
-    <div class="error-card">
-      <div class="error-icon">⚠️</div>
-      <h2 class="error-title">Job not found</h2>
-      <p class="error-text" id="errorMessage">This job may have been filled or removed.</p>
-      <a href="index.html#jobs" class="btn-primary">Browse all open jobs</a>
+<main id="jobMain" class="detail-layout">
+  <div>
+    <div class="skeleton-card">
+      <div class="skeleton skeleton-line skeleton-line-lg"></div>
+      <div class="skeleton skeleton-line skeleton-line-md"></div>
+      <div style="margin-top:20px">
+        <div class="skeleton skeleton-line" style="width:100%"></div>
+        <div class="skeleton skeleton-line" style="width:90%"></div>
+        <div class="skeleton skeleton-line" style="width:75%"></div>
+      </div>
     </div>
   </div>
-
-  <div class="container job-grid" id="jobContent" hidden>
-
-    <article class="job-main">
-
-      <header class="job-hero">
-        <div class="job-hero-bg" aria-hidden="true"></div>
-        <div class="job-hero-content">
-          <div class="job-chips">
-            <span class="chip chip-navy" id="jobIdChip">—</span>
-            <span class="chip chip-green" id="jobTypeChip">Full-Time</span>
-            <span class="chip chip-amber" id="jobUrgentChip" hidden>🔥 Urgent</span>
-            <span class="chip chip-blue" id="jobPositionsChip" hidden>— openings</span>
-            <span class="chip chip-purple" id="jobRemoteChip" hidden>🌐 Remote</span>
-          </div>
-          <h1 class="job-title" id="jobTitle">Loading…</h1>
-          <p class="job-subtitle" id="jobSubtitle">
-            <span class="job-company" id="jobCompany">—</span>
-            <span class="dot" aria-hidden="true">•</span>
-            <span id="jobLocationTop">—</span>
-            <span class="dot" id="jobIndustryDot" aria-hidden="true" hidden>•</span>
-            <span id="jobIndustryTop"></span>
-          </p>
-          <div class="job-quick-meta">
-            <div class="quick-meta-item">
-              <div class="quick-meta-label">💰 Salary</div>
-              <div class="quick-meta-value" id="jobSalary">—</div>
-            </div>
-            <div class="quick-meta-item">
-              <div class="quick-meta-label">🧭 Experience</div>
-              <div class="quick-meta-value" id="jobExp">—</div>
-            </div>
-            <div class="quick-meta-item">
-              <div class="quick-meta-label">📍 Location</div>
-              <div class="quick-meta-value" id="jobLocationMeta">—</div>
-            </div>
-            <div class="quick-meta-item">
-              <div class="quick-meta-label">🗓 Posted</div>
-              <div class="quick-meta-value" id="jobPostedDate">—</div>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <section class="job-block" id="blockDescription">
-        <h2 class="job-block-title"><span class="title-bar"></span> Job Description</h2>
-        <div class="job-rich" id="jobDescription"></div>
-      </section>
-
-      <section class="job-block" id="blockRequirements">
-        <h2 class="job-block-title"><span class="title-bar"></span> Requirements</h2>
-        <div class="job-rich" id="jobRequirements"></div>
-      </section>
-
-      <section class="job-block" id="blockSkills">
-        <h2 class="job-block-title"><span class="title-bar"></span> Key Skills</h2>
-        <div class="skills-grid" id="jobSkills"></div>
-      </section>
-
-      <section class="job-block" id="blockEducation">
-        <h2 class="job-block-title"><span class="title-bar"></span> Education</h2>
-        <p class="job-rich" id="jobEducation"></p>
-      </section>
-
-      <section class="job-block" id="blockBenefits">
-        <h2 class="job-block-title"><span class="title-bar"></span> Benefits &amp; Perks</h2>
-        <div class="benefits-grid" id="jobBenefits"></div>
-      </section>
-
-      <section class="job-block" id="blockIndustry">
-        <h2 class="job-block-title"><span class="title-bar"></span> Industry</h2>
-        <p class="job-rich" id="jobIndustry"></p>
-      </section>
-
-      <section class="job-block" id="blockCompany">
-        <h2 class="job-block-title"><span class="title-bar"></span> About the Company</h2>
-        <div class="company-card" id="companyCard">
-          <div class="company-logo" id="companyLogo" aria-hidden="true">🏢</div>
-          <div class="company-info">
-            <h3 class="company-name" id="companyName">—</h3>
-            <p class="company-address" id="companyAddress"></p>
-            <a class="company-link" id="companyWebsite" href="#" target="_blank" rel="noopener">
-              🌐 Visit website ↗
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <section class="job-block job-deadline" id="blockDeadline" hidden>
-        <div class="deadline-banner">
-          <span class="deadline-icon">⏰</span>
-          <span>Apply before <strong id="jobDeadline">—</strong></span>
-        </div>
-      </section>
-
-      <section class="job-block" id="blockSimilar">
-        <h2 class="job-block-title"><span class="title-bar"></span> Similar Jobs</h2>
-        <div class="similar-grid" id="similarJobs"></div>
-      </section>
-
-    </article>
-
-    <aside class="job-sidebar" id="applySidebar">
-      <div class="apply-card">
-
-        <div class="apply-card-head">
-          <div class="apply-card-label">Ready to apply?</div>
-          <div class="apply-card-title">Join this opportunity</div>
-          <div class="apply-card-sub" id="applyCardSub">
-            Verified role · Direct with hiring company
-          </div>
-        </div>
-
-        <div class="apply-actions">
-          <button class="action-btn" id="saveBtn" type="button" aria-label="Save this job">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
-            </svg>
-            <span id="saveBtnText">Save</span>
-          </button>
-          <button class="action-btn" id="shareBtn" type="button" aria-label="Share this job">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/>
-              <circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/>
-            </svg>
-            Share
-          </button>
-          <button class="action-btn" id="copyLinkBtn" type="button" aria-label="Copy link">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="9" y="9" width="13" height="13" rx="2"/>
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-            </svg>
-            Link
-          </button>
-        </div>
-
-        <!-- ═══════════════════════════════════════════════════════════
-             QUICK APPLY — upload resume, auto-fill the form
-             ═══════════════════════════════════════════════════════════ -->
-        <div id="quickApplyBox" style="padding:20px;margin-bottom:16px;background:#F0FDF4;border:2px solid #16A34A;border-radius:12px">
-          <h3 style="margin:0 0 6px 0;font-size:15px;font-weight:700;color:#166534">⚡ Quick Apply</h3>
-          <p style="font-size:13px;color:#166534;margin:0 0 14px 0">
-            Upload your resume — <b>LinkedIn profile PDF, Naukri download, or any CV</b> — and we'll fill the form for you.
-          </p>
-
-          <input type="file" id="quickResume" accept=".pdf,.doc,.docx" style="display:none">
-
-          <div id="quickDropZone"
-               style="border:2px dashed #16A34A;border-radius:10px;padding:24px;text-align:center;cursor:pointer;background:#fff"
-               onclick="document.getElementById('quickResume').click()">
-            <div style="font-size:32px">📄</div>
-            <div style="font-weight:700;font-size:13px;color:#166534;margin-top:6px">Click to upload your resume</div>
-            <div style="font-size:11px;color:#64748B;margin-top:4px">PDF, DOC, DOCX · max 5 MB</div>
-          </div>
-
-          <div id="quickProgress" style="display:none;margin-top:12px;text-align:center;font-size:13px;color:#166534">
-            ⏳ Parsing your resume… (5-10 seconds)
-          </div>
-
-          <div id="quickStatus" style="display:none;margin-top:12px;font-size:12px"></div>
-
-          <div style="text-align:center;margin-top:14px;font-size:12px;color:#64748B">
-            Or <a href="#" onclick="document.getElementById('quickApplyBox').style.display='none';return false;" style="color:#1A365D;font-weight:600">fill the form manually</a> ↓
-          </div>
-        </div>
-
-        <form id="applyForm" class="apply-form" novalidate>
-
-          <div class="form-row form-row-2">
-            <div class="form-field">
-              <label class="form-label" for="fName">Full Name <span class="req">*</span></label>
-              <input id="fName" name="fName" type="text" class="form-input" autocomplete="name" required minlength="2">
-            </div>
-            <div class="form-field">
-              <label class="form-label" for="fPhone">Phone <span class="req">*</span></label>
-              <input id="fPhone" name="fPhone" type="tel" class="form-input" autocomplete="tel" required inputmode="numeric" maxlength="15" placeholder="10 digits">
-            </div>
-          </div>
-
-          <div class="form-field">
-            <label class="form-label" for="fEmail">Email <span class="req">*</span></label>
-            <input id="fEmail" name="fEmail" type="email" class="form-input" autocomplete="email" required>
-          </div>
-
-          <div class="form-row form-row-2">
-            <div class="form-field">
-              <label class="form-label" for="fLocation">Current Location</label>
-              <input id="fLocation" name="fLocation" type="text" class="form-input" autocomplete="address-level2" placeholder="City">
-            </div>
-            <div class="form-field">
-              <label class="form-label" for="fEducation">Education</label>
-              <input id="fEducation" name="fEducation" type="text" class="form-input" placeholder="e.g. B.E. Mechanical">
-            </div>
-          </div>
-
-          <div class="form-row form-row-2">
-            <div class="form-field">
-              <label class="form-label" for="fTotalExp">Total Experience <span class="req">*</span></label>
-              <input id="fTotalExp" name="fTotalExp" type="text" class="form-input" required placeholder="e.g. 4 years">
-            </div>
-            <div class="form-field">
-              <label class="form-label" for="fRelExp">Relevant Experience</label>
-              <input id="fRelExp" name="fRelExp" type="text" class="form-input" placeholder="e.g. 3 years">
-            </div>
-          </div>
-
-          <div class="form-row form-row-2">
-            <div class="form-field">
-              <label class="form-label" for="fCurrentCtc">Current CTC</label>
-              <input id="fCurrentCtc" name="fCurrentCtc" type="text" class="form-input" placeholder="e.g. 3 LPA">
-            </div>
-            <div class="form-field">
-              <label class="form-label" for="fExpectedCtc">Expected CTC</label>
-              <input id="fExpectedCtc" name="fExpectedCtc" type="text" class="form-input" placeholder="e.g. 5 LPA">
-            </div>
-          </div>
-
-          <div class="form-field">
-            <label class="form-label" for="fNotice">Notice Period <span class="req">*</span></label>
-            <input id="fNotice" name="fNotice" type="text" class="form-input" required placeholder="e.g. 30 days / Immediate">
-          </div>
-
-          <div class="form-field">
-            <label class="form-label" for="fReason">Reason for Leaving</label>
-            <textarea id="fReason" name="fReason" class="form-input form-textarea" rows="2" placeholder="Optional"></textarea>
-          </div>
-
-          <div class="form-field">
-            <label class="form-label">Resume Upload <span class="req">*</span></label>
-            <label class="upload-zone" for="fResume" id="uploadZone">
-              <input id="fResume" name="fResume" type="file" class="upload-input" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" required>
-              <div class="upload-icon" aria-hidden="true">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                  <polyline points="17 8 12 3 7 8"/>
-                  <line x1="12" y1="3" x2="12" y2="15"/>
-                </svg>
-              </div>
-              <div class="upload-text">
-                <span class="upload-title">Choose file or drag &amp; drop</span>
-                <span class="upload-sub">PDF, DOC, DOCX, JPG · max 5 MB</span>
-              </div>
-              <div class="upload-file" id="uploadFileName"></div>
-            </label>
-          </div>
-
-          <input type="hidden" id="fJobId">
-
-          <button type="submit" class="btn-apply" id="submitBtn">
-            <span class="btn-apply-text">Submit Application</span>
-          </button>
-
-          <p class="form-note">
-            By submitting, you agree to our
-            <a href="pages.html?page=terms" target="_blank" rel="noopener">Terms</a> and
-            <a href="pages.html?page=privacy" target="_blank" rel="noopener">Privacy Policy</a>.
-          </p>
-
-        </form>
-
-                <div class="apply-success" id="applySuccess" hidden>
-          <div class="success-icon">✓</div>
-          <h3 class="success-title">Application submitted!</h3>
-          <p class="success-text">
-            Reference ID: <strong id="successAppId">—</strong>
-          </p>
-          <p class="success-note">
-            We've sent a confirmation email. Our recruiter will reach out within 2–3 working days.
-          </p>
-
-            <!-- SECONDARY: Download CV -->
-          <div style="margin-top:12px;padding:16px;background:#F0FDF4;border:2px solid #16A34A;border-radius:12px;text-align:center">
-            <div style="font-size:13px;font-weight:700;color:#166534;margin-bottom:6px">
-              🎁 Download your free standardized CV
-            </div>
-            <div style="font-size:12px;color:#166534;margin-bottom:10px">
-              Professionally formatted — perfect for Naukri, LinkedIn, Indeed, or Shine.
-            </div>
-            <button onclick="downloadStandardizedCV()"
-                    style="background:#16A34A;color:#fff;padding:10px 22px;border-radius:8px;border:none;
-                           font-weight:700;font-size:13px;cursor:pointer;font-family:inherit">
-              📥 Download CV (PDF)
-            </button>
-            <div style="font-size:11px;color:#64748B;margin-top:8px">
-              Also available as DOCX — <a href="#" onclick="downloadStandardizedCV('docx');return false;" style="color:#1A365D">download .docx</a>
-            </div>
-          </div>
-
-          <!-- Tertiary: browse more -->
-          <div style="text-align:center;margin-top:14px">
-            <a href="index.html#jobs" style="color:#64748B;font-size:12.5px;text-decoration:underline">
-              Browse more open jobs
-            </a>
-          </div>
-        </div>
-
-      </div>
-    </aside>
-
-  </div>
+  <aside class="sidebar">
+    <div class="skeleton-card">
+      <div class="skeleton skeleton-line skeleton-line-md"></div>
+      <div class="skeleton skeleton-line" style="height:40px;margin-top:16px"></div>
+    </div>
+  </aside>
 </main>
 
-<div class="mobile-apply-bar" id="mobileApplyBar" hidden>
-  <div class="mobile-apply-info">
-    <div class="mobile-apply-title" id="mobileJobTitle">—</div>
-    <div class="mobile-apply-sub" id="mobileJobSalary">—</div>
-  </div>
-  <button class="btn-apply btn-apply-sm" id="mobileApplyBtn">Apply Now</button>
-</div>
-
-<div class="share-popover" id="sharePopover" hidden>
-  <div class="share-popover-head">
-    <span>Share this job</span>
-    <button class="share-close" id="shareClose" aria-label="Close">×</button>
-  </div>
-  <a class="share-option" id="shareWhatsapp" href="#" target="_blank" rel="noopener">
-    <span class="share-ico" style="background:#25D366">💬</span><span>WhatsApp</span>
-  </a>
-  <a class="share-option" id="shareEmail" href="#">
-    <span class="share-ico" style="background:#1A365D">✉️</span><span>Email</span>
-  </a>
-  <a class="share-option" id="shareLinkedin" href="#" target="_blank" rel="noopener">
-    <span class="share-ico" style="background:#0077B5">in</span><span>LinkedIn</span>
-  </a>
-  <button class="share-option" id="shareCopy">
-    <span class="share-ico" style="background:#64748B">🔗</span><span>Copy link</span>
-  </button>
-</div>
-
 <footer class="site-footer">
-  <div class="container footer-grid">
-    <div class="footer-col footer-brand">
-      <div class="brand brand-footer">
-        <span class="brand-mark" aria-hidden="true">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/>
-          </svg>
-        </span>
-        <span class="brand-text">
-          <span class="brand-title">Raveone Careers</span>
-          <span class="brand-sub">Executive Search &amp; Selection</span>
-        </span>
-      </div>
-      <p class="footer-blurb">
-        Connecting exceptional talent with MSME manufacturers, engineering firms, and enterprises across India.
-      </p>
-      <div class="footer-contact">
-        <a href="tel:+919148330565">📞 9148330565</a>
-        <a href="mailto:rajesh@raveone.in">✉️ rajesh@raveone.in</a>
-      </div>
+  <div class="footer-inner">
+    <div class="brand">
+      <div class="brand-mark">R</div>
+      <span>Raveone Careers</span>
     </div>
-    <div class="footer-col">
-      <h4 class="footer-heading">For Candidates</h4>
-      <ul class="footer-list">
-        <li><a href="index.html#jobs">Browse Jobs</a></li>
-        <li><a href="pages.html?page=submit-cv">Submit CV</a></li>
-        <li><a href="pages.html?page=process">Our Process</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4 class="footer-heading">For Employers</h4>
-      <ul class="footer-list">
-        <li><a href="pages.html?page=employers">Post a Job</a></li>
-        <li><a href="pages.html?page=employers">Why Raveone</a></li>
-        <li><a href="pages.html?page=contact">Talk to Us</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4 class="footer-heading">Company</h4>
-      <ul class="footer-list">
-        <li><a href="pages.html?page=about">About Us</a></li>
-        <li><a href="pages.html?page=contact">Contact</a></li>
-        <li><a href="https://www.raveone.in" target="_blank" rel="noopener">www.raveone.in ↗</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <div class="container footer-bottom-inner">
-      <p class="footer-copy">
-        © <span id="footerYear"></span> Raveone Consultants. All rights reserved.
-      </p>
-      <div class="footer-legal">
-        <a href="pages.html?page=terms">Terms &amp; Conditions</a>
-        <span aria-hidden="true">·</span>
-        <a href="pages.html?page=privacy">Privacy Policy</a>
-      </div>
-    </div>
+    <p>&copy; <span id="footerYear">2026</span> Raveone Consultants · MSME Hiring Partners</p>
   </div>
 </footer>
 
-<script src="app.js" defer></script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  if (window.__jobDetailInit) return;
-  window.__jobDetailInit = true;
-
-  const y = document.getElementById('footerYear');
-  if (y) y.textContent = new Date().getFullYear();
-
-  if (typeof window.initJobDetail === 'function') {
-    window.initJobDetail();
-  } else {
-    setTimeout(function () {
-      if (typeof window.initJobDetail === 'function') window.initJobDetail();
-      else console.error('app.js is missing initJobDetail()');
-    }, 300);
-  }
-});
-</script>
 <script>
 (function () {
-  const input = document.getElementById('quickResume');
-  if (!input) return;
+  /* ═══════════════════════════════════════════════════════════════
+     CONFIG — Replace with your Apps Script deployment URL
+     ═══════════════════════════════════════════════════════════════ */
+  var SCRIPT_URL = "REPLACE_WITH_YOUR_DEPLOYMENT_URL";
+  var SITE_URL = "https://career.raveone.in";
 
-  input.addEventListener('change', async function () {
-    const file = input.files[0];
-    if (!file) return;
+  document.getElementById('footerYear').textContent = new Date().getFullYear();
 
-    if (file.size > 5 * 1024 * 1024) {
-      alert('File too large — max 5 MB');
-      input.value = '';
-      return;
-    }
+  // 1. Parse job ID from URL
+  var params = new URLSearchParams(window.location.search);
+  var jobId = (params.get('job') || params.get('id') || '').trim();
 
-    document.getElementById('quickProgress').style.display = 'block';
-    document.getElementById('quickDropZone').style.display = 'none';
-    document.getElementById('quickStatus').style.display = 'none';
+  if (!jobId) {
+    show404('No job ID provided in the URL.');
+    return;
+  }
 
-    try {
-      const dataUri = await new Promise(function (resolve, reject) {
-        const r = new FileReader();
-        r.onload = function () { resolve(r.result); };
-        r.onerror = function () { reject(new Error('Could not read file')); };
-        r.readAsDataURL(file);
-      });
+  // 2. Update canonical early — helps Google deduplicate
+  var canonical = document.getElementById('canonicalLink');
+  if (canonical) {
+    canonical.href = SITE_URL + '/job.html?job=' + encodeURIComponent(jobId);
+  }
 
-      const res = await ATS.post('parseResumePreview', {
-        resumeData: dataUri,
-        resumeName: file.name
-      });
-
-      document.getElementById('quickProgress').style.display = 'none';
-
-      if (!res.ok) {
-        document.getElementById('quickStatus').style.display = 'block';
-        document.getElementById('quickStatus').innerHTML =
-          '<span style="color:#DC2626">⚠️ Could not parse your resume: ' +
-          ATS.esc(res.error || 'unknown error') +
-          '<br><span style="color:#64748B">Please <a href="#" onclick="document.getElementById(\'quickApplyBox\').style.display=\'none\';return false;" style="color:#1A365D">fill the form manually</a>.</span></span>';
+  // 3. Fetch job data
+  fetch(SCRIPT_URL + '?action=job&id=' + encodeURIComponent(jobId))
+    .then(function (r) {
+      if (!r.ok) throw new Error('Server returned ' + r.status);
+      return r.json();
+    })
+    .then(function (job) {
+      if (!job || !job.jobId) {
+        show404('This job may have been removed or the link is invalid.');
         return;
       }
+      renderJob(job);
+      injectSchema(job);
+    })
+    .catch(function (err) {
+      showError(err.message || String(err));
+    });
 
-      const p = res.parsed;
-      const fill = function (id, val) {
-        const el = document.getElementById(id);
-        if (el && val) el.value = val;
-      };
+  /* ─── Render ─── */
 
-      fill('fName',        p.name);
-      fill('fEmail',       p.email);
-      fill('fPhone',       String(p.phone || '').replace(/^\+91/, ''));
-      fill('fLocation',    p.location);
-      fill('fEducation',   p.education);
-      fill('fTotalExp',    p.totalExp);
-      fill('fRelExp',      p.totalExp);
-      fill('fCurrentCtc',  p.currentCtc);
-      fill('fExpectedCtc', p.expectedCtc);
-      fill('fNotice',      p.noticePeriod);
+  function renderJob(job) {
+    var title = cleanTitle(job.title, job.jobId);
+    var applyUrl = SITE_URL + '/apply.html?job=' + encodeURIComponent(job.jobId);
 
-      // Copy the uploaded file into the form's fResume input so Submit sees it
-      try {
-        const dt = new DataTransfer();
-        dt.items.add(file);
-        document.getElementById('fResume').files = dt.files;
+    // Document metadata
+    document.title = title + ' at ' + (job.company || 'Raveone') + ' | Raveone Careers';
+    setMeta('description', truncate(job.description || title + ' at ' + job.company, 155));
+    setMeta('og:title', title + ' — ' + job.company, 'property');
+    setMeta('og:description', truncate(job.description || '', 200), 'property');
+    setMeta('og:url', SITE_URL + '/job.html?job=' + job.jobId, 'property');
+    setMeta('og:type', 'article', 'property');
 
-        // Also update the upload zone display
-        const fileName = document.getElementById('uploadFileName');
-        const zone = document.getElementById('uploadZone');
-        if (fileName) {
-          fileName.textContent = file.name + ' (' + Math.round(file.size / 1024) + ' KB)';
-          fileName.style.color = '';
-        }
-        if (zone) zone.classList.add('has-file');
-      } catch (dtErr) {
-        console.warn('DataTransfer not supported — user must re-upload', dtErr);
-      }
-
-      // Hidden fields for parsed structured data
-      const ensureHidden = function (id) {
-        let el = document.getElementById(id);
-        if (!el) {
-          el = document.createElement('input');
-          el.type = 'hidden';
-          el.id = id;
-          document.getElementById('applyForm').appendChild(el);
-        }
-        return el;
-      };
-
-      ensureHidden('__parsedExperience').value = JSON.stringify(p.experience || []);
-      ensureHidden('__parsedEducation').value  = JSON.stringify(p.educationList || []);
-      ensureHidden('__parsedSkills').value     = (p.skills || []).join(', ');
-      ensureHidden('__parsedLinkedin').value   = p.linkedin || '';
-
-      const confidence = Math.round((p.confidence || 0) * 100);
-      document.getElementById('quickStatus').style.display = 'block';
-      document.getElementById('quickStatus').innerHTML =
-        '<span style="color:#16A34A">✓ Resume parsed (' + confidence + '% confidence) — scroll down to review your auto-filled details</span>';
-
-      setTimeout(function () {
-        document.getElementById('applyForm').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 300);
-
-    } catch (e) {
-      document.getElementById('quickProgress').style.display = 'none';
-      document.getElementById('quickStatus').style.display = 'block';
-      document.getElementById('quickStatus').innerHTML =
-        '<span style="color:#DC2626">⚠️ Error: ' + ATS.esc(e.message) + '</span>';
+    // Meta pills
+    var pills = [];
+    pills.push('<span class="meta-pill meta-id">' + esc(job.jobId) + '</span>');
+    if (job.location) pills.push('<span class="meta-pill meta-loc">📍 ' + esc(job.location) + '</span>');
+    var exp = formatExp(job);
+    if (exp) pills.push('<span class="meta-pill meta-exp">' + exp + '</span>');
+    if (job.salaryDisplay && job.salaryDisplay !== 'Not disclosed') {
+      pills.push('<span class="meta-pill meta-salary">💰 ' + esc(job.salaryDisplay) + '</span>');
     }
-  });
+    if (job.employmentType && job.employmentType !== 'Full Time') {
+      pills.push('<span class="meta-pill meta-type">' + esc(job.employmentType) + '</span>');
+    }
+    if (job.positions > 1) {
+      pills.push('<span class="meta-pill meta-positions">' + job.positions + ' openings</span>');
+    }
+
+    // Company link
+    var website = cleanWebsiteUrl(job.website);
+    var companyHtml = esc(job.company || '');
+    if (website) {
+      companyHtml = '<a href="' + esc(website) + '" target="_blank" rel="noopener">' + esc(job.company) + '</a>';
+    }
+
+    // Skills
+    var skillsHtml = '';
+    var cleanSkills = (job.skills || []).filter(function (s) {
+      return s && String(s).trim() && String(s).length < 60;
+    });
+    if (cleanSkills.length) {
+      skillsHtml = '<h2 class="section-title">Skills Required</h2>' +
+        '<div class="skills-list">' +
+        cleanSkills.map(function (s) {
+          return '<span class="skill-tag">' + esc(s) + '</span>';
+        }).join('') +
+        '</div>';
+    }
+
+    // Benefits
+    var benefitsHtml = '';
+    var cleanBenefits = (job.benefits || []).filter(function (b) {
+      return b && String(b).trim() && String(b).length < 80;
+    });
+    if (cleanBenefits.length) {
+      benefitsHtml = '<h2 class="section-title">Benefits</h2>' +
+        '<div class="skills-list">' +
+        cleanBenefits.map(function (b) {
+          return '<span class="benefit-tag">✓ ' + esc(b) + '</span>';
+        }).join('') +
+        '</div>';
+    }
+
+    // Info grid (education, experience, employment type, industry)
+    var infoItems = [];
+    if (job.education) {
+      infoItems.push({ label: 'Education', value: job.education });
+    }
+    if (exp) {
+      infoItems.push({ label: 'Experience', value: stripEmoji(exp) });
+    }
+    if (job.employmentType) {
+      infoItems.push({ label: 'Employment Type', value: job.employmentType });
+    }
+    if (job.industry) {
+      infoItems.push({ label: 'Industry', value: job.industry });
+    }
+    if (job.positions > 1) {
+      infoItems.push({ label: 'Openings', value: String(job.positions) });
+    }
+    if (job.validThrough) {
+      infoItems.push({ label: 'Valid Until', value: job.validThrough });
+    }
+    var infoHtml = '';
+    if (infoItems.length) {
+      infoHtml = '<h2 class="section-title">Additional Details</h2>' +
+        '<div class="info-grid">' +
+        infoItems.map(function (item) {
+          return '<div class="info-item">' +
+            '<label>' + esc(item.label) + '</label>' +
+            '<span>' + esc(item.value) + '</span>' +
+          '</div>';
+        }).join('') +
+        '</div>';
+    }
+
+    // Address
+    var addressHtml = '';
+    var addressParts = [];
+    if (job.fullAddress) addressParts.push(job.fullAddress);
+    if (job.addressLocality && job.addressLocality !== job.location) addressParts.push(job.addressLocality);
+    if (job.addressRegion) addressParts.push(job.addressRegion);
+    if (job.postalCode) addressParts.push(job.postalCode);
+    if (addressParts.length) {
+      addressHtml = '<h2 class="section-title">Location & Address</h2>' +
+        '<div class="section-body">' +
+        esc(addressParts.join(', ')) +
+        '</div>';
+    }
+
+    // Main content
+    var content =
+      '<a href="' + SITE_URL + '/" class="back-link">← Back to all jobs</a>' +
+      '<div class="detail-card">' +
+        '<div class="detail-header">' +
+          '<h1>' + esc(title) + '</h1>' +
+          '<div class="detail-company">' + companyHtml +
+            (job.location ? ' · ' + esc(job.location) : '') +
+          '</div>' +
+          '<div class="detail-pills">' + pills.join('') + '</div>' +
+        '</div>' +
+        (job.description
+          ? '<h2 class="section-title" style="margin-top:32px">About the Role</h2>' +
+            '<div class="section-body">' + esc(job.description) + '</div>'
+          : '') +
+        (job.requirements
+          ? '<h2 class="section-title">Requirements</h2>' +
+            '<div class="section-body">' + esc(job.requirements) + '</div>'
+          : '') +
+        skillsHtml +
+        benefitsHtml +
+        infoHtml +
+        addressHtml +
+      '</div>';
+
+    // Sidebar
+    var sidebarFacts = [
+      { label: 'Job ID', value: job.jobId },
+      { label: 'Posted', value: job.postedDate || '—' },
+      { label: 'Company', value: job.company || '—' }
+    ];
+    if (job.positions > 1) {
+      sidebarFacts.push({ label: 'Openings', value: String(job.positions) });
+    }
+    if (job.validThrough) {
+      sidebarFacts.push({ label: 'Valid Until', value: job.validThrough });
+    }
+
+    var sidebar =
+      '<div class="apply-card">' +
+        '<h3>Interested in this role?</h3>' +
+        '<p>Submit your application and our team will respond within 2–3 business days.</p>' +
+        '<a href="' + esc(applyUrl) + '" class="btn-primary">Apply Now →</a>' +
+        '<button class="btn-secondary" onclick="copyLink()">🔗 Copy Job Link</button>' +
+      '</div>' +
+      '<div class="apply-card">' +
+        '<h3 style="font-size:13px;margin-bottom:12px">Job Details</h3>' +
+        sidebarFacts.map(function (f) {
+          return '<div class="detail-fact">' +
+            '<span class="label">' + esc(f.label) + '</span>' +
+            '<span class="value">' + esc(f.value) + '</span>' +
+          '</div>';
+        }).join('') +
+      '</div>';
+
+    document.getElementById('jobMain').innerHTML =
+      '<div>' + content + '</div>' +
+      '<aside class="sidebar">' + sidebar + '</aside>';
+  }
+
+  /* ─── JSON-LD Schema for Google Jobs ─── */
+
+  function injectSchema(job) {
+    var title = cleanTitle(job.title, job.jobId);
+    var employmentMap = {
+      'full time': 'FULL_TIME',
+      'part time': 'PART_TIME',
+      'contract': 'CONTRACTOR',
+      'temporary': 'TEMPORARY',
+      'intern': 'INTERN',
+      'internship': 'INTERN'
+    };
+    var empType = employmentMap[String(job.employmentType || '').toLowerCase()] || 'FULL_TIME';
+
+    var schema = {
+      '@context': 'https://schema.org/',
+      '@type': 'JobPosting',
+      'title': title,
+      'description': sanitizeDescription(job.description || title),
+      'datePosted': toIsoDate(job.postedDate),
+      'hiringOrganization': {
+        '@type': 'Organization',
+        'name': job.company || 'Raveone Consultants'
+      },
+      'jobLocation': {
+        '@type': 'Place',
+        'address': {
+          '@type': 'PostalAddress',
+          'addressLocality': job.addressLocality || job.location || 'India',
+          'addressCountry': job.country || 'IN'
+        }
+      },
+      'employmentType': empType,
+      'identifier': {
+        '@type': 'PropertyValue',
+        'name': 'Raveone Consultants',
+        'value': job.jobId
+      }
+    };
+
+    if (job.addressRegion) schema.jobLocation.address.addressRegion = job.addressRegion;
+    if (job.postalCode) schema.jobLocation.address.postalCode = job.postalCode;
+    if (job.fullAddress) schema.jobLocation.address.streetAddress = job.fullAddress;
+
+    if (job.validThrough) {
+      var valid = toIsoDate(job.validThrough);
+      if (valid) schema.validThrough = valid + 'T23:59:59+05:30';
+    }
+
+    if (job.industry) schema.industry = job.industry;
+
+    // Base salary — only if we can parse both min and max
+    var minN = parseSalaryValue(job.minSalary);
+    var maxN = parseSalaryValue(job.maxSalary);
+    if (minN || maxN) {
+      schema.baseSalary = {
+        '@type': 'MonetaryAmount',
+        'currency': job.salaryCurrency || 'INR',
+        'value': {
+          '@type': 'QuantitativeValue',
+          'minValue': minN || maxN,
+          'maxValue': maxN || minN,
+          'unitText': String(job.salaryUnit || 'YEAR').toUpperCase()
+        }
+      };
+    }
+
+    if (job.education) {
+      schema.educationRequirements = {
+        '@type': 'EducationalOccupationalCredential',
+        'credentialCategory': job.education
+      };
+    }
+
+    if (job.requirements) {
+      schema.responsibilities = job.requirements;
+    }
+
+    if (cleanSkills.length) {
+      schema.skills = job.skills.filter(Boolean).join(', ');
+    }
+
+    // Inject as <script type="application/ld+json">
+    var script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify(schema);
+    document.head.appendChild(script);
+  }
+
+  /* ─── Helpers ─── */
+
+  function toIsoDate(str) {
+    if (!str) return '';
+    var s = String(str).trim();
+
+    // Already ISO
+    if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10);
+
+    // "31 Jan 2026" or "31 January 2026"
+    var m = s.match(/(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})/);
+    if (m) {
+      var months = { jan: '01', feb: '02', mar: '03', apr: '04', may: '05', jun: '06',
+                     jul: '07', aug: '08', sep: '09', oct: '10', nov: '11', dec: '12' };
+      var mon = months[m[2].toLowerCase().slice(0, 3)];
+      if (mon) return m[3] + '-' + mon + '-' + ('0' + m[1]).slice(-2);
+    }
+
+    // "2026-10-24T00:00:00.000Z"
+    var d = new Date(s);
+    if (!isNaN(d.getTime())) {
+      return d.getFullYear() + '-' +
+        ('0' + (d.getMonth() + 1)).slice(-2) + '-' +
+        ('0' + d.getDate()).slice(-2);
+    }
+    return '';
+  }
+
+  function parseSalaryValue(str) {
+    if (!str) return null;
+    var s = String(str).trim().toLowerCase();
+    var n = parseFloat(s.replace(/[^\d.]/g, ''));
+    if (isNaN(n)) return null;
+    if (/\d\s*k$/i.test(s)) n *= 1000;
+    else if (/lpa|lakh|\d\s*l$/i.test(s)) n *= 100000;
+    return Math.round(n);
+  }
+
+  function cleanTitle(title, jobId) {
+    if (!title) return 'Untitled Role';
+    if (!jobId) return title;
+    var esc = jobId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return title.replace(new RegExp('^' + esc + '\\s*[-–:\\s]\\s*', 'i'), '').trim() || title;
+  }
+
+  function cleanWebsiteUrl(raw) {
+    if (!raw) return '';
+    var w = String(raw).trim();
+    if (!/^https?:\/\//i.test(w) && w.indexOf('.') !== -1) w = 'https://' + w;
+    return /^https?:\/\//i.test(w) ? w : '';
+  }
+
+  function formatExp(job) {
+    var min = String(job.minExp || '').trim();
+    var max = String(job.maxExp || '').trim();
+    if (/^fresh/i.test(min)) return '🌱 Fresher';
+    var minN = parseFloat(min.replace(/[^\d.]/g, ''));
+    var maxN = parseFloat(max.replace(/[^\d.]/g, ''));
+    var hasMin = !isNaN(minN) && minN > 0;
+    var hasMax = !isNaN(maxN) && maxN > 0;
+    if (hasMin && hasMax) return '📊 ' + minN + '–' + maxN + ' Yrs';
+    if (hasMin) return '📊 ' + minN + '+ Yrs';
+    if (hasMax) return '📊 Up to ' + maxN + ' Yrs';
+    return '';
+  }
+
+  function stripEmoji(s) {
+    return String(s || '').replace(/[\u{1F300}-\u{1FAFF}\u2600-\u27BF]/gu, '').trim();
+  }
+
+  function sanitizeDescription(text) {
+    // Google Jobs accepts HTML in description but prefers clean text with <p> and <ul>
+    return String(text || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/\n\n+/g, '</p><p>')
+      .replace(/\n/g, '<br>')
+      .replace(/^/, '<p>')
+      .replace(/$/, '</p>');
+  }
+
+  function truncate(s, n) {
+    s = String(s || '').replace(/\s+/g, ' ').trim();
+    return s.length > n ? s.slice(0, n - 1) + '…' : s;
+  }
+
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function setMeta(name, content, attr) {
+    attr = attr || 'name';
+    var existing = document.querySelector('meta[' + attr + '="' + name + '"]');
+    if (existing) { existing.content = content; return; }
+    var meta = document.createElement('meta');
+    meta.setAttribute(attr, name);
+    meta.content = content;
+    document.head.appendChild(meta);
+  }
+
+  function show404(message) {
+    document.title = 'Job Not Found | Raveone Careers';
+    document.getElementById('jobMain').innerHTML =
+      '<div style="grid-column:1/-1">' +
+        '<div class="msg-box">' +
+          '<div class="icon">🔍</div>' +
+          '<h2>Job Not Found</h2>' +
+          '<p>' + esc(message || 'This role may have been removed.') + '</p>' +
+          '<a href="' + SITE_URL + '/" class="btn-primary" style="max-width:220px;margin:0 auto">← Back to All Jobs</a>' +
+        '</div>' +
+      '</div>';
+  }
+
+  function showError(message) {
+    document.title = 'Error | Raveone Careers';
+    document.getElementById('jobMain').innerHTML =
+      '<div style="grid-column:1/-1">' +
+        '<div class="msg-box">' +
+          '<div class="icon">⚠️</div>' +
+          '<h2>Could Not Load Job</h2>' +
+          '<p>' + esc(message || 'Unknown error') + '</p>' +
+          '<button class="btn-primary" onclick="location.reload()" style="max-width:220px;margin:0 auto">Reload Page</button>' +
+        '</div>' +
+      '</div>';
+  }
+
+  window.copyLink = function () {
+    var url = window.location.href;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(url).then(function () {
+        alert('✓ Job link copied to clipboard');
+      }).catch(function () {
+        window.prompt('Copy this link:', url);
+      });
+    } else {
+      window.prompt('Copy this link:', url);
+    }
+  };
 })();
-
-async function downloadStandardizedCV(format) {
-  format = format || 'pdf';
-  const appId = document.getElementById('successAppId').textContent.trim();
-  const email = (document.getElementById('fEmail').value || '').trim().toLowerCase();
-
-  if (!appId || appId === '—') {
-    alert('Application ID missing — please reload');
-    return;
-  }
-  if (!email) {
-    alert('Email missing — please reload');
-    return;
-  }
-
-  ATS.toast('Preparing your CV…');
-
-  const res = await ATS.post('downloadStandardizedCV', { appId, email, format });
-
-  if (!res.ok) {
-    ATS.toast(res.error || 'Download failed', 'error');
-    return;
-  }
-
-  const bytes = Uint8Array.from(atob(res.base64), c => c.charCodeAt(0));
-  const blob = new Blob([bytes], { type: res.mimeType });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = res.filename;
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1500);
-
-  ATS.toast('CV downloaded', 'success');
-}
-window.downloadStandardizedCV = downloadStandardizedCV;
 </script>
+
 </body>
 </html>
