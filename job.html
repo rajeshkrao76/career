@@ -3,9 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Loading… | Raveone Careers</title>
-<meta name="description" content="Curated job opportunities from Raveone Consultants.">
+<!-- SEO & Open Graph defaults (updated dynamically via JS) -->
+<title>Loading Job Details… | Raveone Careers</title>
+<meta name="description" content="View this job opportunity at Raveone Consultants.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Raveone Careers">
 <link rel="canonical" id="canonicalLink" href="https://career.raveone.in/">
+
 <style>
 :root {
   --navy: #1A365D; --navy-2: #2A5487; --gold: #A16207; --gold-bg: #FEF3C7;
@@ -154,6 +158,7 @@ button { font-family: inherit; }
   var canonical = document.getElementById('canonicalLink');
   if (canonical) canonical.href = SITE_URL + '/job.html?job=' + encodeURIComponent(jobId);
 
+  // Fetch the job data
   fetch(SCRIPT_URL + '?action=job&id=' + encodeURIComponent(jobId))
     .then(function (r) {
       if (!r.ok) throw new Error('Server returned ' + r.status);
@@ -166,13 +171,20 @@ button { font-family: inherit; }
     })
     .catch(function (err) { showError(err.message || String(err)); });
 
+  /* ─── Render UI ─── */
   function renderJob(job) {
     var title = cleanTitle(job.title, job.jobId);
     var applyUrl = 'apply.html?job=' + encodeURIComponent(job.jobId);
 
+    // Update Meta Tags
+    var metaDesc = truncate(job.description || title + ' at ' + job.company, 155);
     document.title = title + ' at ' + (job.company || 'Raveone') + ' | Raveone Careers';
-    setMeta('description', truncate(job.description || title + ' at ' + job.company, 155));
+    setMeta('description', metaDesc);
+    setMeta('og:title', title + ' — ' + job.company, 'property');
+    setMeta('og:description', metaDesc, 'property');
+    setMeta('og:url', SITE_URL + '/job.html?job=' + job.jobId, 'property');
 
+    // Build UI Pills
     var pills = [];
     pills.push('<span class="meta-pill meta-id">' + esc(job.jobId) + '</span>');
     if (job.location) pills.push('<span class="meta-pill meta-loc">📍 ' + esc(job.location) + '</span>');
@@ -196,6 +208,7 @@ button { font-family: inherit; }
     if (job.industry) overviewHtml += '<div class="overview-item"><div class="overview-icon">🏢</div><div class="overview-label">Industry</div><div class="overview-value">' + esc(job.industry) + '</div></div>';
     overviewHtml += '</div>';
 
+    // Skills & Benefits
     var skillsHtml = '';
     var cleanSkills = (job.skills || []).filter(function (s) { return s && String(s).trim() && String(s).length < 60; });
     if (cleanSkills.length) {
@@ -208,6 +221,7 @@ button { font-family: inherit; }
       benefitsHtml = '<h2 class="section-title">Benefits</h2><div class="skills-list">' + cleanBenefits.map(b => '<span class="benefit-tag">✓ ' + esc(b) + '</span>').join('') + '</div>';
     }
 
+    // Main Content
     var content = '<a href="' + SITE_URL + '/" class="back-link">← Back to all jobs</a>' +
       '<div class="detail-card">' +
         '<div class="detail-header">' +
@@ -221,6 +235,7 @@ button { font-family: inherit; }
         skillsHtml + benefitsHtml +
       '</div>';
 
+    // Sidebar
     var sidebarFacts = [{ label: 'Job ID', value: job.jobId }, { label: 'Posted', value: job.postedDate || '—' }, { label: 'Company', value: job.company || '—' }];
     if (job.positions > 1) sidebarFacts.push({ label: 'Openings', value: String(job.positions) });
     if (job.validThrough) sidebarFacts.push({ label: 'Valid Until', value: job.validThrough });
@@ -239,38 +254,122 @@ button { font-family: inherit; }
     document.getElementById('jobMain').innerHTML = '<div>' + content + '</div><aside class="sidebar">' + sidebar + '</aside>';
   }
 
+  /* ─── GOOGLE JOBS SCHEMA INJECTION ─── */
   function injectSchema(job) {
     var title = cleanTitle(job.title, job.jobId);
+
+    // 1. Date Posted (Must be ISO 8601. Fallback to today if missing)
+    var postedDate = job.postedDate ? toIsoDate(job.postedDate) : new Date().toISOString().split('T')[0];
+    if (!postedDate) postedDate = new Date().toISOString().split('T')[0];
+
+    // 2. Employment Type Mapping
     var empType = 'FULL_TIME';
-    var schema = {
-      '@context': 'https://schema.org/', '@type': 'JobPosting', 'title': title,
-      'description': sanitizeDescription(job.description || title), 'datePosted': toIsoDate(job.postedDate),
-      'hiringOrganization': { '@type': 'Organization', 'name': job.company || 'Raveone Consultants' },
-      'jobLocation': { '@type': 'Place', 'address': { '@type': 'PostalAddress', 'addressLocality': job.addressLocality || job.location || 'India', 'addressCountry': job.country || 'IN' } },
-      'employmentType': empType,
-      'identifier': { '@type': 'PropertyValue', 'name': 'Raveone Consultants', 'value': job.jobId }
+    var rawType = String(job.employmentType || '').toLowerCase();
+    if (rawType.includes('part')) empType = 'PART_TIME';
+    else if (rawType.includes('contract') || rawType.includes('freelance')) empType = 'CONTRACTOR';
+    else if (rawType.includes('temporary') || rawType.includes('temp')) empType = 'TEMPORARY';
+    else if (rawType.includes('intern')) empType = 'INTERN';
+    else if (rawType.includes('volunteer')) empType = 'VOLUNTEER';
+
+    // 3. Remote Work Detection
+    var locString = String(job.location || '').toLowerCase();
+    var isRemote = locString.includes('remote') || locString.includes('anywhere') || locString.includes('wfh');
+
+    // 4. Location Parsing
+    var jobLocation = {
+      '@type': 'Place',
+      'address': {
+        '@type': 'PostalAddress',
+        'addressCountry': job.country || 'IN',
+        'addressLocality': job.addressLocality || job.location || 'India'
+      }
     };
-    if (job.addressRegion) schema.jobLocation.address.addressRegion = job.addressRegion;
-    if (job.postalCode) schema.jobLocation.address.postalCode = job.postalCode;
-    if (job.validThrough) { var valid = toIsoDate(job.validThrough); if (valid) schema.validThrough = valid + 'T23:59:59+05:30'; }
-    if (job.industry) schema.industry = job.industry;
-    if (job.education) schema.educationRequirements = { '@type': 'EducationalOccupationalCredential', 'credentialCategory': job.education };
-    if (job.requirements) schema.responsibilities = job.requirements;
-    
-    if (job.skills && job.skills.length) {
-      schema.skills = job.skills.filter(Boolean).join(', ');
+    if (job.addressRegion) jobLocation.address.addressRegion = job.addressRegion;
+    if (job.postalCode) jobLocation.address.postalCode = job.postalCode;
+
+    // 5. Salary Parsing
+    var minSal = parseSalaryValue(job.minSalary);
+    var maxSal = parseSalaryValue(job.maxSalary);
+    var salUnit = String(job.salaryUnit || 'YEAR').toUpperCase();
+    if (['HOUR', 'DAY', 'WEEK', 'MONTH', 'YEAR'].indexOf(salUnit) === -1) salUnit = 'YEAR';
+
+    // Build the schema object
+    var schema = {
+      '@context': 'https://schema.org/',
+      '@type': 'JobPosting',
+      'title': title,
+      'description': sanitizeDescription(job.description || title),
+      'datePosted': postedDate,
+      'hiringOrganization': {
+        '@type': 'Organization',
+        'name': job.company || 'Raveone Consultants'
+      },
+      'jobLocation': jobLocation,
+      'employmentType': empType,
+      'identifier': {
+        '@type': 'PropertyValue',
+        'name': 'Raveone Consultants',
+        'value': job.jobId
+      }
+    };
+
+    // Add optional but highly recommended fields
+    if (job.validThrough) {
+      var valid = toIsoDate(job.validThrough);
+      if (valid) schema.validThrough = valid + 'T23:59:59+05:30';
     }
 
+    if (isRemote) {
+      schema.jobLocationType = 'TELECOMMUTE';
+    }
+
+    if (job.website) {
+      var cleanWeb = cleanWebsiteUrl(job.website);
+      if (cleanWeb) schema.hiringOrganization.sameAs = cleanWeb;
+    }
+
+    if (job.industry) schema.industry = job.industry;
+    if (job.skills && job.skills.length) schema.skills = job.skills.join(', ');
+    
+    if (minSal || maxSal) {
+      schema.baseSalary = {
+        '@type': 'MonetaryAmount',
+        'currency': job.salaryCurrency || 'INR',
+        'value': {
+          '@type': 'QuantitativeValue',
+          'unitText': salUnit
+        }
+      };
+      if (minSal) schema.baseSalary.value.minValue = minSal;
+      if (maxSal) schema.baseSalary.value.maxValue = maxSal;
+    }
+
+    if (job.education) {
+      schema.educationRequirements = {
+        '@type': 'EducationalOccupationalCredential',
+        'credentialCategory': job.education
+      };
+    }
+
+    // Remove undefined properties to keep JSON clean
+    var cleanSchema = JSON.parse(JSON.stringify(schema, function(key, value) {
+      return value === undefined || value === null ? undefined : value;
+    }));
+
+    // Inject into head
     var script = document.createElement('script');
     script.type = 'application/ld+json';
-    script.text = JSON.stringify(schema);
+    script.text = JSON.stringify(cleanSchema);
     document.head.appendChild(script);
   }
+
+  /* ─── HELPERS ─── */
 
   function toIsoDate(str) {
     if (!str) return '';
     var s = String(str).trim();
-    if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10);
+    if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10); // Already ISO
+    // Parse "4 Nov 2026"
     var m = s.match(/(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})/);
     if (m) {
       var months = { jan: '01', feb: '02', mar: '03', apr: '04', may: '05', jun: '06', jul: '07', aug: '08', sep: '09', oct: '10', nov: '11', dec: '12' };
@@ -280,6 +379,28 @@ button { font-family: inherit; }
     var d = new Date(s);
     if (!isNaN(d.getTime())) return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
     return '';
+  }
+
+  function parseSalaryValue(str) {
+    if (!str) return null;
+    var s = String(str).trim().toLowerCase();
+    var n = parseFloat(s.replace(/[^\d.]/g, ''));
+    if (isNaN(n)) return null;
+    if (/\d\s*k$/i.test(s)) n *= 1000;
+    else if (/lpa|lakh|\d\s*l$/i.test(s)) n *= 100000;
+    return Math.round(n);
+  }
+
+  function sanitizeDescription(text) {
+    // Google accepts basic HTML. Escaping ampersands and entities keeps it safe.
+    return String(text || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/\n\n+/g, '</p><p>')
+      .replace(/\n/g, '<br>')
+      .replace(/^/, '<p>')
+      .replace(/$/, '</p>');
   }
 
   function cleanTitle(title, jobId) {
@@ -307,7 +428,6 @@ button { font-family: inherit; }
   }
 
   function stripEmoji(s) { return String(s || '').replace(/[\u{1F300}-\u{1FAFF}\u2600-\u27BF]/gu, '').trim(); }
-  function sanitizeDescription(text) { return String(text || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n\n+/g, '</p><p>').replace(/\n/g, '<br>').replace(/^/, '<p>').replace(/$/, '</p>'); }
   function truncate(s, n) { s = String(s || '').replace(/\s+/g, ' ').trim(); return s.length > n ? s.slice(0, n - 1) + '…' : s; }
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
   
