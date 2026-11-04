@@ -168,7 +168,7 @@ button { font-family: inherit; }
 
   function renderJob(job) {
     var title = cleanTitle(job.title, job.jobId);
-    var applyUrl = SCRIPT_URL + '?page=apply&job=' + encodeURIComponent(job.jobId);
+    var applyUrl = 'apply.html?job=' + encodeURIComponent(job.jobId);
 
     document.title = title + ' at ' + (job.company || 'Raveone') + ' | Raveone Careers';
     setMeta('description', truncate(job.description || title + ' at ' + job.company, 155));
