@@ -144,8 +144,6 @@ button { font-family: inherit; }
 
   function renderJob(job) {
     var title = cleanTitle(job.title, job.jobId);
-    
-    // 👇 THIS IS THE FIX: Apply button points to Apps Script
     var applyUrl = SCRIPT_URL + '?page=apply&job=' + encodeURIComponent(job.jobId);
 
     document.title = title + ' at ' + (job.company || 'Raveone') + ' | Raveone Careers';
@@ -245,8 +243,10 @@ button { font-family: inherit; }
     if (job.education) schema.educationRequirements = { '@type': 'EducationalOccupationalCredential', 'credentialCategory': job.education };
     if (job.requirements) schema.responsibilities = job.requirements;
     
-    // FIX: Check job.skills directly instead of the undefined cleanSkills variable
-    if (job.skills && job.skills.length) schema.skills = job.skills.filter(Boolean).join(', ');
+    // CLEAN FIX: Direct check on job.skills, NO cleanSkills variable here
+    if (job.skills && job.skills.length) {
+      schema.skills = job.skills.filter(Boolean).join(', ');
+    }
 
     var script = document.createElement('script');
     script.type = 'application/ld+json';
