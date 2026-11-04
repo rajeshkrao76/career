@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apply | Raveone Careers</title>
+<style>
+  :root {
+    --navy: #1A365D; --navy-2: #2A5487;
+    --bg: #F8FAFC; --surface: #FFFFFF; --border: #E2E8F0;
+    --text: #0F172A; --text-muted: #475569; --text-light: #94A3B8;
+    --blue: #2563EB; --blue-bg: #DBEAFE;
+    --success: #15803D; --success-bg: #D1FAE5;
+    --danger: #B91C1C; --danger-bg: #FEE2E2;
+    --radius: 12px;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; font-size: 15px; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+  button, input, textarea { font-family: inherit; font-size: inherit; }
+
+  /* Header */
+  .site-header { background: rgba(255,255,255,0.95); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(12px); }
+  .site-header-inner { max-width: 800px; margin: 0 auto; padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 17px; color: var(--navy); }
+  .brand-mark { width: 34px; height: 34px; background: linear-gradient(135deg, var(--navy), var(--navy-2)); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 15px; }
+  .header-nav a { font-size: 14px; font-weight: 500; color: var(--text-muted); padding: 8px 14px; border-radius: 6px; }
+  .header-nav a:hover { color: var(--text); background: var(--bg); }
+
+  /* Layout */
+  .form-wrap { max-width: 800px; margin: 0 auto; padding: 32px 24px 80px; }
+  .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--text-muted); font-size: 14px; font-weight: 500; margin-bottom: 20px; transition: color .15s; }
+  .back-link:hover { color: var(--navy); }
+  .form-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 40px; box-shadow: var(--shadow); }
+  .form-card h1 { font-size: 28px; font-weight: 800; color: var(--navy); margin-bottom: 8px; letter-spacing: -0.02em; }
+  .form-subtitle { font-size: 16px; color: var(--text-muted); margin-bottom: 32px; }
+
+  /* Sections */
+  .form-section { margin-bottom: 32px; }
+  .form-section-title { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--navy); padding-bottom: 8px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .form-grid .full { grid-column: 1 / -1; }
+  .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
+  .req { color: var(--danger); }
+  .form-group input, .form-group textarea { width: 100%; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: 8px; outline: none; transition: all .15s; background: var(--bg); }
+  .form-group input:focus, .form-group textarea:focus { border-color: var(--blue); background: var(--surface); box-shadow: 0 0 0 3px var(--blue-bg); }
+  .form-group textarea { resize: vertical; min-height: 100px; }
+
+  /* File Dropzone */
+  .file-dropzone { border: 2px dashed var(--border); border-radius: var(--radius); padding: 32px 20px; text-align: center; cursor: pointer; background: var(--bg); transition: all .2s; }
+  .file-dropzone:hover, .file-dropzone.dragover { border-color: var(--blue); background: var(--blue-bg); }
+  .file-dropzone-icon { color: var(--blue); margin-bottom: 12px; }
+  .file-dropzone-text { font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+  .file-dropzone-hint { font-size: 12px; color: var(--text-light); }
+  .file-selected { display: flex; align-items: center; gap: 8px; margin-top: 12px; padding: 12px; background: var(--success-bg); color: var(--success); border-radius: 8px; font-weight: 600; font-size: 14px; }
+
+  /* Actions & Alerts */
+  .form-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border); }
+  .btn-primary, .btn-secondary { padding: 12px 24px; border-radius: 8px; font-weight: 600; font-size: 15px; cursor: pointer; border: none; transition: all .15s; display: inline-flex; align-items: center; justify-content: center; }
+  .btn-primary { background: var(--navy); color: white; }
+  .btn-primary:hover:not(:disabled) { background: var(--navy-2); transform: translateY(-1px); box-shadow: var(--shadow); }
+  .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
+  .btn-secondary { background: var(--bg); color: var(--text-muted); text-decoration: none; }
+  .btn-secondary:hover { background: var(--border); color: var(--text); }
+  .alert { padding: 16px; border-radius: 8px; font-size: 14px; font-weight: 500; margin-bottom: 24px; }
+  .alert-success { background: var(--success-bg); color: var(--success); border: 1px solid #BBF7D0; }
+  .alert-error { background: var(--danger-bg); color: var(--danger); border: 1px solid #FECACA; }
+
+  /* Spinner */
+  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Footer */
+  .site-footer { background: var(--navy); color: var(--text-light); padding: 40px 24px 32px; margin-top: 80px; }
+  .site-footer-inner { max-width: 800px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+  .site-footer .brand { color: white; }
+
+  @media (max-width: 640px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .form-card { padding: 24px; }
+    .form-actions { flex-direction: column; }
+    .btn-primary, .btn-secondary { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header-inner">
+    <a href="./" class="brand"><div class="brand-mark">R</div><span>Raveone Careers</span></a>
+    <nav class="header-nav"><a href="./">All Jobs</a></nav>
+  </div>
+</header>
+
+<main class="form-wrap">
+  <a href="job.html" id="backLink" class="back-link">← Back to job</a>
+
+  <div class="form-card">
+    <h1 id="pageTitle">Apply</h1>
+    <p class="form-subtitle" id="pageSubtitle">Loading job details...</p>
+
+    <form id="applyForm" novalidate>
+      <input type="hidden" id="jobId" value="">
+
+      <!-- SECTION 1: Personal -->
+      <div class="form-section">
+        <div class="form-section-title">1 · Personal Information</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="candidateName">Full Name <span class="req">*</span></label>
+            <input type="text" id="candidateName" name="candidateName" required placeholder="e.g. Priya Sharma">
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone Number <span class="req">*</span></label>
+            <input type="tel" id="phone" name="phone" required placeholder="10-digit mobile number">
+          </div>
+          <div class="form-group full">
+            <label for="email">Email Address <span class="req">*</span></label>
+            <input type="email" id="email" name="email" required placeholder="you@example.com">
+          </div>
+          <div class="form-group full">
+            <label for="location">Current Location <span class="req">*</span></label>
+            <input type="text" id="location" name="location" required placeholder="City, State">
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 2: Experience -->
+      <div class="form-section">
+        <div class="form-section-title">2 · Experience &amp; Education</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="education">Highest Education <span class="req">*</span></label>
+            <input type="text" id="education" name="education" required placeholder="e.g. B.E. Mechanical">
+          </div>
+          <div class="form-group">
+            <label for="totalExp">Total Experience <span class="req">*</span></label>
+            <input type="text" id="totalExp" name="totalExp" required placeholder="e.g. 5 years">
+          </div>
+          <div class="form-group">
+            <label for="relExp">Relevant Experience <span class="req">*</span></label>
+            <input type="text" id="relExp" name="relExp" required placeholder="e.g. 3 years">
+          </div>
+          <div class="form-group">
+            <label for="noticePeriod">Notice Period <span class="req">*</span></label>
+            <input type="text" id="noticePeriod" name="noticePeriod" required placeholder="e.g. 30 days">
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 3: Compensation -->
+      <div class="form-section">
+        <div class="form-section-title">3 · Compensation</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="currentCtc">Current CTC <span class="req">*</span></label>
+            <input type="text" id="currentCtc" name="currentCtc" required placeholder="e.g. 6.5 LPA">
+          </div>
+          <div class="form-group">
+            <label for="expectedCtc">Expected CTC <span class="req">*</span></label>
+            <input type="text" id="expectedCtc" name="expectedCtc" required placeholder="e.g. 9 LPA">
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 4: Background -->
+      <div class="form-section">
+        <div class="form-section-title">4 · Background</div>
+        <div class="form-grid">
+          <div class="form-group full">
+            <label for="reasonLeaving">Reason for Leaving Current Role <span class="req">*</span></label>
+            <textarea id="reasonLeaving" name="reasonLeaving" required placeholder="Briefly explain your reason for looking for a new role"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 5: Resume -->
+      <div class="form-section">
+        <div class="form-section-title">5 · Resume</div>
+        <div class="form-group full">
+          <div class="file-dropzone" id="dropzone">
+            <div class="file-dropzone-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            </div>
+            <div class="file-dropzone-text">Click to upload or drag and drop</div>
+            <div class="file-dropzone-hint">PDF, DOC, or DOCX · Max 5 MB</div>
+            <input type="file" id="resume" name="resume" accept=".pdf,.doc,.docx" style="display:none">
+          </div>
+          <div id="fileSelected" style="display:none"></div>
+        </div>
+      </div>
+
+      <div id="statusMessage"></div>
+
+      <div class="form-actions">
+        <a href="job.html" id="cancelLink" class="btn-secondary">Cancel</a>
+        <button type="submit" class="btn-primary" id="submitBtn">
+          <span id="submitText">Submit Application</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div class="brand"><div class="brand-mark">R</div><span>Raveone Careers</span></div>
+    <p>&copy; <span id="footerYear">2026</span> Raveone Consultants</p>
+  </div>
+</footer>
+
+<script>
+(function() {
+  // 1. CONFIG
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby11ZYopJAAbHT0tsBu4v5YQe9TTpc_m88O43YhmEGYUg0kOlpudIDSWVF34ESc30k/exec";
+  document.getElementById('footerYear').textContent = new Date().getFullYear();
+
+  // 2. GET JOB ID FROM URL
+  const params = new URLSearchParams(window.location.search);
+  const jobId = params.get('job');
+
+  if (!jobId) {
+    document.getElementById('pageTitle').textContent = "Error";
+    document.getElementById('pageSubtitle').innerHTML = '<span style="color:#DC2626">No job ID provided. Please go back and select a job.</span>';
+    document.getElementById('applyForm').style.display = 'none';
+    return;
+  }
+
+  document.getElementById('jobId').value = jobId;
+  document.getElementById('backLink').href = 'job.html?job=' + encodeURIComponent(jobId);
+  document.getElementById('cancelLink').href = 'job.html?job=' + encodeURIComponent(jobId);
+
+  // 3. FETCH JOB DETAILS TO POPULATE HEADER
+  fetch(SCRIPT_URL + '?action=job&id=' + encodeURIComponent(jobId))
+    .then(function(r) {
+      if (!r.ok) throw new Error('Server returned ' + r.status);
+      return r.json();
+    })
+    .then(function(job) {
+      if (job && job.jobId) {
+        // Clean up title (remove Job ID prefix if present)
+        var title = job.title || '';
+        var escapedId = jobId.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        title = title.replace(new RegExp('^' + escapedId + '\\s*[-–:\\s]\\s*', 'i'), '').trim();
+        
+        document.title = 'Apply for ' + title + ' | Raveone Careers';
+        document.getElementById('pageTitle').textContent = 'Apply for ' + title;
+        document.getElementById('pageSubtitle').textContent = (job.company || '') + (job.location ? ' · ' + job.location : '');
+      }
+    })
+    .catch(function(err) {
+      console.error("Failed to load job details:", err);
+      document.getElementById('pageSubtitle').textContent = "Could not load job details. You may still submit your application.";
+    });
+
+  // 4. FORM LOGIC
+  const form = document.getElementById('applyForm');
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('resume');
+  const fileSelectedEl = document.getElementById('fileSelected');
+  const statusEl = document.getElementById('statusMessage');
+  const submitBtn = document.getElementById('submitBtn');
+  const submitText = document.getElementById('submitText');
+  let selectedFile = null;
+
+  // Dropzone interactions
+  dropzone.addEventListener('click', function() { fileInput.click(); });
+  ['dragenter', 'dragover'].forEach(function(evt) {
+    dropzone.addEventListener(evt, function(e) { e.preventDefault(); dropzone.classList.add('dragover'); });
+  });
+  ['dragleave', 'drop'].forEach(function(evt) {
+    dropzone.addEventListener(evt, function(e) { e.preventDefault(); dropzone.classList.remove('dragover'); });
+  });
+  dropzone.addEventListener('drop', function(e) {
+    if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+  });
+  fileInput.addEventListener('change', function(e) {
+    if (e.target.files.length) handleFile(e.target.files[0]);
+  });
+
+  function handleFile(file) {
+    const maxSize = 5 * 1024 * 1024;
+    const allowedExt = /\.(pdf|doc|docx)$/i;
+    if (file.size > maxSize) { showAlert('error', 'File too large. Maximum 5 MB.'); return; }
+    if (!allowedExt.test(file.name)) { showAlert('error', 'Please upload a PDF, DOC, or DOCX file.'); return; }
+    
+    selectedFile = file;
+    fileSelectedEl.style.display = 'block';
+    fileSelectedEl.innerHTML = '<div class="file-selected"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg><span>' + file.name + ' · ' + (file.size / 1024).toFixed(0) + ' KB</span></div>';
+  }
+
+  // Submit Logic
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    statusEl.innerHTML = '';
+
+    // Validation
+    const required = ['candidateName', 'phone', 'email', 'location', 'education', 'totalExp', 'relExp', 'noticePeriod', 'currentCtc', 'expectedCtc', 'reasonLeaving'];
+    for (const id of required) {
+      const el = document.getElementById(id);
+      if (!el.value.trim()) {
+        el.focus();
+        showAlert('error', 'Please fill all required fields.');
+        return;
+      }
+    }
+
+    const emailEl = document.getElementById('email');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value.trim())) {
+      emailEl.focus();
+      showAlert('error', 'Please enter a valid email address.');
+      return;
+    }
+
+    const phoneEl = document.getElementById('phone');
+    const phoneDigits = phoneEl.value.replace(/\D/g, '');
+    if (phoneDigits.length !== 10 && !(phoneDigits.length === 12 && phoneDigits.startsWith('91'))) {
+      phoneEl.focus();
+      showAlert('error', 'Please enter a valid 10-digit mobile number.');
+      return;
+    }
+
+    if (!selectedFile) {
+      showAlert('error', 'Please upload your resume.');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitText.innerHTML = '<span class="spinner"></span>&nbsp; Uploading resume...';
+
+    try {
+      const resumeData = await readFileAsBase64(selectedFile);
+      
+      const payload = {
+        action: 'submitCandidate',
+        jobId: jobId,
+        candidateName: document.getElementById('candidateName').value.trim(),
+        email: emailEl.value.trim().toLowerCase(),
+        phone: phoneEl.value.trim(),
+        location: document.getElementById('location').value.trim(),
+        education: document.getElementById('education').value.trim(),
+        totalExp: document.getElementById('totalExp').value.trim(),
+        relExp: document.getElementById('relExp').value.trim(),
+        noticePeriod: document.getElementById('noticePeriod').value.trim(),
+        currentCtc: document.getElementById('currentCtc').value.trim(),
+        expectedCtc: document.getElementById('expectedCtc').value.trim(),
+        reasonLeaving: document.getElementById('reasonLeaving').value.trim(),
+        resumeData: resumeData,
+        resumeName: selectedFile.name
+      };
+
+      submitText.innerHTML = '<span class="spinner"></span>&nbsp; Submitting application...';
+
+      // Post to Google Apps Script
+      const res = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+      
+      const result = await res.json();
+
+      if (result.ok) {
+        showAlert('success', 'Application submitted successfully! Reference: <strong>' + result.applicationId + '</strong>');
+        form.reset();
+        selectedFile = null;
+        fileSelectedEl.style.display = 'none';
+        submitText.textContent = 'Submitted ✓';
+        submitBtn.style.background = '#15803D'; // Green success color
+      } else {
+        throw new Error(result.error || 'Submission failed');
+      }
+    } catch (err) {
+      console.error(err);
+      showAlert('error', err.message || 'Something went wrong. Please try again.');
+      submitBtn.disabled = false;
+      submitText.textContent = 'Submit Application';
+    }
+  });
+
+  function readFileAsBase64(file) {
+    return new Promise(function(resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function() { resolve(reader.result); };
+      reader.onerror = function() { reject(new Error('Could not read file')); };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function showAlert(type, html) {
+    statusEl.innerHTML = '<div class="alert alert-' + type + '">' + html + '</div>';
+    statusEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+})();
+</script>
+</body>
+</html>
