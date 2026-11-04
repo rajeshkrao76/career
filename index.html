@@ -663,8 +663,9 @@ button, input, select { font-family: inherit; font-size: inherit; }
     },
 
     renderCard: function (j) {
-      var url = SCRIPT_URL + '?page=job&id=' + encodeURIComponent(j.jobId);
-      var title = App.cleanTitle(j.title, j.jobId);
+  var url = 'job.html?job=' + encodeURIComponent(j.jobId);
+  var title = App.cleanTitle(j.title, j.jobId);
+  // ...
 
       // Meta pills
       var pills = [];
