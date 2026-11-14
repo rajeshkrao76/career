@@ -144,22 +144,37 @@
 
   // ── LOAD PROFILE ───────────────────────────────────────────────────────
   fetch(SCRIPT_URL + '?action=getCandidateByToken&token=' + encodeURIComponent(TOKEN))
-    .then(r => r.json())
-    .then(res => {
-      if (!res || !res.ok) {
-        showFatal('⏱️', 'Link not available', (res && res.error) || 'This link is invalid or has already been used.');
-        return;
-      }
-      PROFILE    = res.profile || {};
-      APP_ID     = res.appId || '';
-      EXPIRES_AT = res.expiresAt || '';
-      EXP_ENTRIES = Array.isArray(PROFILE.experience) ? PROFILE.experience.slice() : [];
-      EDU_ENTRIES = Array.isArray(PROFILE.education)  ? PROFILE.education.slice()  : [];
-      renderForm();
-    })
-    .catch(err => {
-      showFatal('⚠️', 'Could not load profile', err.message || String(err));
-    });
+  .then(async r => {
+    const text = await r.text();
+    let res;
+    try { res = JSON.parse(text); }
+    catch (e) {
+      return showFatal('⚠️', 'Unexpected server response',
+        'Received HTML/plain text instead of JSON (likely auth redirect or stale deployment).\n\nFirst 300 chars:\n' + text.slice(0, 300));
+    }
+    if (!res || !res.ok) {
+      return showFatal('⏱️', 'Link not available', (res && res.error) || 'Invalid or expired token.');
+    }
+    PROFILE    = res.profile || {};
+    APP_ID     = res.appId || '';
+    EXPIRES_AT = res.expiresAt || '';
+    EXP_ENTRIES = Array.isArray(PROFILE.experience) ? PROFILE.experience.slice() : [];
+    EDU_ENTRIES = Array.isArray(PROFILE.education)  ? PROFILE.education.slice()  : [];
+    renderForm();
+  })
+  .catch(err => {
+    const isFetchFail = String(err.message).includes('Failed to fetch');
+    showFatal('🔌', 'Network error',
+      (isFetchFail
+        ? 'Could not reach the Apps Script server.\n\n' +
+          'This almost always means the web app deployment requires Google login ' +
+          '(redirects to accounts.google.com — browsers block reading those responses).\n\n' +
+          'Fix: In Apps Script → Deploy → Manage deployments → set ' +
+          '"Who has access" to "Anyone" → redeploy.\n\n' +
+          'Open this URL in a fresh browser tab to confirm:\n' +
+          SCRIPT_URL + '?action=jobs'
+        : err.message));
+  });
 
   // ── RENDER FORM ────────────────────────────────────────────────────────
   function renderForm() {
